@@ -1,0 +1,165 @@
+[
+  {
+    "id": "rfq-1",
+    "title": "Need 1000 cotton t-shirts for export",
+    "description": "Looking for a reliable supplier to provide 1000 high-quality cotton t-shirts. Must be export-ready with proper packaging. Prefer suppliers with export experience.",
+    "category": {
+      "id": "cat-1",
+      "name": "Textiles & Apparel",
+      "slug": "textiles-apparel"
+    },
+    "buyer": {
+      "id": "buyer-1",
+      "name": "John Smith",
+      "email": "john.smith@example.com",
+      "company": "Global Trading Co."
+    },
+    "quantity": {
+      "min": 1000,
+      "max": 2000,
+      "unit": "pieces"
+    },
+    "budget": {
+      "min": 5000,
+      "max": 10000,
+      "currency": "USD"
+    },
+    "specifications": {
+      "Material": "100% Cotton",
+      "Sizes": "S, M, L, XL",
+      "Colors": "White, Black, Navy",
+      "Packaging": "Export-ready"
+    },
+    "attachments": [],
+    "status": "open",
+    "deadline": "2024-12-31T23:59:59Z",
+    "responses": [
+      {
+        "id": "resp-1",
+        "rfqId": "rfq-1",
+        "supplier": {
+          "id": "supplier-1",
+          "name": "Ahmed Khan",
+          "company": "Pak Textiles Ltd"
+        },
+        "price": {
+          "amount": 7500,
+          "currency": "USD"
+        },
+        "message": "We can provide 1000 high-quality cotton t-shirts with export packaging. Delivery within 30 days.",
+        "status": "pending",
+        "createdAt": "2024-11-15T10:30:00Z"
+      },
+      {
+        "id": "resp-2",
+        "rfqId": "rfq-1",
+        "supplier": {
+          "id": "supplier-2",
+          "name": "Fatima Ali",
+          "company": "Premium Garments Inc"
+        },
+        "price": {
+          "amount": 8500,
+          "currency": "USD"
+        },
+        "message": "We specialize in export-quality garments. Can provide custom sizes and colors.",
+        "status": "pending",
+        "createdAt": "2024-11-16T14:20:00Z"
+      }
+    ],
+    "createdAt": "2024-11-10T09:00:00Z",
+    "updatedAt": "2024-11-16T14:20:00Z"
+  },
+  {
+    "id": "rfq-2",
+    "title": "Surgical instruments - bulk order",
+    "description": "Requiring surgical scissors, forceps, and other medical instruments. Must meet international quality standards (ISO certified preferred).",
+    "category": {
+      "id": "cat-2",
+      "name": "Medical Equipment",
+      "slug": "medical-equipment"
+    },
+    "buyer": {
+      "id": "buyer-2",
+      "name": "Dr. Sarah Johnson",
+      "email": "sarah.j@example.com",
+      "company": "MedSupply International"
+    },
+    "quantity": {
+      "min": 500,
+      "max": 1000,
+      "unit": "sets"
+    },
+    "budget": {
+      "min": 15000,
+      "max": 30000,
+      "currency": "USD"
+    },
+    "specifications": {
+      "Certification": "ISO 13485",
+      "Material": "Stainless Steel",
+      "Sterilization": "Required"
+    },
+    "attachments": [],
+    "status": "open",
+    "deadline": "2025-01-15T23:59:59Z",
+    "responses": [],
+    "createdAt": "2024-11-20T11:00:00Z",
+    "updatedAt": "2024-11-20T11:00:00Z"
+  },
+  {
+    "id": "rfq-3",
+    "title": "Cricket bats - wholesale order",
+    "description": "Looking for cricket bat manufacturer for wholesale export. Need various sizes and grades.",
+    "category": {
+      "id": "cat-3",
+      "name": "Sports Equipment",
+      "slug": "sports-equipment"
+    },
+    "buyer": {
+      "id": "buyer-3",
+      "name": "Michael Brown",
+      "email": "m.brown@example.com",
+      "company": "Sports Distributors Ltd"
+    },
+    "quantity": {
+      "min": 500,
+      "max": 1000,
+      "unit": "pieces"
+    },
+    "budget": {
+      "min": 20000,
+      "max": 40000,
+      "currency": "USD"
+    },
+    "specifications": {
+      "Grades": "Grade 1, Grade 2, Grade 3",
+      "Sizes": "Short handle, Long handle",
+      "Branding": "Custom branding available"
+    },
+    "attachments": [],
+    "status": "closed",
+    "deadline": "2024-10-31T23:59:59Z",
+    "responses": [
+      {
+        "id": "resp-3",
+        "rfqId": "rfq-3",
+        "supplier": {
+          "id": "supplier-3",
+          "name": "Hassan Malik",
+          "company": "Sialkot Sports Manufacturing"
+        },
+        "price": {
+          "amount": 35000,
+          "currency": "USD"
+        },
+        "message": "We are leading cricket bat manufacturers. Can provide all grades and sizes.",
+        "status": "accepted",
+        "createdAt": "2024-10-25T09:15:00Z"
+      }
+    ],
+    "createdAt": "2024-10-15T08:00:00Z",
+    "updatedAt": "2024-10-30T16:45:00Z"
+  }
+]
+

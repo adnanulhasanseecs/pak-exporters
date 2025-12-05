@@ -1,0 +1,1010 @@
+[
+  {
+    "id": "1",
+    "name": "Embroidered Tablecloths",
+    "description": "Exquisite embroidered tablecloths for elegant dining. Handcrafted with traditional designs perfect for export.",
+    "shortDescription": "Exquisite embroidered tablecloths for elegant dining",
+    "price": {
+      "amount": 35.0,
+      "currency": "USD",
+      "minOrderQuantity": 20
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-85.webp"
+    ],
+    "category": {
+      "id": "14",
+      "name": "Others",
+      "slug": "others"
+    },
+    "company": {
+      "id": "1",
+      "name": "Anchor Group",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Material": "Cotton, Linen",
+      "Sizes": "Various sizes available",
+      "Design": "Traditional embroidered patterns",
+      "Finish": "Handcrafted"
+    },
+    "tags": ["embroidered", "tablecloths", "artisan", "textiles"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:54:00Z",
+    "updatedAt": "2024-09-22T19:54:00Z"
+  },
+  {
+    "id": "2",
+    "name": "Woven Baskets",
+    "description": "Beautifully woven baskets for storage and décor. Traditional craftsmanship, perfect for home and commercial use.",
+    "shortDescription": "Beautifully woven baskets for storage and décor",
+    "price": {
+      "amount": 12.0,
+      "currency": "USD",
+      "minOrderQuantity": 50
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-76.webp"
+    ],
+    "category": {
+      "id": "14",
+      "name": "Others",
+      "slug": "others"
+    },
+    "company": {
+      "id": "2",
+      "name": "Paktherm",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": false
+    },
+    "specifications": {
+      "Material": "Natural fibers, Cane",
+      "Sizes": "Small, Medium, Large",
+      "Style": "Traditional woven",
+      "Use": "Storage, Decorative"
+    },
+    "tags": ["baskets", "woven", "handmade", "storage"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:54:00Z",
+    "updatedAt": "2024-09-22T19:54:00Z"
+  },
+  {
+    "id": "3",
+    "name": "Handmade Pottery",
+    "description": "Unique handcrafted pottery pieces for a personal touch. Artisan-crafted decorative and functional pottery.",
+    "shortDescription": "Unique handcrafted pottery pieces",
+    "price": {
+      "amount": 18.0,
+      "currency": "USD",
+      "minOrderQuantity": 30
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-72.webp"
+    ],
+    "category": {
+      "id": "14",
+      "name": "Others",
+      "slug": "others"
+    },
+    "company": {
+      "id": "3",
+      "name": "Unicol",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Material": "Clay",
+      "Type": "Decorative, Functional",
+      "Finish": "Glazed, Unglazed",
+      "Style": "Traditional, Modern"
+    },
+    "tags": ["pottery", "handmade", "artisan", "ceramics"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:54:00Z",
+    "updatedAt": "2024-09-22T19:54:00Z"
+  },
+  {
+    "id": "4",
+    "name": "Handcrafted Wooden Furniture",
+    "description": "Unique handcrafted wooden furniture for your home. Premium quality wood, traditional and modern designs.",
+    "shortDescription": "Unique handcrafted wooden furniture",
+    "price": {
+      "amount": 250.0,
+      "currency": "USD",
+      "minOrderQuantity": 5
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-67.webp"
+    ],
+    "category": {
+      "id": "12",
+      "name": "Furniture",
+      "slug": "furniture"
+    },
+    "company": {
+      "id": "4",
+      "name": "Himalayan Salt",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": false
+    },
+    "specifications": {
+      "Material": "Premium Wood",
+      "Types": "Chairs, Tables, Cabinets",
+      "Finish": "Polished, Natural",
+      "Style": "Traditional, Modern"
+    },
+    "tags": ["furniture", "wooden", "handcrafted", "home"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:54:00Z",
+    "updatedAt": "2024-09-22T19:54:00Z"
+  },
+  {
+    "id": "5",
+    "name": "Ornate Brass Decorative Items",
+    "description": "Beautiful decorative brass items to elevate your home décor. Handcrafted traditional designs.",
+    "shortDescription": "Beautiful decorative brass items",
+    "price": {
+      "amount": 45.0,
+      "currency": "USD",
+      "minOrderQuantity": 10
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-63.webp"
+    ],
+    "category": {
+      "id": "14",
+      "name": "Others",
+      "slug": "others"
+    },
+    "company": {
+      "id": "5",
+      "name": "MR. CRAFTS TREASURES",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Material": "Brass",
+      "Finish": "Polished, Antique",
+      "Style": "Traditional, Ornate",
+      "Types": "Vases, Bowls, Plates, Decorative items"
+    },
+    "tags": ["brass", "decorative", "handmade", "traditional"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:54:00Z",
+    "updatedAt": "2024-09-22T19:54:00Z"
+  },
+  {
+    "id": "6",
+    "name": "Hand-Woven Persian Carpets",
+    "description": "Exquisite hand-woven carpets to enhance any space. Premium quality, traditional Persian designs.",
+    "shortDescription": "Exquisite hand-woven carpets",
+    "price": {
+      "amount": 350.0,
+      "currency": "USD",
+      "minOrderQuantity": 1
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-59.webp"
+    ],
+    "category": {
+      "id": "14",
+      "name": "Others",
+      "slug": "others"
+    },
+    "company": {
+      "id": "1",
+      "name": "Anchor Group",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Material": "Wool, Silk",
+      "Size": "Various sizes",
+      "Design": "Persian patterns",
+      "Quality": "Hand-woven, Premium"
+    },
+    "tags": ["carpets", "persian", "hand-woven", "luxury"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:54:00Z",
+    "updatedAt": "2024-09-22T19:54:00Z"
+  },
+  {
+    "id": "7",
+    "name": "Surgical Clamps",
+    "description": "Essential surgical clamps for securing tissues during procedures. Medical grade stainless steel.",
+    "shortDescription": "Essential surgical clamps for securing tissues",
+    "price": {
+      "amount": 28.0,
+      "currency": "USD",
+      "minOrderQuantity": 10
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-55.webp"
+    ],
+    "category": {
+      "id": "4",
+      "name": "Surgical Instruments",
+      "slug": "surgical-instruments"
+    },
+    "company": {
+      "id": "6",
+      "name": "ELA",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Material": "Stainless Steel",
+      "Types": "Various clamp types",
+      "Sterilization": "Autoclavable",
+      "Certification": "ISO 13485"
+    },
+    "tags": ["surgical", "clamps", "medical", "instruments"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:54:00Z",
+    "updatedAt": "2024-09-22T19:54:00Z"
+  },
+  {
+    "id": "8",
+    "name": "Surgical Needles",
+    "description": "High-quality surgical needles for suturing. Medical grade, sterilizable, precision manufactured.",
+    "shortDescription": "High-quality surgical needles for suturing",
+    "price": {
+      "amount": 12.0,
+      "currency": "USD",
+      "minOrderQuantity": 50
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-53.webp"
+    ],
+    "category": {
+      "id": "4",
+      "name": "Surgical Instruments",
+      "slug": "surgical-instruments"
+    },
+    "company": {
+      "id": "3",
+      "name": "Unicol",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Material": "Stainless Steel",
+      "Sizes": "Various gauges",
+      "Sterilization": "Autoclavable",
+      "Certification": "ISO 13485"
+    },
+    "tags": ["surgical", "needles", "medical", "suturing"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:54:00Z",
+    "updatedAt": "2024-09-22T19:54:00Z"
+  },
+  {
+    "id": "9",
+    "name": "Surgical Retractors",
+    "description": "Essential surgical retractors for visibility during surgery. High-quality medical instruments.",
+    "shortDescription": "Essential surgical retractors for visibility during surgery",
+    "price": {
+      "amount": 35.0,
+      "currency": "USD",
+      "minOrderQuantity": 10
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-46.webp"
+    ],
+    "category": {
+      "id": "4",
+      "name": "Surgical Instruments",
+      "slug": "surgical-instruments"
+    },
+    "company": {
+      "id": "6",
+      "name": "ELA",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Material": "Stainless Steel",
+      "Types": "Self-Retaining, Hand-Held",
+      "Sizes": "Various",
+      "Certification": "ISO 13485"
+    },
+    "tags": ["surgical", "retractors", "medical", "instruments"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "10",
+    "name": "Precision Stainless Steel Forceps",
+    "description": "Precision forceps for delicate surgical procedures. Medical grade stainless steel, autoclavable.",
+    "shortDescription": "Precision forceps for delicate surgical procedures",
+    "price": {
+      "amount": 22.0,
+      "currency": "USD",
+      "minOrderQuantity": 20
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-42.webp"
+    ],
+    "category": {
+      "id": "4",
+      "name": "Surgical Instruments",
+      "slug": "surgical-instruments"
+    },
+    "company": {
+      "id": "3",
+      "name": "Unicol",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Material": "Stainless Steel",
+      "Types": "Various forceps types",
+      "Sterilization": "Autoclavable",
+      "Certification": "ISO 13485"
+    },
+    "tags": ["surgical", "forceps", "medical", "precision"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "11",
+    "name": "Sharp Surgical Scissors",
+    "description": "High-quality surgical scissors for accurate cutting. Precision manufactured, medical grade.",
+    "shortDescription": "High-quality surgical scissors for accurate cutting",
+    "price": {
+      "amount": 18.0,
+      "currency": "USD",
+      "minOrderQuantity": 20
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-41.webp"
+    ],
+    "category": {
+      "id": "4",
+      "name": "Surgical Instruments",
+      "slug": "surgical-instruments"
+    },
+    "company": {
+      "id": "6",
+      "name": "ELA",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Material": "Stainless Steel",
+      "Types": "Straight, Curved",
+      "Sizes": "Various lengths",
+      "Certification": "ISO 13485, CE"
+    },
+    "tags": ["surgical", "scissors", "medical", "cutting"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "12",
+    "name": "Precision Surgical Scalpels",
+    "description": "Precision scalpels for surgical procedures. High-grade stainless steel, sterilizable.",
+    "shortDescription": "Precision scalpels for surgical procedures",
+    "price": {
+      "amount": 15.0,
+      "currency": "USD",
+      "minOrderQuantity": 30
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-36.webp"
+    ],
+    "category": {
+      "id": "4",
+      "name": "Surgical Instruments",
+      "slug": "surgical-instruments"
+    },
+    "company": {
+      "id": "3",
+      "name": "Unicol",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Material": "Stainless Steel",
+      "Blade Types": "Various",
+      "Sterilization": "Autoclavable",
+      "Certification": "ISO 13485"
+    },
+    "tags": ["surgical", "scalpels", "medical", "precision"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "13",
+    "name": "Basketballs",
+    "description": "High-quality basketballs designed for competitive play. Durable construction, excellent grip.",
+    "shortDescription": "High-quality basketballs for competitive play",
+    "price": {
+      "amount": 25.0,
+      "currency": "USD",
+      "minOrderQuantity": 20
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-33.webp"
+    ],
+    "category": {
+      "id": "3",
+      "name": "Leather & Sports Gears",
+      "slug": "leather-sports-gears"
+    },
+    "company": {
+      "id": "2",
+      "name": "Paktherm",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": false
+    },
+    "specifications": {
+      "Size": "Standard (Size 7)",
+      "Material": "Composite Leather",
+      "Weight": "600-650g",
+      "Type": "Indoor, Outdoor"
+    },
+    "tags": ["basketballs", "sports", "balls", "athletic"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "14",
+    "name": "Cricket Bats",
+    "description": "Quality cricket bats crafted for performance. Premium willow wood, professional grade.",
+    "shortDescription": "Quality cricket bats crafted for performance",
+    "price": {
+      "amount": 45.0,
+      "currency": "USD",
+      "minOrderQuantity": 10
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-23.webp"
+    ],
+    "category": {
+      "id": "3",
+      "name": "Leather & Sports Gears",
+      "slug": "leather-sports-gears"
+    },
+    "company": {
+      "id": "1",
+      "name": "Anchor Group",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Material": "Premium Willow Wood",
+      "Sizes": "Short Handle, Long Handle",
+      "Weight": "1.1kg - 1.3kg",
+      "Grade": "Professional"
+    },
+    "tags": ["cricket", "bats", "sports", "professional"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "15",
+    "name": "Tennis Rackets",
+    "description": "Professional-grade tennis rackets for serious players. High-quality construction, excellent performance.",
+    "shortDescription": "Professional-grade tennis rackets",
+    "price": {
+      "amount": 55.0,
+      "currency": "USD",
+      "minOrderQuantity": 10
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-17.webp"
+    ],
+    "category": {
+      "id": "3",
+      "name": "Leather & Sports Gears",
+      "slug": "leather-sports-gears"
+    },
+    "company": {
+      "id": "2",
+      "name": "Paktherm",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": false
+    },
+    "specifications": {
+      "Weight": "280g - 320g",
+      "Grip Size": "G2, G3, G4",
+      "String Pattern": "16x19, 18x20",
+      "Material": "Graphite, Carbon"
+    },
+    "tags": ["tennis", "rackets", "sports", "professional"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "16",
+    "name": "Durable Sports Gloves",
+    "description": "High-performance sports gloves for various activities. Durable construction, excellent grip, comfortable fit.",
+    "shortDescription": "High-performance sports gloves",
+    "price": {
+      "amount": 20.0,
+      "currency": "USD",
+      "minOrderQuantity": 50
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-12.webp"
+    ],
+    "category": {
+      "id": "3",
+      "name": "Leather & Sports Gears",
+      "slug": "leather-sports-gears"
+    },
+    "company": {
+      "id": "1",
+      "name": "Anchor Group",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Material": "Leather, Synthetic",
+      "Sizes": "S, M, L, XL",
+      "Types": "Boxing, Cycling, Weightlifting",
+      "Features": "Breathable, Grip Enhanced"
+    },
+    "tags": ["gloves", "sports", "durable", "athletic"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "17",
+    "name": "High-Performance Sportswear",
+    "description": "Lightweight and breathable sportswear for peak performance. Professional athletic clothing.",
+    "shortDescription": "Lightweight and breathable sportswear",
+    "price": {
+      "amount": 28.0,
+      "currency": "USD",
+      "minOrderQuantity": 50
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-10.webp"
+    ],
+    "category": {
+      "id": "6",
+      "name": "Apparel & Clothing",
+      "slug": "apparel-clothing"
+    },
+    "company": {
+      "id": "1",
+      "name": "Anchor Group",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Material": "Polyester, Spandex",
+      "Sizes": "S, M, L, XL, XXL",
+      "Features": "Moisture-Wicking, Breathable",
+      "Types": "Tops, Bottoms, Sets"
+    },
+    "tags": ["sportswear", "athletic", "performance", "apparel"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "18",
+    "name": "Durable Footballs",
+    "description": "High-quality footballs perfect for intense play. Durable construction, excellent performance.",
+    "shortDescription": "High-quality footballs for intense play",
+    "price": {
+      "amount": 15.0,
+      "currency": "USD",
+      "minOrderQuantity": 50
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/rem-2.webp"
+    ],
+    "category": {
+      "id": "3",
+      "name": "Leather & Sports Gears",
+      "slug": "leather-sports-gears"
+    },
+    "company": {
+      "id": "2",
+      "name": "Paktherm",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": false
+    },
+    "specifications": {
+      "Size": "Size 5 (Standard)",
+      "Material": "PU Leather",
+      "Weight": "410-450g",
+      "Type": "Training, Match"
+    },
+    "tags": ["footballs", "sports", "soccer", "athletic"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "19",
+    "name": "Leather Boots",
+    "description": "Durable leather boots designed for outdoor adventures. Premium quality, rugged construction.",
+    "shortDescription": "Durable leather boots for outdoor adventures",
+    "price": {
+      "amount": 65.0,
+      "currency": "USD",
+      "minOrderQuantity": 20
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/90.webp"
+    ],
+    "category": {
+      "id": "3",
+      "name": "Leather & Sports Gears",
+      "slug": "leather-sports-gears"
+    },
+    "company": {
+      "id": "1",
+      "name": "Anchor Group",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Material": "Genuine Leather",
+      "Sizes": "EU 38-45",
+      "Types": "Hiking, Work, Casual",
+      "Features": "Waterproof, Durable"
+    },
+    "tags": ["boots", "leather", "outdoor", "footwear"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "20",
+    "name": "Leather Belts",
+    "description": "Durable leather belts to complement any outfit. Premium quality, various designs and sizes.",
+    "shortDescription": "Durable leather belts to complement any outfit",
+    "price": {
+      "amount": 15.0,
+      "currency": "USD",
+      "minOrderQuantity": 50
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/84.webp"
+    ],
+    "category": {
+      "id": "3",
+      "name": "Leather & Sports Gears",
+      "slug": "leather-sports-gears"
+    },
+    "company": {
+      "id": "5",
+      "name": "MR. CRAFTS TREASURES",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Material": "Genuine Leather",
+      "Sizes": "32, 34, 36, 38, 40 inches",
+      "Colors": "Brown, Black, Tan",
+      "Buckle": "Metal"
+    },
+    "tags": ["belts", "leather", "fashion", "accessories"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "21",
+    "name": "Premium Long-Grain Basmati Rice",
+    "description": "Quality basmati rice known for its aroma and flavor. Premium long-grain rice perfect for export.",
+    "shortDescription": "Quality basmati rice known for its aroma and flavor",
+    "price": {
+      "amount": 850.0,
+      "currency": "USD",
+      "minOrderQuantity": 1
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/31.webp"
+    ],
+    "category": {
+      "id": "1",
+      "name": "Agriculture",
+      "slug": "agriculture"
+    },
+    "company": {
+      "id": "1",
+      "name": "Anchor Group",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Type": "Long-Grain Basmati",
+      "Grade": "Premium",
+      "Origin": "Pakistan",
+      "Packaging": "25kg, 50kg bags"
+    },
+    "tags": ["basmati rice", "premium rice", "long-grain", "agriculture"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "22",
+    "name": "Sweet Pakistani Mangoes",
+    "description": "Delicious mangoes with exceptional taste. Fresh, export-quality Pakistani mangoes.",
+    "shortDescription": "Delicious mangoes with exceptional taste",
+    "price": {
+      "amount": 45.0,
+      "currency": "USD",
+      "minOrderQuantity": 1
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/37.webp"
+    ],
+    "category": {
+      "id": "1",
+      "name": "Agriculture",
+      "slug": "agriculture"
+    },
+    "company": {
+      "id": "1",
+      "name": "Anchor Group",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Variety": "Sindhri, Chaunsa, Langra",
+      "Grade": "Export Quality",
+      "Packaging": "Cartons, Wooden boxes",
+      "Season": "May - August"
+    },
+    "tags": ["Pakistani mangoes", "fresh mangoes", "sweet mangoes", "fruits"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "23",
+    "name": "High-Quality Pakistani Wheat",
+    "description": "Top-quality wheat harvested from fertile lands. Premium wheat for export markets.",
+    "shortDescription": "Top-quality wheat harvested from fertile lands",
+    "price": {
+      "amount": 320.0,
+      "currency": "USD",
+      "minOrderQuantity": 1
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/40.webp"
+    ],
+    "category": {
+      "id": "1",
+      "name": "Agriculture",
+      "slug": "agriculture"
+    },
+    "company": {
+      "id": "2",
+      "name": "Paktherm",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Type": "Hard Wheat",
+      "Protein Content": "12-14%",
+      "Packaging": "50kg bags",
+      "Grade": "Export Quality"
+    },
+    "tags": ["Pakistani wheat", "high-quality wheat", "organic grains", "agriculture"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "24",
+    "name": "Refined Cooking Sugar",
+    "description": "Pure refined sugar perfect for cooking and baking. High-quality white sugar for export.",
+    "shortDescription": "Pure refined sugar perfect for cooking and baking",
+    "price": {
+      "amount": 450.0,
+      "currency": "USD",
+      "minOrderQuantity": 1
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/42.webp"
+    ],
+    "category": {
+      "id": "1",
+      "name": "Agriculture",
+      "slug": "agriculture"
+    },
+    "company": {
+      "id": "3",
+      "name": "Unicol",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Type": "Refined White Sugar",
+      "Purity": "99.9%",
+      "Packaging": "50kg bags",
+      "Grade": "Food Grade"
+    },
+    "tags": ["refined sugar", "baking essentials", "cooking sugar", "agriculture"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "25",
+    "name": "Fresh Vegetables (Onions, Tomatoes)",
+    "description": "Fresh and organic vegetables for healthy cooking. Export-quality onions and tomatoes.",
+    "shortDescription": "Fresh and organic vegetables for healthy cooking",
+    "price": {
+      "amount": 20.0,
+      "currency": "USD",
+      "minOrderQuantity": 100
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/46.webp"
+    ],
+    "category": {
+      "id": "1",
+      "name": "Agriculture",
+      "slug": "agriculture"
+    },
+    "company": {
+      "id": "6",
+      "name": "ELA",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Types": "Onions, Tomatoes",
+      "Grade": "Export Quality",
+      "Packaging": "Mesh bags, Cartons",
+      "Storage": "Cool, Dry Place"
+    },
+    "tags": ["fresh vegetables", "organic produce", "onions", "tomatoes"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "26",
+    "name": "Organic Brown Rice",
+    "description": "Nutritious organic brown rice perfect for healthy meals. Premium quality, unpolished rice.",
+    "shortDescription": "Nutritious organic brown rice perfect for healthy meals",
+    "price": {
+      "amount": 750.0,
+      "currency": "USD",
+      "minOrderQuantity": 1
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/30.webp"
+    ],
+    "category": {
+      "id": "1",
+      "name": "Agriculture",
+      "slug": "agriculture"
+    },
+    "company": {
+      "id": "2",
+      "name": "Paktherm",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Type": "Organic Brown Rice",
+      "Certification": "Organic Certified",
+      "Packaging": "25kg, 50kg bags",
+      "Nutrition": "High Fiber, Rich in Nutrients"
+    },
+    "tags": ["organic brown rice", "healthy grains", "whole grains", "organic"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "27",
+    "name": "Fresh Oranges",
+    "description": "Sweet and tangy fresh oranges for a refreshing snack. Premium quality citrus fruits.",
+    "shortDescription": "Sweet and tangy fresh oranges for a refreshing snack",
+    "price": {
+      "amount": 35.0,
+      "currency": "USD",
+      "minOrderQuantity": 1
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/54.webp"
+    ],
+    "category": {
+      "id": "1",
+      "name": "Agriculture",
+      "slug": "agriculture"
+    },
+    "company": {
+      "id": "4",
+      "name": "Himalayan Salt",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": false
+    },
+    "specifications": {
+      "Variety": "Kinnow, Blood Orange",
+      "Grade": "Export Quality",
+      "Packaging": "Cartons, Wooden boxes",
+      "Season": "November - March"
+    },
+    "tags": ["fresh oranges", "citrus fruits", "juicy oranges", "fruits"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  },
+  {
+    "id": "28",
+    "name": "Dried Dates",
+    "description": "Naturally sweet dried dates, perfect for snacking. Premium quality dates from Pakistan.",
+    "shortDescription": "Naturally sweet dried dates, perfect for snacking",
+    "price": {
+      "amount": 15.0,
+      "currency": "USD",
+      "minOrderQuantity": 50
+    },
+    "images": [
+      "https://pak-exporters.com/wp-content/uploads/56.webp"
+    ],
+    "category": {
+      "id": "1",
+      "name": "Agriculture",
+      "slug": "agriculture"
+    },
+    "company": {
+      "id": "1",
+      "name": "Anchor Group",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+      "verified": true,
+      "goldSupplier": true
+    },
+    "specifications": {
+      "Type": "Dried Dates",
+      "Grade": "Premium",
+      "Packaging": "1kg, 5kg, 10kg bags",
+      "Storage": "Cool, Dry Place"
+    },
+    "tags": ["dried dates", "natural snacks", "sweet dates", "fruits"],
+    "status": "active",
+    "createdAt": "2024-09-22T19:53:00Z",
+    "updatedAt": "2024-09-22T19:53:00Z"
+  }
+]

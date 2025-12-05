@@ -1,0 +1,139 @@
+[
+  {
+    "id": "1",
+    "name": "Textile Exports Ltd",
+    "description": "Leading textile manufacturer and exporter specializing in cotton garments, fabrics, and home textiles. Established in 1995, we serve clients across 30+ countries.",
+    "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+    "coverImage": "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=1200&h=400&fit=crop",
+    "verified": true,
+    "goldSupplier": true,
+    "trustScore": 95,
+    "location": {
+      "city": "Karachi",
+      "province": "Sindh",
+      "country": "Pakistan"
+    },
+    "contact": {
+      "email": "contact@textileexports.com",
+      "phone": "+92-21-12345678",
+      "website": "https://textileexports.com"
+    },
+    "categories": [
+      {
+        "id": "1",
+        "name": "Textiles & Apparel",
+        "slug": "textiles-apparel"
+      }
+    ],
+    "productCount": 1250,
+    "yearEstablished": 1995,
+    "employeeCount": "500-1000",
+    "certifications": ["ISO 9001", "OEKO-TEX", "GOTS"],
+    "mainProducts": ["Cotton T-Shirts", "Denim", "Home Textiles"],
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-20T00:00:00Z"
+  },
+  {
+    "id": "2",
+    "name": "Leather Craft Co",
+    "description": "Premium leather goods manufacturer with over 20 years of experience. Specializing in wallets, bags, and accessories.",
+    "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+    "coverImage": "https://images.unsplash.com/photo-1627123424574-724758594e93?w=1200&h=400&fit=crop",
+    "verified": true,
+    "goldSupplier": false,
+    "trustScore": 88,
+    "location": {
+      "city": "Sialkot",
+      "province": "Punjab",
+      "country": "Pakistan"
+    },
+    "contact": {
+      "email": "info@leathercraft.com",
+      "phone": "+92-52-12345678",
+      "website": "https://leathercraft.com"
+    },
+    "categories": [
+      {
+        "id": "2",
+        "name": "Leather Goods",
+        "slug": "leather-goods"
+      }
+    ],
+    "productCount": 850,
+    "yearEstablished": 2003,
+    "employeeCount": "100-500",
+    "certifications": ["ISO 9001"],
+    "mainProducts": ["Leather Wallets", "Bags", "Accessories"],
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-18T00:00:00Z"
+  },
+  {
+    "id": "3",
+    "name": "Sports Manufacturing Inc",
+    "description": "World-renowned sports equipment manufacturer. FIFA approved soccer balls and sports gear exported globally.",
+    "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+    "coverImage": "https://images.unsplash.com/photo-1614634715377-c74134f61f9f?w=1200&h=400&fit=crop",
+    "verified": true,
+    "goldSupplier": true,
+    "trustScore": 92,
+    "location": {
+      "city": "Sialkot",
+      "province": "Punjab",
+      "country": "Pakistan"
+    },
+    "contact": {
+      "email": "sales@sportsmfg.com",
+      "phone": "+92-52-87654321",
+      "website": "https://sportsmfg.com"
+    },
+    "categories": [
+      {
+        "id": "3",
+        "name": "Sports Goods",
+        "slug": "sports-goods"
+      }
+    ],
+    "productCount": 620,
+    "yearEstablished": 1985,
+    "employeeCount": "500-1000",
+    "certifications": ["FIFA Approved", "ISO 9001"],
+    "mainProducts": ["Soccer Balls", "Sports Equipment"],
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-22T00:00:00Z"
+  },
+  {
+    "id": "4",
+    "name": "Agri Products Export",
+    "description": "Leading exporter of organic agricultural products including rice, spices, and processed foods.",
+    "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
+    "coverImage": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=1200&h=400&fit=crop",
+    "verified": true,
+    "goldSupplier": false,
+    "trustScore": 85,
+    "location": {
+      "city": "Lahore",
+      "province": "Punjab",
+      "country": "Pakistan"
+    },
+    "contact": {
+      "email": "export@agriproducts.com",
+      "phone": "+92-42-12345678",
+      "website": "https://agriproducts.com"
+    },
+    "categories": [
+      {
+        "id": "4",
+        "name": "Agricultural Products",
+        "slug": "agricultural-products"
+      }
+    ],
+    "productCount": 450,
+    "yearEstablished": 2010,
+    "employeeCount": "50-100",
+    "certifications": ["Organic Certified", "HACCP"],
+    "mainProducts": ["Basmati Rice", "Spices", "Processed Foods"],
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-19T00:00:00Z"
+  }
+]
+
