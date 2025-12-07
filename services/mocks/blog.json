@@ -8,7 +8,8 @@
     "author": "Pak-Exporters Editorial Team",
     "publishedAt": "2024-10-01T00:00:00.000Z",
     "updatedAt": "2024-11-01T00:00:00.000Z",
-    "tags": ["exports", "beginners", "pakistan", "guide"]
+    "tags": ["exports", "beginners", "pakistan", "guide"],
+    "category": "getting-started"
   },
   {
     "id": "2",
@@ -18,7 +19,96 @@
     "content": "Choosing the right supplier is critical for successful importing. On Pak-Exporters, suppliers go through a structured verification process, including business documentation checks, on-ground verification where applicable, and continuous performance monitoring.\\n\\nIn this article, we explain how to read supplier profiles, what our Platinum, Gold, Silver, and Starter tiers mean, and which metrics matter most when shortlisting suppliers.",
     "author": "Pak-Exporters Editorial Team",
     "publishedAt": "2024-11-10T00:00:00.000Z",
-    "tags": ["suppliers", "verification", "buyers", "trust"]
+    "tags": ["suppliers", "verification", "buyers", "trust"],
+    "category": "features"
+  },
+  {
+    "id": "3",
+    "slug": "why-pak-exporters-exists",
+    "title": "Why Pak-Exporters Exists: Connecting Pakistani Exporters with Global Buyers",
+    "excerpt": "Learn about Pak-Exporters, Pakistan's first B2B export marketplace, and how we're helping exporters reach global buyers since 2019.",
+    "content": "In today's digital-first world, having a strong online presence isn't just an advantage for exporters—it's a necessity. Pak-Exporters was founded in 2019 as Pakistan's first and premier B2B export marketplace, specifically designed to bridge the gap between Pakistani exporters and international buyers.",
+    "author": "Pak-Exporters Team",
+    "publishedAt": "2024-12-06T00:00:00.000Z",
+    "tags": ["exporters", "pakistan", "b2b", "marketplace", "introduction"],
+    "category": "introduction"
+  },
+  {
+    "id": "4",
+    "slug": "challenges-pakistani-exporters-face",
+    "title": "The Challenges Pakistani Exporters Face (And How to Overcome Them)",
+    "excerpt": "Understanding the common challenges Pakistani exporters face and how Pak-Exporters helps solve them.",
+    "content": "Pakistani exporters produce world-class products but face significant challenges reaching international buyers. This article covers the main challenges: limited visibility, high marketing costs, trust barriers, communication issues, and lack of market intelligence—and how Pak-Exporters addresses each one.",
+    "author": "Pak-Exporters Team",
+    "publishedAt": "2024-12-06T00:00:00.000Z",
+    "tags": ["exporters", "challenges", "solutions", "pakistan"],
+    "category": "challenges"
+  },
+  {
+    "id": "5",
+    "slug": "success-stories-pak-exporters",
+    "title": "Success Stories: How Exporters Are Growing with Pak-Exporters",
+    "excerpt": "Real results from real exporters. See how Pakistani businesses are using Pak-Exporters to reach international buyers and grow their export business.",
+    "content": "Three detailed case studies showing how Pakistani exporters from Karachi, Sialkot, and Punjab have grown their businesses using Pak-Exporters. Learn about their challenges, solutions, and impressive results including 40% export volume increases, $200,000+ in new contracts, and expansion to multiple countries.",
+    "author": "Pak-Exporters Team",
+    "publishedAt": "2024-12-06T00:00:00.000Z",
+    "tags": ["success-stories", "case-studies", "exporters", "results"],
+    "category": "success-stories"
+  },
+  {
+    "id": "6",
+    "slug": "key-features-for-exporters",
+    "title": "Key Features That Benefit Exporters on Pak-Exporters",
+    "excerpt": "A comprehensive guide to the key features on Pak-Exporters and how to use them effectively to grow your export business.",
+    "content": "Learn about the powerful features Pak-Exporters offers: easy product listing, direct buyer communication, RFQ system, analytics and insights, trust and verification, marketing support, and membership tiers. Each feature is explained with benefits and best practices for maximum results.",
+    "author": "Pak-Exporters Team",
+    "publishedAt": "2024-12-06T00:00:00.000Z",
+    "tags": ["features", "guide", "platform", "exporters"],
+    "category": "features"
+  },
+  {
+    "id": "7",
+    "slug": "getting-started-pak-exporters",
+    "title": "Getting Started: Your Step-by-Step Guide to Pak-Exporters",
+    "excerpt": "A complete step-by-step guide to getting started on Pak-Exporters, from creating your account to listing products and connecting with buyers.",
+    "content": "This detailed guide walks you through every step: creating your account, completing your company profile, choosing a membership tier, listing products, responding to RFQs, engaging with buyers, and monitoring your results. Includes tips, checklists, and best practices for each step.",
+    "author": "Pak-Exporters Team",
+    "publishedAt": "2024-12-06T00:00:00.000Z",
+    "tags": ["getting-started", "guide", "tutorial", "beginners"],
+    "category": "getting-started"
+  },
+  {
+    "id": "8",
+    "slug": "membership-tiers-comparison",
+    "title": "Membership Tiers: Which One is Right for You?",
+    "excerpt": "Compare Starter, Silver, Gold, and Platinum membership tiers to find the perfect fit for your export business.",
+    "content": "Detailed comparison of all four membership tiers with features, benefits, pricing considerations, and ROI expectations. Includes a feature comparison table, upgrade paths, and guidance on choosing the right tier based on your business stage, product count, and goals.",
+    "author": "Pak-Exporters Team",
+    "publishedAt": "2024-12-06T00:00:00.000Z",
+    "tags": ["membership", "pricing", "comparison", "tiers"],
+    "category": "membership"
+  },
+  {
+    "id": "9",
+    "slug": "tips-for-success-pak-exporters",
+    "title": "Tips for Success on Pak-Exporters: Best Practices for Exporters",
+    "excerpt": "Proven tips and best practices from successful exporters to help you maximize your results on Pak-Exporters.",
+    "content": "Ten essential tips for success: optimizing product listings, building strong company profiles, being responsive, competitive pricing, leveraging RFQs, using analytics, building relationships, professional communication, maintaining quality standards, and staying active. Includes common mistakes to avoid.",
+    "author": "Pak-Exporters Team",
+    "publishedAt": "2024-12-06T00:00:00.000Z",
+    "tags": ["tips", "best-practices", "success", "exporters"],
+    "category": "tips"
+  },
+  {
+    "id": "10",
+    "slug": "faq-for-pakistani-exporters",
+    "title": "Frequently Asked Questions: Everything Pakistani Exporters Need to Know",
+    "excerpt": "Comprehensive FAQ covering all common questions from Pakistani exporters about Pak-Exporters, from getting started to achieving success.",
+    "content": "Answers to frequently asked questions covering: getting started, product listings, pricing and payments, communication, RFQs, membership, technical issues, business questions, and success metrics. Everything you need to know to succeed on Pak-Exporters.",
+    "author": "Pak-Exporters Team",
+    "publishedAt": "2024-12-06T00:00:00.000Z",
+    "tags": ["faq", "help", "questions", "exporters"],
+    "category": "faq"
   }
 ]
 

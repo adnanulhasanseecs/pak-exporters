@@ -5,7 +5,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { ROUTES } from "@/lib/constants";
 
 interface MembershipButtonProps {

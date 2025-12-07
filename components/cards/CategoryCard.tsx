@@ -1,18 +1,20 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { ROUTES } from "@/lib/constants";
 import { IMAGE_PLACEHOLDER } from "@/lib/constants";
 import type { Category } from "@/types/category";
+import { useTranslations } from "next-intl";
 
 interface CategoryCardProps {
   category: Category;
 }
 
 export function CategoryCard({ category }: CategoryCardProps) {
+  const t = useTranslations();
   return (
     <Link href={ROUTES.category(category.slug)}>
       <motion.div
@@ -41,7 +43,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
               </p>
             )}
             <p className="text-xs text-muted-foreground mt-2">
-              {category.productCount} products
+              {t("categories.productCount", { count: category.productCount })}
             </p>
           </div>
         </CardContent>

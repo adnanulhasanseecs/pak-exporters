@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { RFQList } from "@/components/dashboard/RFQList";
+import { AIMatchmaking } from "@/components/placeholders/AIMatchmaking";
 import { toast } from "sonner";
 import { ROUTES } from "@/lib/constants";
 import { loadRFQsFromStorageOnInit } from "@/services/api/rfq";
@@ -47,6 +48,17 @@ export default function RFQDashboardPage() {
             : "Browse open RFQs and submit your quotes"}
         </p>
       </div>
+
+      {user.role === "buyer" && (
+        <div className="mb-8">
+          <AIMatchmaking
+            potentialMatches={0}
+            onMatch={() => {
+              // Placeholder - would trigger matchmaking
+            }}
+          />
+        </div>
+      )}
 
       <RFQList userRole={user.role} />
     </div>

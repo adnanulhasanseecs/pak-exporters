@@ -1,6 +1,6 @@
  "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,12 +8,14 @@ import { Badge } from "@/components/ui/badge";
 import { ROUTES } from "@/lib/constants";
 import type { CompanyListItem } from "@/types/company";
 import { Verified, Award, MapPin } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface CompanyCardProps {
   company: CompanyListItem;
 }
 
 export function CompanyCard({ company }: CompanyCardProps) {
+  const t = useTranslations();
   return (
     <Link href={ROUTES.company(company.id)}>
       <motion.div
@@ -59,13 +61,13 @@ export function CompanyCard({ company }: CompanyCardProps) {
                   {company.verified && (
                     <Badge variant="outline" className="text-xs">
                       <Verified className="h-3 w-3 mr-1" />
-                      Verified
+                      {t("companies.verified")}
                     </Badge>
                   )}
                   {company.goldSupplier && (
                     <Badge variant="default" className="bg-yellow-500 text-xs">
                       <Award className="h-3 w-3 mr-1" />
-                      Gold
+                      {t("products.membershipTiers.gold")}
                     </Badge>
                   )}
                 </div>
@@ -85,11 +87,11 @@ export function CompanyCard({ company }: CompanyCardProps) {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">
-                  {company.productCount} products
+                  {t("companies.productCount", { count: company.productCount })}
                 </span>
                 {company.trustScore && (
                   <span className="text-sm font-medium">
-                    Trust Score: {company.trustScore}%
+                    {t("companies.trustScore")}: {company.trustScore}%
                   </span>
                 )}
               </div>

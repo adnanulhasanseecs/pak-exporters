@@ -1,8 +1,10 @@
-"use client";
+import { redirect } from "next/navigation";
+import { defaultLocale } from "@/i18n/config";
 
-import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+// Redirect to locale-aware login page
+export default function LoginPage() {
+  redirect(`/${defaultLocale}/login`);
+}
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

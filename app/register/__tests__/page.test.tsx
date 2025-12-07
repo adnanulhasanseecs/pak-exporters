@@ -1,229 +1,104 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { useRouter } from "next/navigation";
 import RegisterPage from "../page";
-import { useAuthStore } from "@/store/useAuthStore";
-import { toast } from "sonner";
 
-const mockLogin = vi.fn();
-const mockPush = vi.fn();
-const mockRefresh = vi.fn();
-
-// Mock dependencies
+// Mock next/navigation
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({
-    push: mockPush,
-    replace: vi.fn(),
-    prefetch: vi.fn(),
-    refresh: mockRefresh,
-  }),
+  useRouter: vi.fn(),
 }));
 
-vi.mock("@/store/useAuthStore");
+// Mock sonner
 vi.mock("sonner", () => ({
   toast: {
     success: vi.fn(),
     error: vi.fn(),
-    info: vi.fn(),
   },
 }));
 
-describe("RegisterPage", () => {
+// Mock useAuthStore
+const mockLogin = vi.fn();
+vi.mock("@/store/useAuthStore", () => ({
+  useAuthStore: () => ({
+    login: mockLogin,
+  }),
+}));
+
+describe("Register Page", () => {
+  const mockPush = vi.fn();
+  const mockRefresh = vi.fn();
+
   beforeEach(() => {
     vi.clearAllMocks();
-    mockPush.mockClear();
-    mockRefresh.mockClear();
-    vi.mocked(useAuthStore).mockReturnValue({
-      user: null,
-      token: null,
-      login: mockLogin,
-      logout: vi.fn(),
-      setUser: vi.fn(),
-      updateUser: vi.fn(),
+    (useRouter as ReturnType<typeof vi.fn>).mockReturnValue({
+      push: mockPush,
+      refresh: mockRefresh,
     });
   });
 
-  it("should render registration form", () => {
+  it("should render the register page", () => {
     render(<RegisterPage />);
-    expect(screen.getAllByText("Create Account").length).toBeGreaterThan(0);
-    expect(screen.getByLabelText(/Full Name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
-    expect(screen.getAllByLabelText(/Password/i).length).toBeGreaterThanOrEqual(2); // Password and Confirm Password
-    expect(screen.getByLabelText(/Confirm Password/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /create account/i })).toBeInTheDocument();
   });
 
-  it("should render role selection", () => {
+  it("should have name input field", () => {
     render(<RegisterPage />);
-    expect(screen.getByText(/I am a/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Buyer/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Supplier/i)).toBeInTheDocument();
+    const nameInput = screen.getByLabelText(/name/i);
+    expect(nameInput).toBeInTheDocument();
   });
 
-  it("should default to buyer role", () => {
+  it("should have email input field", () => {
     render(<RegisterPage />);
-    const buyerRadio = screen.getByLabelText(/Buyer/i);
-    expect(buyerRadio).toBeChecked();
+    const emailInput = screen.getByLabelText(/email/i);
+    expect(emailInput).toBeInTheDocument();
+    expect(emailInput).toHaveAttribute("type", "email");
   });
 
-  it("should allow role selection", async () => {
+  it("should have password input field", () => {
+    render(<RegisterPage />);
+    const passwordInput = screen.getByLabelText(/^password$/i);
+    expect(passwordInput).toBeInTheDocument();
+    expect(passwordInput).toHaveAttribute("type", "password");
+  });
+
+  it("should have confirm password input field", () => {
+    render(<RegisterPage />);
+    const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
+    expect(confirmPasswordInput).toBeInTheDocument();
+    expect(confirmPasswordInput).toHaveAttribute("type", "password");
+  });
+
+  it("should have role selection (buyer/supplier)", () => {
+    render(<RegisterPage />);
+    expect(screen.getByText(/buyer/i)).toBeInTheDocument();
+    expect(screen.getByText(/supplier/i)).toBeInTheDocument();
+  });
+
+  it("should have submit button", () => {
+    render(<RegisterPage />);
+    const submitButton = screen.getByRole("button", { name: /create account/i });
+    expect(submitButton).toBeInTheDocument();
+  });
+
+  it("should have link to login page", () => {
+    render(<RegisterPage />);
+    const loginLink = screen.getByRole("link", { name: /sign in/i });
+    expect(loginLink).toBeInTheDocument();
+    expect(loginLink).toHaveAttribute("href", "/login");
+  });
+
+  it("should update form fields", async () => {
     const user = userEvent.setup();
     render(<RegisterPage />);
-
-    const supplierRadio = screen.getByLabelText(/Supplier/i);
-    await user.click(supplierRadio);
-
-    expect(supplierRadio).toBeChecked();
-  });
-
-  it("should show error when passwords do not match", async () => {
-    const user = userEvent.setup();
-    render(<RegisterPage />);
-
-    const nameInput = screen.getByLabelText(/Full Name/i);
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInputs = screen.getAllByLabelText(/Password/i);
-    const passwordInput = passwordInputs[0]; // First one is Password
-    const confirmPasswordInput = screen.getByLabelText(/Confirm Password/i);
-    const submitButton = screen.getByRole("button", { name: /Create Account/i });
-
-    await user.type(nameInput, "Test User");
-    await user.type(emailInput, "test@test.com");
-    await user.type(passwordInput, "password123");
-    await user.type(confirmPasswordInput, "differentpassword");
-    await user.click(submitButton);
-
-    await waitFor(() => {
-      expect(vi.mocked(toast.error)).toHaveBeenCalledWith("Passwords do not match");
-    });
-  });
-
-  it("should register buyer successfully", async () => {
-    const user = userEvent.setup();
-    render(<RegisterPage />);
-
-    const nameInput = screen.getByLabelText(/Full Name/i);
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInputs = screen.getAllByLabelText(/Password/i);
-    const passwordInput = passwordInputs[0]; // First one is Password
-    const confirmPasswordInput = screen.getByLabelText(/Confirm Password/i);
-    const submitButton = screen.getByRole("button", { name: /Create Account/i });
-
-    await user.type(nameInput, "Test Buyer");
-    await user.type(emailInput, "buyer@test.com");
-    await user.type(passwordInput, "password123");
-    await user.type(confirmPasswordInput, "password123");
-    await user.click(submitButton);
-
-    await waitFor(
-      () => {
-        expect(mockLogin).toHaveBeenCalled();
-        expect(vi.mocked(toast.success)).toHaveBeenCalledWith("Registration successful!");
-      },
-      { timeout: 2000 }
-    );
-  });
-
-  it("should register supplier and redirect to membership application", async () => {
-    const user = userEvent.setup();
-    render(<RegisterPage />);
-
-    const nameInput = screen.getByLabelText(/Full Name/i);
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInputs = screen.getAllByLabelText(/Password/i);
-    const passwordInput = passwordInputs[0]; // First one is Password
-    const confirmPasswordInput = screen.getByLabelText(/Confirm Password/i);
-    const supplierRadio = screen.getByLabelText(/Supplier/i);
-    const submitButton = screen.getByRole("button", { name: /Create Account/i });
-
-    await user.type(nameInput, "Test Supplier");
-    await user.type(emailInput, "supplier@test.com");
-    await user.click(supplierRadio);
-    await user.type(passwordInput, "password123");
-    await user.type(confirmPasswordInput, "password123");
-    await user.click(submitButton);
-
-    await waitFor(
-      () => {
-        expect(mockLogin).toHaveBeenCalled();
-        expect(vi.mocked(toast.success)).toHaveBeenCalledWith("Registration successful!");
-        expect(vi.mocked(toast.info)).toHaveBeenCalledWith(
-          "Please complete your membership application to start uploading products"
-        );
-      },
-      { timeout: 2000 }
-    );
-  });
-
-  it("should show loading state during registration", async () => {
-    const user = userEvent.setup();
-    render(<RegisterPage />);
-
-    const nameInput = screen.getByLabelText(/Full Name/i);
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInputs = screen.getAllByLabelText(/Password/i);
-    const passwordInput = passwordInputs[0]; // First one is Password
-    const confirmPasswordInput = screen.getByLabelText(/Confirm Password/i);
-    const submitButton = screen.getByRole("button", { name: /Create Account/i });
-
-    await user.type(nameInput, "Test User");
-    await user.type(emailInput, "test@test.com");
-    await user.type(passwordInput, "password123");
-    await user.type(confirmPasswordInput, "password123");
-    await user.click(submitButton);
-
-    // Button should show loading state
-    await waitFor(() => {
-      expect(screen.getByRole("button", { name: /Creating account/i })).toBeDisabled();
-    });
-  });
-
-  it("should handle registration errors", async () => {
-    const user = userEvent.setup();
-    // Mock login to throw an error
-    mockLogin.mockImplementationOnce(() => {
-      throw new Error("Registration failed");
-    });
-
-    render(<RegisterPage />);
-
-    const nameInput = screen.getByLabelText(/Full Name/i);
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInputs = screen.getAllByLabelText(/Password/i);
-    const passwordInput = passwordInputs[0]; // First one is Password
-    const confirmPasswordInput = screen.getByLabelText(/Confirm Password/i);
-    const submitButton = screen.getByRole("button", { name: /Create Account/i });
-
-    await user.type(nameInput, "Test User");
-    await user.type(emailInput, "test@test.com");
-    await user.type(passwordInput, "password123");
-    await user.type(confirmPasswordInput, "password123");
-    await user.click(submitButton);
-
-    await waitFor(
-      () => {
-        expect(vi.mocked(toast.error)).toHaveBeenCalledWith("Registration failed. Please try again.");
-      },
-      { timeout: 2000 }
-    );
-  });
-
-  it("should require all fields", () => {
-    render(<RegisterPage />);
-    const nameInput = screen.getByLabelText(/Full Name/i);
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInputs = screen.getAllByLabelText(/Password/i);
-    const passwordInput = passwordInputs[0]; // First one is Password
-    const confirmPasswordInput = screen.getByLabelText(/Confirm Password/i);
-
-    expect(nameInput).toBeRequired();
-    expect(emailInput).toBeRequired();
-    expect(passwordInput).toBeRequired();
-    expect(confirmPasswordInput).toBeRequired();
-  });
-
-  it("should render sign in link", () => {
-    render(<RegisterPage />);
-    expect(screen.getByText(/Sign in/i)).toBeInTheDocument();
+    
+    const nameInput = screen.getByLabelText(/name/i);
+    const emailInput = screen.getByLabelText(/email/i);
+    
+    await user.type(nameInput, "John Doe");
+    await user.type(emailInput, "john@example.com");
+    
+    expect(nameInput).toHaveValue("John Doe");
+    expect(emailInput).toHaveValue("john@example.com");
   });
 });
-

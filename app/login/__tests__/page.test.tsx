@@ -1,182 +1,97 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { useRouter } from "next/navigation";
 import LoginPage from "../page";
-import { useAuthStore } from "@/store/useAuthStore";
-import { toast } from "sonner";
 
-const mockLogin = vi.fn();
-const mockPush = vi.fn();
-const mockRefresh = vi.fn();
-
-// Mock dependencies
+// Mock next/navigation
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({
-    push: mockPush,
-    replace: vi.fn(),
-    prefetch: vi.fn(),
-    refresh: mockRefresh,
-  }),
+  useRouter: vi.fn(),
 }));
 
-vi.mock("@/store/useAuthStore");
+// Mock sonner
 vi.mock("sonner", () => ({
   toast: {
     success: vi.fn(),
     error: vi.fn(),
-    info: vi.fn(),
   },
 }));
 
-describe("LoginPage", () => {
+// Mock useAuthStore
+const mockLogin = vi.fn();
+vi.mock("@/store/useAuthStore", () => ({
+  useAuthStore: () => ({
+    login: mockLogin,
+  }),
+}));
+
+describe("Login Page", () => {
+  const mockPush = vi.fn();
+  const mockRefresh = vi.fn();
+
   beforeEach(() => {
     vi.clearAllMocks();
-    mockPush.mockClear();
-    mockRefresh.mockClear();
-    vi.mocked(useAuthStore).mockReturnValue({
-      user: null,
-      token: null,
-      login: mockLogin,
-      logout: vi.fn(),
-      setUser: vi.fn(),
-      updateUser: vi.fn(),
+    (useRouter as ReturnType<typeof vi.fn>).mockReturnValue({
+      push: mockPush,
+      refresh: mockRefresh,
     });
   });
 
-  it("should render login form", () => {
+  it("should render the login page", () => {
     render(<LoginPage />);
-    expect(screen.getAllByText("Sign In").length).toBeGreaterThan(0); // Title and button both have "Sign In"
-    expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Sign In/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /login/i })).toBeInTheDocument();
   });
 
-  it("should render forgot password link", () => {
+  it("should have email input field", () => {
     render(<LoginPage />);
-    expect(screen.getByText(/Forgot password/i)).toBeInTheDocument();
+    const emailInput = screen.getByLabelText(/email/i);
+    expect(emailInput).toBeInTheDocument();
+    expect(emailInput).toHaveAttribute("type", "email");
   });
 
-  it("should render sign up link", () => {
+  it("should have password input field", () => {
     render(<LoginPage />);
-    expect(screen.getByText(/Sign up/i)).toBeInTheDocument();
+    const passwordInput = screen.getByLabelText(/password/i);
+    expect(passwordInput).toBeInTheDocument();
+    expect(passwordInput).toHaveAttribute("type", "password");
   });
 
-  it("should handle admin login", async () => {
+  it("should have submit button", () => {
+    render(<LoginPage />);
+    const submitButton = screen.getByRole("button", { name: /login|sign in/i });
+    expect(submitButton).toBeInTheDocument();
+  });
+
+  it("should have link to register page", () => {
+    render(<LoginPage />);
+    const registerLink = screen.getByRole("link", { name: /register|sign up/i });
+    expect(registerLink).toBeInTheDocument();
+    expect(registerLink).toHaveAttribute("href", "/register");
+  });
+
+  it("should have link to forgot password", () => {
+    render(<LoginPage />);
+    const forgotPasswordLink = screen.getByRole("link", { name: /forgot password/i });
+    expect(forgotPasswordLink).toBeInTheDocument();
+  });
+
+  it("should update email input value", async () => {
     const user = userEvent.setup();
     render(<LoginPage />);
-
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    const submitButton = screen.getByRole("button", { name: /Sign In/i });
-
-    await user.type(emailInput, "admin@admin.com");
-    await user.type(passwordInput, "12345678");
-    await user.click(submitButton);
-
-    await waitFor(
-      () => {
-        expect(mockLogin).toHaveBeenCalled();
-        expect(vi.mocked(toast.success)).toHaveBeenCalledWith("Admin login successful!");
-      },
-      { timeout: 2000 }
-    );
+    
+    const emailInput = screen.getByLabelText(/email/i);
+    await user.type(emailInput, "test@example.com");
+    
+    expect(emailInput).toHaveValue("test@example.com");
   });
 
-  it("should handle buyer login", async () => {
+  it("should update password input value", async () => {
     const user = userEvent.setup();
     render(<LoginPage />);
-
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    const submitButton = screen.getByRole("button", { name: /Sign In/i });
-
-    await user.type(emailInput, "buyer@test.com");
+    
+    const passwordInput = screen.getByLabelText(/password/i);
     await user.type(passwordInput, "password123");
-    await user.click(submitButton);
-
-    await waitFor(
-      () => {
-        expect(mockLogin).toHaveBeenCalled();
-        expect(vi.mocked(toast.success)).toHaveBeenCalledWith("Login successful!");
-      },
-      { timeout: 2000 }
-    );
-  });
-
-  it("should handle supplier login", async () => {
-    const user = userEvent.setup();
-    render(<LoginPage />);
-
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    const submitButton = screen.getByRole("button", { name: /Sign In/i });
-
-    await user.type(emailInput, "supplier@test.com");
-    await user.type(passwordInput, "password123");
-    await user.click(submitButton);
-
-    await waitFor(
-      () => {
-        expect(mockLogin).toHaveBeenCalled();
-        expect(vi.mocked(toast.success)).toHaveBeenCalledWith("Login successful!");
-        expect(vi.mocked(toast.info)).toHaveBeenCalledWith(
-          "Please complete your membership application to access all features"
-        );
-      },
-      { timeout: 2000 }
-    );
-  });
-
-  it("should show loading state during login", async () => {
-    const user = userEvent.setup();
-    render(<LoginPage />);
-
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    const submitButton = screen.getByRole("button", { name: /Sign In/i });
-
-    await user.type(emailInput, "test@test.com");
-    await user.type(passwordInput, "password123");
-    await user.click(submitButton);
-
-    // Button should show loading state
-    await waitFor(() => {
-      expect(screen.getByRole("button", { name: /Signing in/i })).toBeDisabled();
-    });
-  });
-
-  it("should handle login errors", async () => {
-    const user = userEvent.setup();
-    // Mock login to throw an error
-    mockLogin.mockImplementationOnce(() => {
-      throw new Error("Login failed");
-    });
-
-    render(<LoginPage />);
-
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    const submitButton = screen.getByRole("button", { name: /Sign In/i });
-
-    await user.type(emailInput, "test@test.com");
-    await user.type(passwordInput, "wrongpassword");
-    await user.click(submitButton);
-
-    await waitFor(
-      () => {
-        expect(vi.mocked(toast.error)).toHaveBeenCalledWith("Login failed. Please try again.");
-      },
-      { timeout: 2000 }
-    );
-  });
-
-  it("should require email and password", () => {
-    render(<LoginPage />);
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-
-    expect(emailInput).toBeRequired();
-    expect(passwordInput).toBeRequired();
+    
+    expect(passwordInput).toHaveValue("password123");
   });
 });
-

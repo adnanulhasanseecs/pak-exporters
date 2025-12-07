@@ -21,16 +21,14 @@ import {
 } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { formatDistanceToNow } from "date-fns";
-
-interface Notification {
-  id: string;
-  type: "order" | "message" | "product" | "system" | "rfq";
-  title: string;
-  message: string;
-  read: boolean;
-  timestamp: string;
-  actionUrl?: string;
-}
+import {
+  getUserNotifications,
+  markNotificationAsRead,
+  markAllNotificationsAsRead,
+  deleteNotification as deleteNotificationService,
+  getUnreadCount,
+  type Notification as ServiceNotification,
+} from "@/services/notification/notification";
 
 export default function NotificationsPage() {
   const router = useRouter();
@@ -50,59 +48,50 @@ export default function NotificationsPage() {
   }, [user, router]);
 
   const loadNotifications = async () => {
+    if (!user) return;
+    
     setLoading(true);
     try {
-      // Mock: Load notifications
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      // Use notification service
+      const serviceNotifications: ServiceNotification[] = await getUserNotifications(user.id);
+      
+      // Convert service notifications to page format
+      const pageNotifications: Notification[] = serviceNotifications.map((notif) => ({
+        id: notif.id,
+        type: mapNotificationType(notif.type),
+        title: notif.title,
+        message: notif.message,
+        read: notif.read,
+        timestamp: notif.createdAt,
+        actionUrl: notif.link,
+      }));
 
-      const mockNotifications: Notification[] = [
-        {
-          id: "1",
-          type: "order",
-          title: "New Order Received",
-          message: "You received a new order for Cotton T-Shirts (Order #1234)",
-          read: false,
-          timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-          actionUrl: "/dashboard/orders/1234",
-        },
-        {
-          id: "2",
-          type: "rfq",
-          title: "RFQ Response",
-          message: "A supplier responded to your RFQ for Leather Jackets",
-          read: false,
-          timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-          actionUrl: "/dashboard/rfq/rfq-1",
-        },
-        {
-          id: "3",
-          type: "message",
-          title: "New Message",
-          message: "You have a new message from Global Retail Inc.",
-          read: true,
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-          actionUrl: "/dashboard/messages",
-        },
-        {
-          id: "4",
-          type: "product",
-          title: "Product Approved",
-          message: "Your product 'Sports Equipment' has been approved and is now live",
-          read: true,
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-          actionUrl: "/dashboard/products",
-        },
-        {
-          id: "5",
-          type: "system",
-          title: "System Update",
-          message: "Scheduled maintenance will occur on December 15, 2024 from 2:00 AM to 4:00 AM",
-          read: false,
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
-        },
-      ];
-
-      setNotifications(mockNotifications);
+      // If no notifications from service, use mock data for demo
+      if (pageNotifications.length === 0) {
+        const mockNotifications: Notification[] = [
+          {
+            id: "1",
+            type: "order",
+            title: "New Order Received",
+            message: "You received a new order for Cotton T-Shirts (Order #1234)",
+            read: false,
+            timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+            actionUrl: "/dashboard/orders/1234",
+          },
+          {
+            id: "2",
+            type: "rfq",
+            title: "RFQ Response",
+            message: "A supplier responded to your RFQ for Leather Jackets",
+            read: false,
+            timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+            actionUrl: "/dashboard/rfq/rfq-1",
+          },
+        ];
+        setNotifications(mockNotifications);
+      } else {
+        setNotifications(pageNotifications);
+      }
     } catch (error) {
       toast.error("Failed to load notifications");
       console.error(error);
@@ -111,21 +100,60 @@ export default function NotificationsPage() {
     }
   };
 
+  const mapNotificationType = (type: string): Notification["type"] => {
+    switch (type) {
+      case "order_update":
+        return "order";
+      case "rfq_response":
+        return "rfq";
+      case "message":
+        return "message";
+      case "membership_status":
+        return "system";
+      default:
+        return "system";
+    }
+  };
+
   const markAsRead = async (id: string) => {
-    setNotifications((prev) =>
-      prev.map((notif) => (notif.id === id ? { ...notif, read: true } : notif))
-    );
-    toast.success("Notification marked as read");
+    if (!user) return;
+    
+    try {
+      await markNotificationAsRead(user.id, id);
+      setNotifications((prev) =>
+        prev.map((notif) => (notif.id === id ? { ...notif, read: true } : notif))
+      );
+      toast.success("Notification marked as read");
+    } catch (error) {
+      toast.error("Failed to mark notification as read");
+      console.error(error);
+    }
   };
 
   const markAllAsRead = async () => {
-    setNotifications((prev) => prev.map((notif) => ({ ...notif, read: true })));
-    toast.success("All notifications marked as read");
+    if (!user) return;
+    
+    try {
+      await markAllNotificationsAsRead(user.id);
+      setNotifications((prev) => prev.map((notif) => ({ ...notif, read: true })));
+      toast.success("All notifications marked as read");
+    } catch (error) {
+      toast.error("Failed to mark all as read");
+      console.error(error);
+    }
   };
 
   const deleteNotification = async (id: string) => {
-    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
-    toast.success("Notification deleted");
+    if (!user) return;
+    
+    try {
+      await deleteNotificationService(user.id, id);
+      setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+      toast.success("Notification deleted");
+    } catch (error) {
+      toast.error("Failed to delete notification");
+      console.error(error);
+    }
   };
 
   const deleteSelected = async () => {

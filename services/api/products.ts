@@ -1,3 +1,8 @@
+/**
+ * Products API Service
+ * Real implementation using Next.js API routes
+ */
+
 import type {
   Product,
   ProductListItem,
@@ -7,12 +12,40 @@ import type {
   UpdateProductInput,
 } from "@/types/product";
 import type { PaginationParams } from "@/types/api";
-import productsMockData from "@/services/mocks/products.json";
+import { API_ENDPOINTS } from "@/lib/constants";
+import { buildApiUrl } from "@/lib/api-client";
 
 /**
- * Mock delay to simulate API call
+ * Get the API URL - always uses buildApiUrl for absolute URLs
+ * Node.js fetch() requires absolute URLs, so we use buildApiUrl which now
+ * correctly uses APP_CONFIG.url (includes correct port 3001)
  */
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+function getApiUrl(endpoint: string): string {
+  // Always use buildApiUrl - it now correctly uses APP_CONFIG.url as fallback
+  return buildApiUrl(endpoint);
+}
+
+/**
+ * Helper to build query string from filters and pagination
+ */
+function buildQueryString(filters?: ProductFilters, pagination?: PaginationParams): string {
+  const params = new URLSearchParams();
+
+  if (filters?.category) params.append("category", filters.category);
+  if (filters?.search) params.append("search", filters.search);
+  if (filters?.minPrice !== undefined) params.append("minPrice", filters.minPrice.toString());
+  if (filters?.maxPrice !== undefined) params.append("maxPrice", filters.maxPrice.toString());
+  if (filters?.companyId) params.append("companyId", filters.companyId);
+  if (filters?.verifiedOnly) params.append("verifiedOnly", "true");
+  if (filters?.goldSupplierOnly) params.append("goldSupplierOnly", "true");
+  if (filters?.membershipTier) params.append("membershipTier", filters.membershipTier);
+  if (filters?.tags && filters.tags.length > 0) params.append("tags", filters.tags.join(","));
+
+  if (pagination?.page) params.append("page", pagination.page.toString());
+  if (pagination?.pageSize) params.append("pageSize", pagination.pageSize.toString());
+
+  return params.toString();
+}
 
 /**
  * Fetch products with filters and pagination
@@ -21,112 +54,90 @@ export async function fetchProducts(
   filters?: ProductFilters,
   pagination?: PaginationParams
 ): Promise<ProductListResponse> {
-  await delay(300); // Simulate API delay
+  const queryString = buildQueryString(filters, pagination);
+  const url = `${API_ENDPOINTS.products}${queryString ? `?${queryString}` : ""}`;
 
-  let filteredProducts = [...productsMockData] as ProductListItem[];
+  const response = await fetch(getApiUrl(url), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-  // Apply filters
-  if (filters?.category) {
-    filteredProducts = filteredProducts.filter(
-      (p) => p.category.slug === filters.category || p.category.id === filters.category
-    );
+  if (!response.ok) {
+    // Check if response is JSON before parsing
+    const contentType = response.headers.get("content-type");
+    let errorMessage = `Failed to fetch products: ${response.status} ${response.statusText}`;
+    
+    if (contentType && contentType.includes("application/json")) {
+      try {
+        const error = await response.json();
+        errorMessage = error.error || error.message || errorMessage;
+        // Include hint if available
+        if (error.hint) {
+          errorMessage += `\n💡 ${error.hint}`;
+        }
+      } catch (parseError) {
+        // If JSON parsing fails, use status text
+        errorMessage = `Failed to fetch products: ${response.status} ${response.statusText}`;
+      }
+    } else {
+      // Response is HTML (error page) or other non-JSON format
+      try {
+        const text = await response.text();
+        // Try to extract error message from HTML if possible
+        const errorMatch = text.match(/<title[^>]*>([^<]+)<\/title>/i) || 
+                          text.match(/<h1[^>]*>([^<]+)<\/h1>/i) ||
+                          text.match(/Error[:\s]+([^<\n]+)/i);
+        if (errorMatch && errorMatch[1]) {
+          errorMessage = `Failed to fetch products: ${errorMatch[1].trim()}`;
+        }
+      } catch (textError) {
+        // If we can't read the text, just use status
+        errorMessage = `Failed to fetch products: ${response.status} ${response.statusText}`;
+      }
+    }
+    
+    throw new Error(errorMessage);
   }
 
-  if (filters?.search) {
-    const searchLower = filters.search.toLowerCase();
-    filteredProducts = filteredProducts.filter(
-      (p) =>
-        p.name.toLowerCase().includes(searchLower) ||
-        p.shortDescription?.toLowerCase().includes(searchLower)
-    );
-  }
-
-  if (filters?.minPrice) {
-    filteredProducts = filteredProducts.filter((p) => p.price.amount >= filters.minPrice!);
-  }
-
-  if (filters?.maxPrice) {
-    filteredProducts = filteredProducts.filter((p) => p.price.amount <= filters.maxPrice!);
-  }
-
-  if (filters?.verifiedOnly) {
-    filteredProducts = filteredProducts.filter((p) => p.company.verified);
-  }
-
-  if (filters?.goldSupplierOnly) {
-    filteredProducts = filteredProducts.filter((p) => p.company.goldSupplier);
-  }
-
-  if (filters?.membershipTier) {
-    filteredProducts = filteredProducts.filter(
-      (p) => p.company.membershipTier === filters.membershipTier
-    );
-  }
-
-  if (filters?.companyId) {
-    filteredProducts = filteredProducts.filter((p) => p.company.id === filters.companyId);
-  }
-
-  // Pagination
-  const page = pagination?.page || 1;
-  const pageSize = pagination?.pageSize || 20;
-  const startIndex = (page - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
-  const total = filteredProducts.length;
-  const totalPages = Math.ceil(total / pageSize);
-
-  return {
-    products: paginatedProducts,
-    total,
-    page,
-    pageSize,
-    totalPages,
-  };
+  return response.json();
 }
 
 /**
  * Fetch a single product by ID
  */
 export async function fetchProduct(id: string): Promise<Product> {
-  await delay(200);
+  const response = await fetch(getApiUrl(`${API_ENDPOINTS.products}/${id}`), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-  const product = productsMockData.find((p) => p.id === id);
-
-  if (!product) {
-    throw new Error(`Product with id ${id} not found`);
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error(`Product with id ${id} not found`);
+    }
+    // Check if response is JSON before parsing
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const error = await response.json();
+      throw new Error(error.error || "Failed to fetch product");
+    } else {
+      throw new Error(`Failed to fetch product: ${response.status} ${response.statusText}`);
+    }
   }
 
-  // Ensure specifications is properly typed (filter out undefined values)
-  const cleanSpecs: Record<string, string> = {};
-  if (product.specifications) {
-    Object.entries(product.specifications).forEach(([key, value]) => {
-      if (value !== undefined && typeof value === "string") {
-        cleanSpecs[key] = value;
-      }
-    });
-  }
-
-  return {
-    ...product,
-    specifications: Object.keys(cleanSpecs).length > 0 ? cleanSpecs : undefined,
-    status: product.status as "active" | "inactive" | "pending",
-  } as Product;
+  return response.json();
 }
 
 /**
  * Search products
  */
 export async function searchProducts(query: string): Promise<ProductListItem[]> {
-  await delay(300);
-
-  const queryLower = query.toLowerCase();
-  return (productsMockData as ProductListItem[]).filter(
-    (p) =>
-      p.name.toLowerCase().includes(queryLower) ||
-      p.shortDescription?.toLowerCase().includes(queryLower) ||
-      p.category.name.toLowerCase().includes(queryLower)
-  );
+  const response = await fetchProducts({ search: query });
+  return response.products;
 }
 
 /**
@@ -138,55 +149,7 @@ export async function fetchUserProducts(
   filters?: ProductFilters,
   pagination?: PaginationParams
 ): Promise<ProductListResponse> {
-  await delay(300);
-
-  // Filter by user's companyId
-  const userCompanyId = companyId;
-
-  let filteredProducts = (productsMockData as ProductListItem[]).filter(
-    (p) => p.company.id === userCompanyId
-  );
-
-  // Apply additional filters
-  if (filters?.category) {
-    filteredProducts = filteredProducts.filter(
-      (p) => p.category.slug === filters.category || p.category.id === filters.category
-    );
-  }
-
-  if (filters?.search) {
-    const searchLower = filters.search.toLowerCase();
-    filteredProducts = filteredProducts.filter(
-      (p) =>
-        p.name.toLowerCase().includes(searchLower) ||
-        p.shortDescription?.toLowerCase().includes(searchLower)
-    );
-  }
-
-  if (filters?.minPrice) {
-    filteredProducts = filteredProducts.filter((p) => p.price.amount >= filters.minPrice!);
-  }
-
-  if (filters?.maxPrice) {
-    filteredProducts = filteredProducts.filter((p) => p.price.amount <= filters.maxPrice!);
-  }
-
-  // Pagination
-  const page = pagination?.page || 1;
-  const pageSize = pagination?.pageSize || 20;
-  const startIndex = (page - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
-  const total = filteredProducts.length;
-  const totalPages = Math.ceil(total / pageSize);
-
-  return {
-    products: paginatedProducts,
-    total,
-    page,
-    pageSize,
-    totalPages,
-  };
+  return fetchProducts({ ...filters, companyId }, pagination);
 }
 
 /**
@@ -198,31 +161,27 @@ export async function fetchUserProducts(
 export async function createProduct(
   productData: CreateProductInput,
   companyId: string,
-  category: { id: string; name: string; slug: string }
+  _category: { id: string; name: string; slug: string }
 ): Promise<Product> {
-  await delay(500);
-
-  // In real app, this would:
-  // 1. Upload images to storage
-  // 2. Create product in database
-  // 3. Return created product with full details
-
-  // Mock implementation
-  const newProduct: Product = {
-    id: `product-${Date.now()}`,
-    ...productData,
-    category,
-    company: {
-      id: companyId,
-      name: "User Company", // Would come from company lookup
-      verified: true,
-      goldSupplier: false,
+  const response = await fetch(buildApiUrl(API_ENDPOINTS.products), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      // TODO: Add Authorization header with token
+      // Authorization: `Bearer ${getAuthToken()}`,
     },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
+    body: JSON.stringify({
+      ...productData,
+      companyId, // Include companyId in request
+    }),
+  });
 
-  return newProduct;
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "Failed to create product");
+  }
+
+  return response.json();
 }
 
 /**
@@ -232,82 +191,71 @@ export async function updateProduct(
   id: string,
   productData: UpdateProductInput
 ): Promise<Product> {
-  await delay(500);
+  const response = await fetch(buildApiUrl(`${API_ENDPOINTS.products}/${id}`), {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      // TODO: Add Authorization header with token
+      // Authorization: `Bearer ${getAuthToken()}`,
+    },
+    body: JSON.stringify(productData),
+  });
 
-  // In real app, this would:
-  // 1. Verify ownership (user's company)
-  // 2. Update product in database
-  // 3. Handle image updates
-
-  const existingProduct = productsMockData.find((p) => p.id === id);
-  if (!existingProduct) {
-    throw new Error(`Product with id ${id} not found`);
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error(`Product with id ${id} not found`);
+    }
+    const error = await response.json();
+    throw new Error(error.error || "Failed to update product");
   }
 
-  // Mock update
-  const updatedProduct: Product = {
-    ...existingProduct,
-    ...productData,
-    id,
-    updatedAt: new Date().toISOString(),
-  } as Product;
-
-  return updatedProduct;
+  return response.json();
 }
 
 /**
  * Delete a product
  */
 export async function deleteProduct(id: string): Promise<void> {
-  await delay(300);
+  const response = await fetch(buildApiUrl(`${API_ENDPOINTS.products}/${id}`), {
+    method: "DELETE",
+    headers: {
+      // TODO: Add Authorization header with token
+      // Authorization: `Bearer ${getAuthToken()}`,
+    },
+  });
 
-  // In real app, this would:
-  // 1. Verify ownership
-  // 2. Delete product from database
-  // 3. Clean up associated images
-
-  const product = productsMockData.find((p) => p.id === id);
-  if (!product) {
-    throw new Error(`Product with id ${id} not found`);
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error(`Product with id ${id} not found`);
+    }
+    const error = await response.json();
+    throw new Error(error.error || "Failed to delete product");
   }
-
-  // Mock: product would be deleted
 }
 
 /**
  * Duplicate a product
  */
 export async function duplicateProduct(id: string): Promise<Product> {
-  await delay(400);
+  // Fetch the original product
+  const originalProduct = await fetchProduct(id);
 
-  const product = productsMockData.find((p) => p.id === id);
-  if (!product) {
-    throw new Error(`Product with id ${id} not found`);
-  }
-
-  // Create a duplicate with new ID
-  const duplicated = {
-    ...product,
-    id: `product-${Date.now()}`,
-    name: `${product.name} (Copy)`,
-    status: "pending" as const,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+  // Create a new product with copied data
+  const duplicatedData: CreateProductInput = {
+    name: `${originalProduct.name} (Copy)`,
+    description: originalProduct.description,
+    shortDescription: originalProduct.shortDescription,
+    categoryId: originalProduct.category.id,
+    price: originalProduct.price,
+    images: originalProduct.images,
+    specifications: originalProduct.specifications,
+    tags: originalProduct.tags,
+    status: "pending",
   };
 
-  // Clean specifications to ensure proper typing
-  const cleanSpecs: Record<string, string> = {};
-  if (duplicated.specifications) {
-    Object.entries(duplicated.specifications).forEach(([key, value]) => {
-      if (value !== undefined && typeof value === "string") {
-        cleanSpecs[key] = value;
-      }
-    });
-  }
+  // Get company ID from original product
+  const companyId = originalProduct.company.id;
 
-  return {
-    ...duplicated,
-    specifications: Object.keys(cleanSpecs).length > 0 ? cleanSpecs : undefined,
-  } as Product;
+  // Create the duplicated product
+  return createProduct(duplicatedData, companyId, originalProduct.category);
 }
-

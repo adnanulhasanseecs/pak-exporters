@@ -2,6 +2,20 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fetchCategories, fetchCategoryTree, fetchCategoryBySlug, fetchCategory } from "./categories";
 import categoriesMockData from "@/services/mocks/categories.json";
 
+// Mock fetch globally
+global.fetch = vi.fn();
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  (global.fetch as ReturnType<typeof vi.fn>).mockClear();
+  
+  // Default mock response for fetchCategories
+  (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+    ok: true,
+    json: async () => categoriesMockData,
+  });
+});
+
 describe("fetchCategories", () => {
   it("should return all categories", async () => {
     const result = await fetchCategories();
@@ -27,6 +41,14 @@ describe("fetchCategories", () => {
 
 describe("fetchCategoryTree", () => {
   it("should return category tree with categories and total", async () => {
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        categories: categoriesMockData,
+        total: categoriesMockData.length,
+      }),
+    });
+
     const result = await fetchCategoryTree();
     expect(result).toHaveProperty("categories");
     expect(result).toHaveProperty("total");
@@ -36,6 +58,14 @@ describe("fetchCategoryTree", () => {
   });
 
   it("should return all categories in tree", async () => {
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        categories: categoriesMockData,
+        total: categoriesMockData.length,
+      }),
+    });
+
     const result = await fetchCategoryTree();
     expect(result.categories.length).toBe(categoriesMockData.length);
   });
@@ -44,6 +74,11 @@ describe("fetchCategoryTree", () => {
 describe("fetchCategoryBySlug", () => {
   it("should return category for valid slug", async () => {
     const firstCategory = categoriesMockData[0] as { slug: string };
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => firstCategory,
+    });
+
     const result = await fetchCategoryBySlug(firstCategory.slug);
     expect(result).toHaveProperty("id");
     expect(result).toHaveProperty("name");
@@ -52,9 +87,13 @@ describe("fetchCategoryBySlug", () => {
   });
 
   it("should throw error for invalid slug", async () => {
-    await expect(fetchCategoryBySlug("non-existent-slug")).rejects.toThrow(
-      "Category with slug non-existent-slug not found"
-    );
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: false,
+      status: 404,
+      json: async () => ({ error: "Category not found" }),
+    });
+
+    await expect(fetchCategoryBySlug("non-existent-slug")).rejects.toThrow();
   });
 
   it("should return correct category for known slug", async () => {

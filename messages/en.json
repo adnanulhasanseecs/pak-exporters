@@ -1,0 +1,648 @@
+{
+  "common": {
+    "appName": "Pak-Exporters",
+    "tagline": "Pakistan's First Export Marketplace",
+    "home": "Home",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "apply": "Apply",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "open": "Open",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm",
+    "create": "Create",
+    "update": "Update",
+    "remove": "Remove",
+    "add": "Add",
+    "select": "Select",
+    "all": "All",
+    "none": "None",
+    "more": "More",
+    "less": "Less",
+    "show": "Show",
+    "hide": "Hide",
+    "optional": "Optional"
+  },
+  "nav": {
+    "home": "Home",
+    "categories": "Categories",
+    "products": "Products",
+    "companies": "Find Suppliers",
+    "suppliers": "Suppliers",
+    "rfq": "RFQ",
+    "blog": "Blog",
+    "about": "About",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Register",
+    "dashboard": "Dashboard",
+    "logout": "Logout",
+    "uploadProduct": "Upload Product",
+    "signIn": "Sign In",
+    "joinFree": "Join Free",
+    "adminDashboard": "Admin Dashboard",
+    "settings": "Settings",
+    "account": "Account",
+    "searchPlaceholder": "Search products, suppliers...",
+    "aiSearchTooltip": "AI Search Assistant (Coming Soon)",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "language": "Language"
+  },
+  "home": {
+    "hero": {
+      "title": "Connect with Pakistani Exporters",
+      "subtitle": "Pakistan's premier B2B marketplace connecting exporters with global buyers",
+      "cta": "Get Started",
+      "ctaSecondary": "Browse Products"
+    },
+    "trustSignals": {
+      "globalConnectivity": {
+        "title": "GLOBAL CONNECTIVITY",
+        "description": "B2B Merchants - Connect with buyers worldwide"
+      },
+      "advertise": {
+        "title": "ADVERTISE WITH US",
+        "description": "Target the Globe - Reach international markets"
+      },
+      "support": {
+        "title": "ONLINE SUPPORT 24/7",
+        "description": "Caring with Professionalism - Always here to help"
+      }
+    },
+    "whyChoose": {
+      "title": "Why Choose Pak-Exporters?",
+      "subtitle": "Pakistan's First Export Marketplace - Powered by AI and built for global trade",
+      "tabs": {
+        "benefits": "Core Benefits",
+        "aiFeatures": "AI Features"
+      },
+      "benefits": {
+        "verifiedSuppliers": {
+          "title": "Verified Suppliers",
+          "description": "All suppliers undergo comprehensive verification. Our tiered membership system (Platinum, Gold, Silver, Starter) ensures you work with trusted partners."
+        },
+        "globalReach": {
+          "title": "Global Reach",
+          "description": "Connect with buyers from around the world. Our platform facilitates international trade with tools designed for cross-border commerce."
+        },
+        "easyToUse": {
+          "title": "Easy to Use",
+          "description": "Intuitive interface designed for both buyers and suppliers. List products, manage orders, and grow your business with ease."
+        },
+        "advancedAnalytics": {
+          "title": "Advanced Analytics",
+          "description": "Track your performance with detailed analytics. Monitor views, inquiries, and sales to make data-driven business decisions."
+        },
+        "secureTransactions": {
+          "title": "Secure Transactions",
+          "description": "Built with security in mind. Your data and transactions are protected with industry-standard encryption and security practices."
+        },
+        "support247": {
+          "title": "24/7 Support",
+          "description": "Our dedicated support team is available around the clock to help you succeed. Get assistance whenever you need it."
+        }
+      },
+      "aiFeatures": {
+        "title": "AI-Powered Features",
+        "comingSoon": "Coming Soon",
+        "subtitle": "We're building the future of B2B marketplaces with cutting-edge AI technology to make your trading experience smarter and more efficient.",
+        "productDescription": {
+          "title": "AI Product Description Generator",
+          "description": "Automatically generate compelling, SEO-optimized product descriptions that highlight key features and benefits."
+        },
+        "autoTagging": {
+          "title": "AI Auto-Tagging & Categorization",
+          "description": "Upload products and let AI automatically tag and categorize them for better discoverability and organization."
+        },
+        "matchmaking": {
+          "title": "AI Buyer-Supplier Matchmaking",
+          "description": "Intelligent matching system that connects buyers with the most relevant suppliers based on requirements and preferences."
+        },
+        "searchAssistant": {
+          "title": "AI Search Assistant",
+          "description": "Natural language search that understands context and intent, helping you find exactly what you're looking for."
+        },
+        "trustScore": {
+          "title": "AI Trust & Verification Scores",
+          "description": "Advanced algorithms analyze supplier credibility, transaction history, and reviews to provide trust scores for informed decisions."
+        },
+        "insightsDashboard": {
+          "title": "AI Insights Dashboard",
+          "description": "Get actionable insights and recommendations powered by AI to optimize your listings, pricing, and business strategy."
+        }
+      }
+    },
+    "stats": {
+      "exporters": "Exporters",
+      "products": "Products",
+      "categories": "Categories",
+      "countries": "Countries Served"
+    },
+    "features": {
+      "verified": "Verified Suppliers",
+      "verifiedDescription": "All suppliers are verified and authenticated",
+      "global": "Global Reach",
+      "globalDescription": "Connect with buyers from around the world",
+      "secure": "Secure Transactions",
+      "secureDescription": "Secure payment and transaction system",
+      "support": "24/7 Support",
+      "supportDescription": "Round-the-clock customer support"
+    },
+    "categories": {
+      "title": "Browse Categories",
+      "subtitle": "Explore our wide range of product categories",
+      "viewCategory": "View All Categories"
+    },
+    "products": {
+      "title": "Featured Products",
+      "subtitle": "Discover quality products from Pakistani exporters",
+      "viewDetails": "View All Products",
+      "trending": {
+        "title": "Trending Products",
+        "subtitle": "Hot-selling products with high demand in the last 7 days"
+      },
+      "featuredGold": {
+        "title": "Featured Products",
+        "subtitle": "Premium products from verified Gold Supplier members",
+        "goldBadge": "Gold Suppliers"
+      }
+    },
+    "globalMap": {
+      "title": "Global Presence",
+      "subtitle": "Pakistani exporters connecting with buyers across the globe"
+    }
+  },
+  "categories": {
+    "title": "Browse Categories",
+    "subtitle": "Explore all product categories on Pak-Exporters",
+    "pageSubtitle": "Explore our wide range of product categories from Pakistani exporters",
+    "allCategories": "All Categories",
+    "productCount": "{count} products",
+    "viewCategory": "View Category",
+    "browseCategories": "Browse Categories",
+    "notFound": "Category Not Found",
+    "products": "products"
+  },
+  "products": {
+    "title": "Products",
+    "allProducts": "All Products",
+    "subtitle": "Browse products from Pakistani exporters",
+    "pageSubtitle": "Browse our complete catalog of products from verified Pakistani exporters",
+    "noProducts": "No products found",
+    "noProductsMessage": "Try adjusting your search criteria or browse all categories.",
+    "notFound": "Product Not Found",
+    "price": "Price",
+    "minOrder": "Min. Order",
+    "viewDetails": "View Details",
+    "contactSupplier": "Contact Supplier",
+    "addToInquiry": "Add to Inquiry",
+    "manageProducts": "Manage Products",
+    "noProductsYet": "No products yet",
+    "noProductsYetMessage": "Start by creating your first product listing.",
+    "createProduct": "Create Product",
+    "editProduct": "Edit Product",
+    "soldLast7Days": "{count} sold in last 7 days",
+    "showingProducts": "Showing {current} of {total} products",
+    "page": "Page",
+    "of": "of",
+    "previous": "Previous",
+    "next": "Next",
+    "membershipTiers": {
+      "platinum": "Platinum",
+      "gold": "Gold",
+      "silver": "Silver"
+    }
+  },
+  "companies": {
+    "title": "Find Suppliers",
+    "subtitle": "Connect with verified Pakistani exporters and manufacturers",
+    "pageSubtitle": "Connect with verified Pakistani exporters and manufacturers",
+    "becomeMember": "Become a Member",
+    "verified": "Verified",
+    "goldSupplier": "Gold Supplier",
+    "products": "Products",
+    "productCount": "{count} products",
+    "viewProfile": "View Profile",
+    "contact": "Contact",
+    "location": "Location",
+    "manageCompanies": "Manage Companies",
+    "notFound": "Company Not Found",
+    "findSuppliers": "Find Suppliers",
+    "browseVerified": "Browse verified Pakistani exporters and suppliers",
+    "trustScore": "Trust Score"
+  },
+  "company": {
+    "title": "Company Profile",
+    "about": "About",
+    "products": "Products",
+    "contact": "Contact Information",
+    "location": "Location",
+    "verified": "Verified Supplier",
+    "trustScore": "Trust Score",
+    "yearEstablished": "Established",
+    "employees": "Employees",
+    "website": "Website",
+    "email": "Email",
+    "phone": "Phone"
+  },
+  "rfq": {
+    "title": "Request for Quotation",
+    "subtitle": "Submit your RFQ and get quotes from multiple suppliers",
+    "detailsTitle": "RFQ Details",
+    "detailsDescription": "Fill in the details below to receive quotes from suppliers",
+    "loginRequired": "Please log in to submit an RFQ",
+    "buyersOnly": "Only buyers can submit RFQs",
+    "fillRequiredFields": "Please fill in all required fields",
+    "submit": "Submit RFQ",
+    "submitting": "Submitting...",
+    "submittedSuccess": "RFQ submitted successfully!",
+    "submitFailed": "Failed to submit RFQ. Please try again.",
+    "form": {
+      "title": "RFQ Title",
+      "description": "Description",
+      "category": "Category",
+      "quantity": "Quantity",
+      "budget": "Budget",
+      "deadline": "Deadline",
+      "submit": "Submit RFQ",
+      "titlePlaceholder": "e.g., Need 1000 cotton t-shirts",
+      "categoryPlaceholder": "Select a category",
+      "descriptionPlaceholder": "Describe your requirements in detail...",
+      "quantityPlaceholder": "e.g., 1000",
+      "budgetPlaceholder": "Amount"
+    },
+    "submitRfq": "Submit RFQ"
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "subtitle": "Enter your credentials to access your account",
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "signingIn": "Signing in..."
+    },
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Join Pak-Exporters to start trading today",
+      "name": "Name",
+      "fullName": "Full Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "role": "I am a",
+      "buyer": "Buyer",
+      "supplier": "Supplier",
+      "agreeTerms": "I agree to the Terms and Conditions",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "creatingAccount": "Creating account...",
+      "passwordMismatch": "Passwords do not match"
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "subtitle": "Enter your email address and we'll send you a reset link",
+      "email": "Email",
+      "submit": "Send Reset Link",
+      "checkEmail": "Check Your Email",
+      "emailSent": "We've sent a password reset link to {email}",
+      "backToLogin": "Back to Login"
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter your new password below",
+      "requestTitle": "Request Password Reset",
+      "requestSubtitle": "Enter your email address and we'll send you a link to reset your password",
+      "requestDescription": "We'll send a password reset link to your email",
+      "setNewPassword": "Set New Password",
+      "description": "Choose a strong password for your account",
+      "email": "Email Address",
+      "password": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "passwordHint": "Must be at least 8 characters long",
+      "submit": "Reset Password",
+      "backToLogin": "Back to Login"
+    },
+    "verifyEmail": {
+      "title": "Verify Your Email",
+      "subtitle": "Please verify your email address to continue",
+      "cardTitle": "Email Verification",
+      "verifying": "Verifying your email...",
+      "success": "Email verified successfully!",
+      "error": "Verification failed",
+      "pendingDescription": "Check your email for a verification link",
+      "verifyingDescription": "Please wait while we verify your email",
+      "successDescription": "Your email has been verified",
+      "errorDescription": "The verification link is invalid or expired",
+      "emailSentMessage": "We've sent a verification link to your email address. Please click the link in the email to verify your account.",
+      "noEmailMessage": "Didn't receive the email? Check your spam folder or resend the verification email.",
+      "successRedirect": "Your email has been successfully verified. Redirecting to dashboard...",
+      "errorMessage": "The verification link is invalid or has expired. Please request a new verification email.",
+      "resend": "Resend Verification Email",
+      "continueToDashboard": "Continue to Dashboard",
+      "goToDashboard": "Go to Dashboard",
+      "backToLogin": "Back to Login"
+    },
+    "toasts": {
+      "pleaseCreateAccount": "Please create an account to upload products",
+      "needSupplierAccount": "You need a supplier account to upload products. Please register as a supplier.",
+      "completeMembership": "Please complete your membership application"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overview",
+    "products": "Products",
+    "companies": "Companies",
+    "rfq": "RFQ",
+    "orders": "Orders",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "notifications": "Notifications",
+    "noOrders": "No orders found",
+    "newOrderReceived": "New Order Received",
+    "rfqResponse": "RFQ Response",
+    "accountDetails": "Your account details",
+    "accountInformation": "Account Information",
+    "notificationPreferences": "Notification Preferences",
+    "notificationPreferencesDescription": "Manage your notification preferences",
+    "customizeExperience": "Customize your experience",
+    "languageRegion": "Language & Region",
+    "settingsDescription": "Manage your account settings and preferences",
+    "saveChanges": "Save Changes",
+    "accountSecurity": "Manage your account security",
+    "mostViewedProducts": "Most viewed and ordered products",
+    "latestUpdates": "Latest updates and events",
+    "analyticsVisualization": "Visual representation of your analytics data",
+    "unreadNotifications": "{count} unread notification",
+    "allCaughtUp": "All caught up!",
+    "deleteSelected": "Delete Selected",
+    "markAllRead": "Mark All Read",
+    "unread": "Unread",
+    "read": "Read",
+    "noUnreadNotifications": "No unread notifications",
+    "noReadNotifications": "No read notifications",
+    "noNotificationsYet": "No notifications yet",
+    "viewDetails": "View Details",
+    "supplierDashboard": "Supplier Dashboard",
+    "buyerDashboard": "Buyer Dashboard",
+    "supplierDescription": "Manage your products, track performance, and grow your business.",
+    "buyerDescription": "Browse products, submit RFQs, and connect with suppliers.",
+    "welcomeBack": "Welcome back! Here's your overview.",
+    "addFirstProduct": "Add Your First Product",
+    "addFirstProductDescription": "Start selling by adding products to your catalog",
+    "uploadProduct": "Upload Product",
+    "recentActivity": "Recent Activity",
+    "recentActivityDescription": "Your latest actions",
+    "noRecentActivity": "No recent activity. Start by submitting an RFQ or browsing products."
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "subtitle": "Review and manage membership applications",
+    "totalApplications": "Total Applications",
+    "allTime": "All time",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "awaitingReview": "Awaiting review",
+    "accepted": "Accepted",
+    "declined": "Declined",
+    "membershipApplications": "Membership Applications",
+    "application": "{count} application",
+    "filterByStatus": "Filter by status",
+    "allApplications": "All Applications",
+    "noApplicationsFound": "No applications found",
+    "noStatusApplications": "No {status} applications",
+    "companyName": "Company Name",
+    "applicant": "Applicant",
+    "email": "Email",
+    "tier": "Tier",
+    "submitted": "Submitted",
+    "status": "Status",
+    "actions": "Actions",
+    "reviewed": "Reviewed",
+    "reason": "Reason",
+    "approve": "Approve",
+    "reject": "Reject",
+    "rejectApplication": "Reject Application",
+    "rejectConfirmation": "Are you sure you want to reject this application? You can provide a reason below.",
+    "rejectionReason": "Rejection Reason",
+    "rejectionReasonPlaceholder": "Provide a reason for rejection..."
+  },
+    "footer": {
+    "about": "About",
+    "quickLinks": "Quick Links",
+    "categories": "Categories",
+    "products": "Products",
+    "suppliers": "Suppliers",
+    "rfq": "RFQ",
+    "blog": "Blog",
+    "support": "Support",
+    "help": "Help Center",
+    "contact": "Contact Us",
+    "faq": "FAQ",
+    "legal": "Legal",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "copyright": "© {year} Pak-Exporters. All rights reserved.",
+    "trademark": "© {year} PAK EXPORTERS REGISTERED TRADEMARK. All rights reserved.",
+    "description": "Pakistan's First Export Marketplace. Connecting exporters with global buyers since 2019.",
+    "browseCategories": "Browse Categories",
+    "findSuppliers": "Find Suppliers",
+    "submitRfq": "Submit RFQ",
+    "membershipTiers": "Membership Tiers",
+    "aboutUs": "About Us",
+    "contactUs": "Contact Us",
+    "contactInfo": "Contact Info",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "hours": "Hours",
+    "linkedin": "LinkedIn",
+    "twitter": "Twitter",
+    "facebook": "Facebook"
+  },
+  "errors": {
+    "404": {
+      "title": "Page Not Found",
+      "message": "The page you're looking for doesn't exist.",
+      "backHome": "Back to Home"
+    },
+    "500": {
+      "title": "Server Error",
+      "message": "Something went wrong. Please try again later.",
+      "retry": "Retry"
+    },
+    "generic": "An error occurred. Please try again."
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email address",
+    "minLength": "Must be at least {min} characters",
+    "maxLength": "Must be no more than {max} characters",
+    "passwordMatch": "Passwords do not match"
+  },
+  "pages": {
+    "about": {
+      "title": "About Pak-Exporters",
+      "tagline": "Pakistan's First Export Marketplace",
+      "since": "Since 2019",
+      "description": "Pakistan's First Export Marketplace - Connecting exporters with global buyers since 2019",
+      "whoWeAre": "Who We Are",
+      "whoWeAreDescription": "Pak-Exporters is Pakistan's first and premier B2B export marketplace, connecting local exporters with global buyers since 2019. We facilitate international trade by providing a trusted platform for businesses to discover, connect, and trade export-quality products worldwide.",
+      "ourMission": "Our Mission",
+      "ourMissionDescription": "To empower Pakistani businesses by providing them with the tools and platform needed to reach global markets, while ensuring quality, trust, and transparency in every transaction. We work together to promote Pakistan's export industry and connect premium suppliers with international buyers.",
+      "whyChooseUs": "Why Choose Us",
+      "whatWeOffer": "What We Offer",
+      "ourCategories": "Our Categories",
+      "categoriesDescription": "We offer a comprehensive range of export-quality products across multiple categories:",
+      "verifiedSuppliers": "Verified suppliers and exporters",
+      "wideRange": "Wide range of product categories",
+      "globalReach": "Global reach with local expertise",
+      "premiumNetwork": "Premium supplier network"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "subtitle": "Fill out the form below",
+      "getInTouch": "Get in Touch",
+      "getInTouchDescription": "We'd love to hear from you",
+      "sendMessage": "Send a Message",
+      "form": {
+        "name": "Name",
+        "email": "Email",
+        "subject": "Subject",
+        "message": "Message",
+        "submit": "Send Message",
+        "phone": "Phone",
+        "address": "Address",
+        "workingHours": "Working Hours"
+      }
+    },
+    "pricing": {
+      "title": "Pricing",
+      "redirecting": "Redirecting to membership tiers"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Find answers to common questions about Pak-Exporters",
+      "description": "Find answers to common questions about Pak-Exporters B2B marketplace, membership tiers, product listings, and more.",
+      "gettingStarted": "Getting Started",
+      "forSuppliers": "For Suppliers",
+      "forBuyers": "For Buyers",
+      "technicalSupport": "Technical Support",
+      "stillHaveQuestions": "Still have questions?",
+      "supportMessage": "Can't find the answer you're looking for? Our support team is here to help.",
+      "contactSupport": "Contact Support",
+      "emailUs": "Email Us"
+    },
+    "membership": {
+      "title": "Supplier Membership Tiers",
+      "description": "Learn about our supplier membership tiers: Platinum, Gold, and Silver. Understand the evaluation criteria and benefits of each tier.",
+      "subtitle": "Our membership tiers are designed to help buyers identify trusted suppliers while providing suppliers with tools to grow their business. Each tier represents a different level of verification, experience, and commitment to quality.",
+      "evaluationCriteria": "Evaluation Criteria",
+      "evaluationDescription": "Our evaluation criteria are inspired by industry leaders like Alibaba, TradeKey, and Pak-China. We assess suppliers based on business history, product quality, sales performance, customer satisfaction, and verification status. This multi-faceted approach ensures buyers can trust the suppliers they work with.",
+      "benefits": "Benefits",
+      "criteria": "Criteria",
+      "applyFor": "Apply for {tier}",
+      "howItWorks": "How Membership Tiers Work",
+      "howItWorksDescription": "Understanding our tiered system and how suppliers can upgrade",
+      "initialAssessment": "Initial Assessment",
+      "initialAssessmentDescription": "All suppliers start with basic verification. Our team reviews business licenses, company information, and initial product listings to assign an appropriate tier.",
+      "performanceMonitoring": "Performance Monitoring",
+      "performanceMonitoringDescription": "We continuously monitor supplier performance including response rates, order fulfillment, buyer feedback, and sales volume. Suppliers can upgrade to higher tiers by meeting the criteria.",
+      "tierUpgrades": "Tier Upgrades",
+      "tierUpgradesDescription": "Suppliers can apply for tier upgrades when they meet the minimum requirements. Our verification team conducts a comprehensive review including on-site inspections for Platinum tier applicants.",
+      "benefitsForBuyers": "Benefits for Buyers",
+      "benefitsForBuyersDescription": "Higher-tier suppliers are more visible in search results and have proven track records. Buyers can filter products by supplier tier to find the most trusted suppliers for their needs.",
+      "starter": {
+        "title": "Starter",
+        "description": "Perfect for new businesses starting their export journey"
+      },
+      "silver": {
+        "title": "Silver",
+        "description": "Reliable suppliers building their reputation in the marketplace"
+      },
+      "gold": {
+        "title": "Gold",
+        "description": "Verified suppliers with excellent track records and quality products"
+      },
+      "platinum": {
+        "title": "Platinum",
+        "description": "Our highest tier for the most trusted and established suppliers"
+      },
+      "apply": {
+        "title": "Apply for Membership",
+        "selectTier": "Please select a membership tier",
+        "forNewBusinesses": "Perfect for new businesses starting their export journey",
+        "forEstablished": "For established businesses with proven track record",
+        "verifiedSuppliers": "Verified suppliers with excellent track records",
+        "highestTier": "Our highest tier for the most trusted suppliers"
+      }
+    },
+    "profile": {
+      "title": "Profile Settings",
+      "updatePicture": "Update your profile picture",
+      "personalDetails": "Your personal details"
+    },
+    "admin": {
+      "title": "Admin Dashboard",
+      "allTime": "All time",
+      "awaitingReview": "Awaiting review"
+    },
+    "search": {
+      "title": "Search",
+      "placeholder": "Search products, companies, categories...",
+      "noResults": "No results found",
+      "resultsFor": "Results for \"{query}\"",
+      "searchError": "Search Error",
+      "enterQuery": "Enter a search query to find products and suppliers."
+    }
+  },
+  "blog": {
+    "title": "Export Insights & Guides",
+    "subtitle": "Learn how to work with Pakistani exporters, understand membership tiers, and grow your global trade business.",
+    "readArticle": "Read Article",
+    "minRead": "{minutes} min read",
+    "noPosts": "No posts found in this category.",
+    "viewAllPosts": "View All Posts",
+    "posts": "posts",
+    "post": "post",
+    "categories": {
+      "all": "All Posts",
+      "gettingStarted": "Getting Started",
+      "gettingStartedDescription": "Guides for new exporters",
+      "successStories": "Success Stories",
+      "successStoriesDescription": "Real results from exporters",
+      "features": "Features & Platform",
+      "featuresDescription": "Platform features and guides",
+      "membership": "Membership",
+      "membershipDescription": "Membership tiers and pricing",
+      "tips": "Tips & Best Practices",
+      "tipsDescription": "Tips for success",
+      "faq": "FAQ & Help",
+      "faqDescription": "Frequently asked questions",
+      "challenges": "Challenges & Solutions",
+      "challengesDescription": "Common challenges and solutions",
+      "introduction": "Introduction",
+      "introductionDescription": "About Pak-Exporters"
+    }
+  }
+}

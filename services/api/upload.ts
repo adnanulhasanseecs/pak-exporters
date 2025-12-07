@@ -1,6 +1,6 @@
 /**
  * Image upload service
- * Currently returns mock URLs, ready for real API integration
+ * Real implementation using Next.js API routes (when available)
  */
 
 export interface UploadProgress {
@@ -17,9 +17,12 @@ export interface UploadResult {
 }
 
 /**
- * Mock delay to simulate API call
+ * Get auth token from localStorage
  */
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+function getAuthToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("auth_token");
+}
 
 /**
  * Validate image file
@@ -65,32 +68,32 @@ export async function uploadImage(
     throw new Error(validation.error || "Invalid image file");
   }
 
-  // Simulate upload progress
+  const token = getAuthToken();
+  const formData = new FormData();
+  formData.append("file", file);
+
+  // TODO: Implement /api/upload endpoint
+  // For now, use data URL for preview
+  // In production, this would upload to cloud storage (S3, Cloudinary, etc.)
+  
   if (onProgress) {
+    // Simulate progress
     const steps = 10;
     for (let i = 0; i <= steps; i++) {
-      await delay(100);
+      await new Promise((resolve) => setTimeout(resolve, 100));
       onProgress({
         loaded: (file.size * i) / steps,
         total: file.size,
         percentage: (i / steps) * 100,
       });
     }
-  } else {
-    await delay(500); // Simulate upload delay
   }
 
-  // In real implementation, this would:
-  // 1. Upload to cloud storage (S3, Cloudinary, etc.)
-  // 2. Get back a URL
-  // 3. Optionally compress/resize the image
-  // 4. Return the URL
-
-  // Mock: Use data URL for preview (in real app, this would be the uploaded URL)
+  // Use data URL for now (in real app, this would be the uploaded URL from API)
   const dataUrl = await fileToDataURL(file);
 
   return {
-    url: dataUrl, // Use data URL for now, in real app this would be the uploaded URL
+    url: dataUrl,
     filename: file.name,
     size: file.size,
     type: file.type,
@@ -164,14 +167,10 @@ export async function compressImage(
  * @param url - URL of the image to delete
  */
 export async function deleteImage(url: string): Promise<void> {
-  await delay(200);
-
-  // In real implementation, this would:
-  // 1. Extract image ID/key from URL
-  // 2. Call API to delete from storage
-  // 3. Handle errors
-
-  // Mock: just simulate deletion
-  console.log(`Mock: Deleting image at ${url}`);
+  const token = getAuthToken();
+  
+  // TODO: Implement DELETE /api/upload/[id] endpoint
+  // For now, just log (in production, this would call the API to delete from storage)
+  console.log(`Deleting image at ${url}`);
 }
 

@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { CheckCircle2, XCircle, ArrowLeft, Calendar, DollarSign, Package, User, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { ROUTES } from "@/lib/constants";
+import { AIMatchmaking } from "@/components/placeholders/AIMatchmaking";
 import Link from "next/link";
 
 export default function RFQDetailPage() {
@@ -354,6 +355,18 @@ export default function RFQDetailPage() {
               )}
             </CardContent>
           </Card>
+        )}
+
+        {/* AI Matchmaking for Buyers */}
+        {isBuyer && rfq.status === "open" && (
+          <AIMatchmaking
+            rfqId={rfqId}
+            potentialMatches={0}
+            onMatch={() => {
+              // Placeholder - would trigger AI matchmaking
+              toast.info("AI matchmaking feature coming soon");
+            }}
+          />
         )}
 
         {/* Supplier Action */}

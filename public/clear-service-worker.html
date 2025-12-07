@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Service Worker Cache</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success { background: #d1fae5; color: #065f46; }
+        .error { background: #fee2e2; color: #991b1b; }
+        .info { background: #dbeafe; color: #1e40af; }
+    </style>
+</head>
+<body>
+    <h1>Clear Service Worker & Cache</h1>
+    <p>This page will help you clear all caches and service workers.</p>
+    <p><strong>Note: Make sure you're accessing this on the correct port (likely 3001, not 3000)</strong></p>
+    
+    <button onclick="clearServiceWorker()">Clear Service Worker</button>
+    <button onclick="clearAllCaches()">Clear All Caches</button>
+    <button onclick="clearLocalStorage()">Clear LocalStorage</button>
+    <button onclick="clearSessionStorage()">Clear SessionStorage</button>
+    <button onclick="clearAll()">Clear Everything</button>
+    
+    <div id="status"></div>
+
+    <script>
+        function showStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = type;
+        }
+
+        async function clearServiceWorker() {
+            try {
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                        showStatus(`✅ Unregistered service worker: ${registration.scope}`, 'success');
+                    }
+                    if (registrations.length === 0) {
+                        showStatus('ℹ️ No service workers found', 'info');
+                    }
+                } else {
+                    showStatus('ℹ️ Service Workers not supported', 'info');
+                }
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function clearAllCaches() {
+            try {
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    for (let cacheName of cacheNames) {
+                        await caches.delete(cacheName);
+                        showStatus(`✅ Deleted cache: ${cacheName}`, 'success');
+                    }
+                    if (cacheNames.length === 0) {
+                        showStatus('ℹ️ No caches found', 'info');
+                    }
+                } else {
+                    showStatus('ℹ️ Cache API not supported', 'info');
+                }
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        function clearLocalStorage() {
+            try {
+                localStorage.clear();
+                showStatus('✅ Cleared LocalStorage', 'success');
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        function clearSessionStorage() {
+            try {
+                sessionStorage.clear();
+                showStatus('✅ Cleared SessionStorage', 'success');
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function clearAll() {
+            showStatus('🔄 Clearing everything...', 'info');
+            await clearServiceWorker();
+            await clearAllCaches();
+            clearLocalStorage();
+            clearSessionStorage();
+            setTimeout(() => {
+                showStatus('✅ All caches cleared! Please refresh the page.', 'success');
+            }, 500);
+        }
+
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            showStatus('ℹ️ Click buttons above to clear caches', 'info');
+        });
+    </script>
+</body>
+</html>
+

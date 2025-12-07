@@ -69,7 +69,17 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      // Return cached version if available
+      // TEMPORARILY DISABLED: Don't serve cached navigation requests
+      // This prevents old cached pages from being served
+      if (event.request.mode === "navigate") {
+        // Always fetch navigation requests from network
+        return fetch(event.request).catch(() => {
+          // Only fallback to cache if network completely fails
+          return cachedResponse || caches.match("/");
+        });
+      }
+      
+      // Return cached version if available (for non-navigation requests only)
       if (cachedResponse) {
         return cachedResponse;
       }

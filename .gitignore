@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+.yarn/install-state.gz
 
 # testing
 /coverage
@@ -26,6 +27,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env.production
 .env
 
 # vercel
@@ -35,13 +37,18 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# logs
-logs/
-*.log
+# prisma
+/lib/generated/prisma
+/dev.db
+/dev.db-journal
+*.db
+*.db-journal
 
-# pids
-pids/
-*.pid
+# backups
+/backups
+*.backup
+*.sql
+*.dump
 
 # IDE
 .vscode/
@@ -52,3 +59,22 @@ pids/
 
 # OS
 Thumbs.db
+.DS_Store
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Testing
+/coverage
+/.nyc_output
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/

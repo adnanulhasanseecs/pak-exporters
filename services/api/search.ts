@@ -1,11 +1,11 @@
 /**
- * Mock Search API Service
- * This service handles search-related API calls with autocomplete and suggestions
+ * Search API Service
+ * Real implementation using Next.js API routes and existing services
  */
 
-import { delay } from "./utils";
 import { fetchProducts } from "./products";
 import { fetchCompanies } from "./companies";
+import { fetchCategories } from "./categories";
 import type { Product } from "@/types/product";
 import type { Company } from "@/types/company";
 
@@ -45,8 +45,6 @@ export async function search(
     companyId?: string;
   }
 ): Promise<SearchResult> {
-  await delay(400);
-
   const limit = options?.limit || 20;
   const searchQuery = query.toLowerCase().trim();
 
@@ -73,29 +71,23 @@ export async function search(
     limit: Math.floor(limit / 2),
   });
 
-  // Search categories (mock - would come from categories API)
-  const categories: SearchResult["categories"] = [];
-  if (searchQuery.length >= 3) {
-    // Mock category matches
-    const categoryKeywords = [
-      { name: "Apparel & Clothing", keywords: ["apparel", "clothing", "textile", "garment"] },
-      { name: "Leather Products", keywords: ["leather", "bag", "wallet", "belt"] },
-      { name: "Sports Equipment", keywords: ["sports", "equipment", "cricket", "football"] },
-    ];
+  // Search categories
+  const allCategories = await fetchCategories();
+  const matchingCategories = allCategories
+    .filter((cat) => 
+      cat.name.toLowerCase().includes(searchQuery) ||
+      cat.slug.includes(searchQuery) ||
+      (cat.description && cat.description.toLowerCase().includes(searchQuery))
+    )
+    .slice(0, Math.floor(limit / 3))
+    .map((cat) => ({
+      id: cat.id,
+      name: cat.name,
+      slug: cat.slug,
+      productCount: cat.productCount || 0,
+    }));
 
-    categoryKeywords.forEach((cat) => {
-      if (cat.keywords.some((kw) => searchQuery.includes(kw))) {
-        categories.push({
-          id: `cat-${cat.name.toLowerCase().replace(/\s+/g, "-")}`,
-          name: cat.name,
-          slug: cat.name.toLowerCase().replace(/\s+/g, "-"),
-          productCount: Math.floor(Math.random() * 100),
-        });
-      }
-    });
-  }
-
-  const total = products.length + companies.length + categories.length;
+  const total = products.length + companies.length + matchingCategories.length;
 
   // Save to search history
   if (typeof window !== "undefined") {
@@ -115,7 +107,7 @@ export async function search(
   return {
     products,
     companies,
-    categories,
+    categories: matchingCategories,
     total,
   };
 }
@@ -127,8 +119,6 @@ export async function getSearchSuggestions(
   query: string,
   limit: number = 5
 ): Promise<SearchSuggestion[]> {
-  await delay(200);
-
   const searchQuery = query.toLowerCase().trim();
 
   if (!searchQuery || searchQuery.length < 2) {
@@ -165,22 +155,22 @@ export async function getSearchSuggestions(
     });
   });
 
-  // Add category suggestions
+  // Get category suggestions
   if (searchQuery.length >= 3) {
-    const categoryMatches = [
-      { name: "Apparel & Clothing", slug: "apparel-clothing" },
-      { name: "Leather Products", slug: "leather-products" },
-      { name: "Sports Equipment", slug: "sports-equipment" },
-    ].filter((cat) =>
-      cat.name.toLowerCase().includes(searchQuery) ||
-      cat.slug.includes(searchQuery)
-    );
+    const allCategories = await fetchCategories();
+    const categoryMatches = allCategories
+      .filter((cat) =>
+        cat.name.toLowerCase().includes(searchQuery) ||
+        cat.slug.includes(searchQuery)
+      )
+      .slice(0, Math.floor(limit / 3));
 
     categoryMatches.forEach((cat) => {
       suggestions.push({
         type: "category",
         text: cat.name,
         url: `/category/${cat.slug}`,
+        count: cat.productCount || 0,
       });
     });
   }
@@ -192,8 +182,6 @@ export async function getSearchSuggestions(
  * Get search history
  */
 export async function getSearchHistory(limit: number = 10): Promise<SearchHistoryItem[]> {
-  await delay(100);
-
   if (typeof window !== "undefined") {
     const history: SearchHistoryItem[] = JSON.parse(
       localStorage.getItem("search-history") || "[]"
@@ -208,8 +196,6 @@ export async function getSearchHistory(limit: number = 10): Promise<SearchHistor
  * Clear search history
  */
 export async function clearSearchHistory(): Promise<void> {
-  await delay(100);
-
   if (typeof window !== "undefined") {
     localStorage.removeItem("search-history");
   }
@@ -219,9 +205,8 @@ export async function clearSearchHistory(): Promise<void> {
  * Get popular searches
  */
 export async function getPopularSearches(limit: number = 10): Promise<string[]> {
-  await delay(200);
-
-  // Mock popular searches
+  // For now, return static popular searches
+  // In the future, this could be based on actual search analytics
   return [
     "cotton t-shirts",
     "leather jackets",
@@ -240,9 +225,8 @@ export async function getPopularSearches(limit: number = 10): Promise<string[]> 
  * Get trending searches
  */
 export async function getTrendingSearches(limit: number = 10): Promise<string[]> {
-  await delay(200);
-
-  // Mock trending searches (would be based on recent activity)
+  // For now, return static trending searches
+  // In the future, this could be based on recent search activity
   return [
     "winter clothing",
     "export quality",

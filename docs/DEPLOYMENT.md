@@ -1,5 +1,9 @@
 # Deployment Guide
 
+> **Note:** For detailed production deployment instructions, see [DEPLOYMENT_PRODUCTION.md](./DEPLOYMENT_PRODUCTION.md)
+
+## Quick Start
+
 ## Overview
 
 This guide covers deploying the Pak-Exporters B2B Marketplace to production.

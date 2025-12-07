@@ -72,6 +72,11 @@ export function DashboardSidebar() {
       icon: FileText,
     },
     {
+      title: "Orders",
+      href: ROUTES.dashboardOrders,
+      icon: ShoppingCart,
+    },
+    {
       title: "Analytics",
       href: ROUTES.dashboardAnalytics,
       icon: BarChart3,
@@ -103,6 +108,11 @@ export function DashboardSidebar() {
       title: "My RFQs",
       href: ROUTES.dashboardRfq,
       icon: FileText,
+    },
+    {
+      title: "Orders",
+      href: ROUTES.dashboardOrders,
+      icon: ShoppingCart,
     },
     {
       title: "Browse Products",

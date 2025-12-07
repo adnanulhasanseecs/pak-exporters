@@ -56,3 +56,6 @@ if (typeof Element !== "undefined") {
   Element.prototype.releasePointerCapture = Element.prototype.releasePointerCapture || (() => {});
 }
 
+// Note: fetch should be mocked in individual test files that need it
+// We don't set a default mock here to avoid conflicts
+

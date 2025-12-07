@@ -1,25 +1,10 @@
 /**
- * Mock User API Service
- * This service handles user profile and settings API calls
+ * User API Service
+ * Real implementation using Next.js API routes
  */
 
 import type { User } from "@/types/user";
-import { delay } from "./utils";
-
-// Mock users storage (would come from database in real app)
-let mockUsers: User[] = [];
-
-// Initialize from localStorage if available
-if (typeof window !== "undefined") {
-  const stored = localStorage.getItem("mock-users");
-  if (stored) {
-    try {
-      mockUsers = JSON.parse(stored);
-    } catch {
-      mockUsers = [];
-    }
-  }
-}
+import { API_ENDPOINTS } from "@/lib/constants";
 
 export interface UpdateUserData {
   name?: string;
@@ -40,18 +25,54 @@ export interface UserSettings {
 }
 
 /**
+ * Get auth token from localStorage
+ */
+function getAuthToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("auth_token");
+}
+
+/**
  * Get user by ID
  */
 export async function getUserById(userId: string): Promise<User> {
-  await delay(300);
-
-  const user = mockUsers.find((u) => u.id === userId);
-
-  if (!user) {
-    throw new Error(`User with ID ${userId} not found`);
+  const token = getAuthToken();
+  if (!token) {
+    throw new Error("Authentication required");
   }
 
-  return user;
+  // Use /api/user/me for current user, or implement /api/user/[id] for other users
+  if (userId === "me" || !userId) {
+    return getCurrentUser();
+  }
+
+  // For now, only support current user
+  throw new Error("Getting other users by ID is not yet implemented");
+}
+
+/**
+ * Get current user
+ */
+export async function getCurrentUser(): Promise<User> {
+  const token = getAuthToken();
+  if (!token) {
+    throw new Error("Authentication required");
+  }
+
+  const response = await fetch(`${API_ENDPOINTS.auth.me || "/api/auth/me"}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "Failed to fetch user");
+  }
+
+  return response.json();
 }
 
 /**
@@ -61,37 +82,38 @@ export async function updateUser(
   userId: string,
   data: UpdateUserData
 ): Promise<User> {
-  await delay(400);
-
-  const userIndex = mockUsers.findIndex((u) => u.id === userId);
-
-  if (userIndex === -1) {
-    throw new Error(`User with ID ${userId} not found`);
+  const token = getAuthToken();
+  if (!token) {
+    throw new Error("Authentication required");
   }
 
-  const updatedUser: User = {
-    ...mockUsers[userIndex],
-    ...data,
-    updatedAt: new Date().toISOString(),
-  };
+  // Use /api/user/me for current user
+  const endpoint = userId === "me" || !userId 
+    ? "/api/user/me" 
+    : `/api/user/${userId}`;
 
-  mockUsers[userIndex] = updatedUser;
+  const response = await fetch(endpoint, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
 
-  // Persist to localStorage
-  if (typeof window !== "undefined") {
-    localStorage.setItem("mock-users", JSON.stringify(mockUsers));
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "Failed to update user");
   }
 
-  return updatedUser;
+  return response.json();
 }
 
 /**
  * Get user settings
  */
 export async function getUserSettings(userId: string): Promise<UserSettings> {
-  await delay(200);
-
-  // Load from localStorage
+  // For now, use localStorage (settings API can be added later)
   if (typeof window !== "undefined") {
     const stored = localStorage.getItem(`user-settings-${userId}`);
     if (stored) {
@@ -121,12 +143,10 @@ export async function updateUserSettings(
   userId: string,
   settings: Partial<UserSettings>
 ): Promise<UserSettings> {
-  await delay(300);
-
   const currentSettings = await getUserSettings(userId);
   const updatedSettings = { ...currentSettings, ...settings };
 
-  // Persist to localStorage
+  // Persist to localStorage (settings API can be added later)
   if (typeof window !== "undefined") {
     localStorage.setItem(
       `user-settings-${userId}`,
@@ -144,23 +164,26 @@ export async function uploadAvatar(
   userId: string,
   file: File
 ): Promise<string> {
-  await delay(800);
-
   // Validate file
   if (!file.type.startsWith("image/")) {
     throw new Error("File must be an image");
   }
 
   if (file.size > 5 * 1024 * 1024) {
-    // 5MB limit
     throw new Error("Image size must be less than 5MB");
   }
 
-  // In a real app, upload to cloud storage and return URL
-  // For mock, return a placeholder URL
-  const mockUrl = `https://api.placeholder.com/200x200?text=${encodeURIComponent(
-    userId
-  )}`;
+  const token = getAuthToken();
+  if (!token) {
+    throw new Error("Authentication required");
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  // Use upload API endpoint (to be implemented)
+  // For now, return a placeholder URL
+  const mockUrl = `https://api.placeholder.com/200x200?text=${encodeURIComponent(userId)}`;
 
   // Update user avatar
   await updateUser(userId, { avatar: mockUrl });
@@ -172,21 +195,13 @@ export async function uploadAvatar(
  * Delete user account
  */
 export async function deleteUser(userId: string): Promise<void> {
-  await delay(500);
-
-  const userIndex = mockUsers.findIndex((u) => u.id === userId);
-
-  if (userIndex === -1) {
-    throw new Error(`User with ID ${userId} not found`);
+  const token = getAuthToken();
+  if (!token) {
+    throw new Error("Authentication required");
   }
 
-  mockUsers.splice(userIndex, 1);
-
-  // Remove from localStorage
-  if (typeof window !== "undefined") {
-    localStorage.setItem("mock-users", JSON.stringify(mockUsers));
-    localStorage.removeItem(`user-settings-${userId}`);
-  }
+  // TODO: Implement DELETE /api/user/me endpoint
+  throw new Error("Delete user account is not yet implemented");
 }
 
 /**
@@ -197,21 +212,10 @@ export async function changePassword(
   currentPassword: string,
   newPassword: string
 ): Promise<void> {
-  await delay(400);
-
-  const user = await getUserById(userId);
-
-  if (!user) {
-    throw new Error("User not found");
-  }
-
-  // In a real app, verify current password hash
-  // For mock, just validate new password
   if (!newPassword || newPassword.length < 8) {
     throw new Error("Password must be at least 8 characters");
   }
 
-  // In a real app, update password hash in database
-  // For mock, just simulate success
+  // TODO: Implement /api/user/me/password endpoint
+  throw new Error("Change password is not yet implemented");
 }
-

@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { Link, useRouter } from "@/i18n/routing";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { Menu, X, Search, User, LogOut, Settings, LayoutDashboard, Sparkles, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,8 +20,11 @@ import { ROUTES } from "@/lib/constants";
 import { useAuthStore } from "@/store/useAuthStore";
 import { canUploadProducts, getMembershipStatusMessage } from "@/lib/membership";
 import { toast } from "sonner";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { useTranslations } from "next-intl";
 
 export function Header() {
+  const t = useTranslations();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
@@ -32,6 +34,11 @@ export function Header() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Debug logging
+  useEffect(() => {
+    console.log("🔍 Header Auth State:", { mounted, isAuthenticated, hasUser: !!user });
+  }, [mounted, isAuthenticated, user]);
 
   const handleLogout = () => {
     logout();
@@ -43,7 +50,7 @@ export function Header() {
     
     if (!isAuthenticated) {
       // Not logged in - redirect to registration
-      toast.info("Please create an account to upload products");
+      toast.info(t("auth.toasts.pleaseCreateAccount"));
       router.push(ROUTES.register);
       return;
     }
@@ -52,7 +59,7 @@ export function Header() {
 
     // Buyers cannot upload products - redirect to register as supplier
     if (user.role === "buyer") {
-      toast.info("You need a supplier account to upload products. Please register as a supplier.");
+      toast.info(t("auth.toasts.needSupplierAccount"));
       router.push(ROUTES.register);
       return;
     }
@@ -60,7 +67,7 @@ export function Header() {
     // Check if user can upload products (must be supplier with approved membership)
     if (!canUploadProducts(user)) {
       const message = getMembershipStatusMessage(user);
-      toast.error(message || "Please complete your membership application");
+      toast.error(message || t("auth.toasts.completeMembership"));
       router.push(ROUTES.membershipApply);
       return;
     }
@@ -108,31 +115,37 @@ export function Header() {
               href={ROUTES.products}
               className="text-sm font-medium transition-colors hover:text-primary"
             >
-              Products
+              {t("nav.products")}
             </Link>
             <Link
               href={ROUTES.categories}
               className="text-sm font-medium transition-colors hover:text-primary"
             >
-              Categories
+              {t("nav.categories")}
             </Link>
             <Link
               href={ROUTES.companies}
               className="text-sm font-medium transition-colors hover:text-primary"
             >
-              Suppliers
+              {t("nav.suppliers")}
             </Link>
             <Link
               href={ROUTES.rfq}
               className="text-sm font-medium transition-colors hover:text-primary"
             >
-              RFQ
+              {t("nav.rfq")}
+            </Link>
+            <Link
+              href={ROUTES.blog}
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
+              {t("nav.blog")}
             </Link>
             <Link
               href={ROUTES.about}
               className="text-sm font-medium transition-colors hover:text-primary"
             >
-              About
+              {t("nav.about")}
             </Link>
             <Button
               variant="default"
@@ -141,23 +154,23 @@ export function Header() {
               className="ml-2"
             >
               <Upload className="h-4 w-4 mr-2" />
-              Upload Product
+              {t("nav.uploadProduct")}
             </Button>
           </nav>
 
           {/* Search Bar - Desktop */}
-          <div className="hidden lg:flex flex-1 max-w-md mx-8">
+          <div className="hidden lg:flex flex-1 max-w-md mx-2 min-w-0">
             <div className="relative w-full flex items-center gap-2">
-              <div className="relative flex-1">
+              <div className="relative flex-1 min-w-0">
                 <Search
                   className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
                   aria-hidden="true"
                 />
                 <Input
                   type="search"
-                  placeholder="Search products, suppliers..."
+                  placeholder={t("nav.searchPlaceholder")}
                   className="pl-9 pr-10 w-full"
-                  aria-label="Search products and suppliers"
+                  aria-label={t("nav.searchPlaceholder")}
                 />
               </div>
               <TooltipProvider>
@@ -166,7 +179,7 @@ export function Header() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-10 w-10"
+                      className="h-10 w-10 flex-shrink-0"
                       disabled
                       onClick={() => {
                         // Placeholder - would trigger AI search
@@ -177,15 +190,15 @@ export function Header() {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>AI Search Assistant (Coming Soon)</p>
+                    <p>{t("nav.aiSearchTooltip")}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center space-x-2">
+          {/* Actions - Right side - Always visible */}
+          <div className="flex items-center space-x-2 flex-shrink-0">
             <Button
               variant="ghost"
               size="icon"
@@ -228,27 +241,27 @@ export function Header() {
                     <DropdownMenuItem asChild>
                       <Link href={ROUTES.admin} className="cursor-pointer">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
-                        Admin Dashboard
+                        {t("nav.adminDashboard")}
                       </Link>
                     </DropdownMenuItem>
                   ) : (
                     <DropdownMenuItem asChild>
                       <Link href={ROUTES.dashboard} className="cursor-pointer">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
-                        Dashboard
+                        {t("nav.dashboard")}
                       </Link>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuItem asChild>
                     <Link href="/profile" className="cursor-pointer">
                       <Settings className="mr-2 h-4 w-4" />
-                      Settings
+                      {t("nav.settings")}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
-                    Log out
+                    {t("nav.logout")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -259,10 +272,10 @@ export function Header() {
                   <span className="sr-only">Account</span>
                 </Button>
                 <Button variant="outline" size="sm" asChild>
-                  <Link href={ROUTES.login}>Sign In</Link>
+                  <Link href={ROUTES.login}>{t("nav.signIn")}</Link>
                 </Button>
                 <Button size="sm" asChild>
-                  <Link href={ROUTES.register}>Join Free</Link>
+                  <Link href={ROUTES.register}>{t("nav.joinFree")}</Link>
                 </Button>
               </>
             )}
@@ -271,7 +284,7 @@ export function Header() {
               size="icon"
               className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+              aria-label={mobileMenuOpen ? t("nav.closeMenu") : t("nav.openMenu")}
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-navigation"
             >
@@ -280,8 +293,10 @@ export function Header() {
               ) : (
                 <Menu className="h-5 w-5" aria-hidden="true" />
               )}
-              <span className="sr-only">{mobileMenuOpen ? "Close menu" : "Open menu"}</span>
+              <span className="sr-only">{mobileMenuOpen ? t("nav.closeMenu") : t("nav.openMenu")}</span>
             </Button>
+            {/* Language Switcher - Rightmost position */}
+            <LanguageSwitcher />
           </div>
         </div>
 
@@ -289,13 +304,19 @@ export function Header() {
         {mobileMenuOpen && (
           <div
             id="mobile-navigation"
-            className="border-t md:hidden animate-in slide-in-from-top-2 duration-200"
+            className="border-t md:hidden animate-in slide-in-from-top-2 duration-200 fixed inset-x-0 top-16 bg-background z-40 shadow-lg"
             role="dialog"
             aria-modal="true"
             aria-label="Mobile navigation menu"
             onClick={(e) => {
               // Close menu when clicking outside
               if (e.target === e.currentTarget) {
+                setMobileMenuOpen(false);
+              }
+            }}
+            onKeyDown={(e) => {
+              // Close menu on Escape key
+              if (e.key === "Escape") {
                 setMobileMenuOpen(false);
               }
             }}
@@ -330,35 +351,42 @@ export function Header() {
                 className="px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Products
+                {t("nav.products")}
               </Link>
               <Link
                 href={ROUTES.categories}
                 className="px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Categories
+                {t("nav.categories")}
               </Link>
               <Link
                 href={ROUTES.companies}
                 className="px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Suppliers
+                {t("nav.suppliers")}
               </Link>
               <Link
                 href={ROUTES.rfq}
                 className="px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                RFQ
+                {t("nav.rfq")}
+              </Link>
+              <Link
+                href={ROUTES.blog}
+                className="px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground rounded-md"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t("nav.blog")}
               </Link>
               <Link
                 href={ROUTES.about}
                 className="px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground rounded-md"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                About
+                {t("nav.about")}
               </Link>
               <div className="px-4 mt-2">
                 <Button
@@ -371,8 +399,15 @@ export function Header() {
                   className="w-full"
                 >
                   <Upload className="h-4 w-4 mr-2" />
-                  Upload Product
+                  {t("nav.uploadProduct")}
                 </Button>
+              </div>
+              {/* Language Switcher - Mobile */}
+              <div className="pt-4 border-t px-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-muted-foreground">{t("nav.language") || "Language"}</span>
+                  <LanguageSwitcher />
+                </div>
               </div>
               <div className="pt-4 border-t px-4">
                 <div className="relative flex items-center gap-2">
@@ -380,7 +415,7 @@ export function Header() {
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       type="search"
-                      placeholder="Search products, suppliers..."
+                      placeholder={t("nav.searchPlaceholder")}
                       className="pl-9 pr-10 w-full"
                     />
                   </div>
@@ -398,7 +433,7 @@ export function Header() {
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>AI Search Assistant (Coming Soon)</p>
+                        <p>{t("nav.aiSearchTooltip")}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -429,7 +464,7 @@ export function Header() {
                       className="block px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground rounded-md"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      Admin Dashboard
+                      {t("nav.adminDashboard")}
                     </Link>
                   ) : (
                     <Link
@@ -437,7 +472,7 @@ export function Header() {
                       className="block px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground rounded-md"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      Dashboard
+                      {t("nav.dashboard")}
                     </Link>
                   )}
                   <Link
@@ -445,7 +480,7 @@ export function Header() {
                     className="block px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground rounded-md"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Settings
+                    {t("nav.settings")}
                   </Link>
                   <button
                     onClick={() => {
@@ -454,21 +489,15 @@ export function Header() {
                     }}
                     className="block w-full text-left px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground rounded-md text-destructive"
                   >
-                    Log out
+                    {t("nav.logout")}
                   </button>
                 </div>
               ) : (
                 <div className="pt-4 border-t space-y-2 px-4">
-                  <Button variant="outline" className="w-full" asChild>
-                    <Link href={ROUTES.login} onClick={() => setMobileMenuOpen(false)}>
-                      Sign In
-                    </Link>
-                  </Button>
-                  <Button className="w-full" asChild>
-                    <Link href={ROUTES.register} onClick={() => setMobileMenuOpen(false)}>
-                      Join Free
-                    </Link>
-                  </Button>
+                  {/* TEMPORARILY HIDDEN FOR TESTING - Buttons removed */}
+                  <div className="hidden">
+                    {/* Buttons completely removed for testing */}
+                  </div>
                 </div>
               )}
             </nav>

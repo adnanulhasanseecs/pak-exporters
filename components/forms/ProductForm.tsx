@@ -15,6 +15,7 @@ import { ProductImageUpload } from "./ProductImageUpload";
 import { ProductSpecifications } from "./ProductSpecifications";
 import { ProductTagsInput } from "./ProductTagsInput";
 import { AIWriteButton } from "@/components/placeholders/AIWriteButton";
+import { AIAutoTagging } from "@/components/placeholders/AIAutoTagging";
 import { Sparkles } from "lucide-react";
 import type { Category } from "@/types/category";
 import { hasPremiumMembership } from "@/lib/membership";
@@ -294,7 +295,16 @@ export function ProductForm({
           <CardTitle>Tags (Optional)</CardTitle>
           <CardDescription>Add tags to help buyers find your product (max 10)</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          <AIAutoTagging
+            productName={watch("name")}
+            productDescription={watch("description")}
+            onTagsGenerated={(generatedTags) => {
+              const currentTags = watch("tags") || [];
+              const newTags = [...new Set([...currentTags, ...generatedTags])].slice(0, 10);
+              setValue("tags", newTags);
+            }}
+          />
           <ProductTagsInput
             tags={tags}
             onChange={(newTags) => setValue("tags", newTags)}

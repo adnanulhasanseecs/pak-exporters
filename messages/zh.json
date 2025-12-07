@@ -1,0 +1,233 @@
+{
+  "common": {
+    "appName": "巴基斯坦出口商",
+    "tagline": "巴基斯坦首个出口市场",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "view": "查看",
+    "search": "搜索",
+    "filter": "筛选",
+    "clear": "清除",
+    "apply": "应用",
+    "submit": "提交",
+    "back": "返回",
+    "next": "下一步",
+    "previous": "上一步",
+    "close": "关闭",
+    "open": "打开",
+    "yes": "是",
+    "no": "否",
+    "confirm": "确认"
+  },
+  "nav": {
+    "home": "首页",
+    "categories": "分类",
+    "products": "产品",
+    "companies": "查找供应商",
+    "rfq": "询价",
+    "blog": "博客",
+    "about": "关于",
+    "contact": "联系",
+    "login": "登录",
+    "register": "注册",
+    "dashboard": "仪表板",
+    "logout": "登出"
+  },
+  "home": {
+    "hero": {
+      "title": "与巴基斯坦出口商联系",
+      "subtitle": "巴基斯坦领先的B2B市场，连接出口商与全球买家",
+      "cta": "开始",
+      "ctaSecondary": "浏览产品"
+    },
+    "stats": {
+      "exporters": "出口商",
+      "products": "产品",
+      "categories": "分类",
+      "countries": "服务国家"
+    },
+    "features": {
+      "verified": "认证供应商",
+      "global": "全球覆盖",
+      "secure": "安全交易",
+      "support": "24/7支持"
+    },
+    "categories": {
+      "title": "按分类浏览",
+      "subtitle": "探索我们广泛的产品分类",
+      "viewCategory": "查看所有分类"
+    },
+    "products": {
+      "title": "特色产品",
+      "subtitle": "发现来自巴基斯坦出口商的优质产品",
+      "viewDetails": "查看所有产品"
+    }
+  },
+  "categories": {
+    "title": "浏览分类",
+    "subtitle": "探索巴基斯坦出口商平台上的所有产品分类",
+    "allCategories": "所有分类",
+    "productCount": "{count} 产品",
+    "viewCategory": "查看分类"
+  },
+  "products": {
+    "title": "产品",
+    "subtitle": "浏览来自巴基斯坦出口商的产品",
+    "noProducts": "未找到产品",
+    "price": "价格",
+    "minOrder": "最小订单",
+    "viewDetails": "查看详情",
+    "contactSupplier": "联系供应商",
+    "addToInquiry": "添加到询价"
+  },
+  "companies": {
+    "title": "查找供应商",
+    "subtitle": "与经过验证的巴基斯坦出口商和制造商联系",
+    "verified": "已验证",
+    "goldSupplier": "金牌供应商",
+    "products": "产品",
+    "viewProfile": "查看资料",
+    "contact": "联系",
+    "location": "位置"
+  },
+  "company": {
+    "title": "公司资料",
+    "about": "关于",
+    "products": "产品",
+    "contact": "联系信息",
+    "location": "位置",
+    "verified": "认证供应商",
+    "trustScore": "信任评分",
+    "yearEstablished": "成立",
+    "employees": "员工",
+    "website": "网站",
+    "email": "电子邮件",
+    "phone": "电话"
+  },
+  "rfq": {
+    "title": "询价请求",
+    "subtitle": "提交您的RFQ并从多个供应商获得报价",
+    "form": {
+      "title": "RFQ标题",
+      "description": "描述",
+      "category": "分类",
+      "quantity": "数量",
+      "budget": "预算",
+      "deadline": "截止日期",
+      "submit": "提交RFQ"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "登录",
+      "email": "电子邮件",
+      "password": "密码",
+      "rememberMe": "记住我",
+      "forgotPassword": "忘记密码？",
+      "noAccount": "没有账户？",
+      "signUp": "注册"
+    },
+    "register": {
+      "title": "创建账户",
+      "name": "姓名",
+      "email": "电子邮件",
+      "password": "密码",
+      "confirmPassword": "确认密码",
+      "role": "我是",
+      "buyer": "买家",
+      "supplier": "供应商",
+      "agreeTerms": "我同意条款和条件",
+      "haveAccount": "已有账户？",
+      "signIn": "登录"
+    },
+    "forgotPassword": {
+      "title": "忘记密码",
+      "subtitle": "输入您的电子邮件以重置密码",
+      "email": "电子邮件",
+      "submit": "发送重置链接"
+    }
+  },
+  "dashboard": {
+    "title": "仪表板",
+    "overview": "概览",
+    "products": "产品",
+    "companies": "公司",
+    "rfq": "RFQ",
+    "orders": "订单",
+    "analytics": "分析",
+    "settings": "设置",
+    "notifications": "通知"
+  },
+  "footer": {
+    "about": "关于",
+    "quickLinks": "快速链接",
+    "categories": "分类",
+    "products": "产品",
+    "suppliers": "供应商",
+    "rfq": "RFQ",
+    "blog": "博客",
+    "support": "支持",
+    "help": "帮助中心",
+    "contact": "联系我们",
+    "faq": "常见问题",
+    "legal": "法律",
+    "terms": "服务条款",
+    "privacy": "隐私政策",
+    "copyright": "© {year} 巴基斯坦出口商。保留所有权利。"
+  },
+  "errors": {
+    "404": {
+      "title": "页面未找到",
+      "message": "您要查找的页面不存在。",
+      "backHome": "返回首页"
+    },
+    "500": {
+      "title": "服务器错误",
+      "message": "出了点问题。请稍后再试。",
+      "retry": "重试"
+    },
+    "generic": "发生错误。请重试。"
+  },
+  "validation": {
+    "required": "此字段为必填项",
+    "email": "请输入有效的电子邮件地址",
+    "minLength": "至少 {min} 个字符",
+    "maxLength": "最多 {max} 个字符",
+    "passwordMatch": "密码不匹配"
+  },
+  "blog": {
+    "title": "出口洞察与指南",
+    "subtitle": "了解如何与巴基斯坦出口商合作，了解会员等级，并发展您的全球贸易业务。",
+    "readArticle": "阅读文章",
+    "minRead": "{minutes} 分钟阅读",
+    "noPosts": "此类别中未找到帖子。",
+    "viewAllPosts": "查看所有帖子",
+    "posts": "帖子",
+    "post": "帖子",
+    "categories": {
+      "all": "所有帖子",
+      "gettingStarted": "入门指南",
+      "gettingStartedDescription": "新出口商的指南",
+      "successStories": "成功案例",
+      "successStoriesDescription": "出口商的真实成果",
+      "features": "功能与平台",
+      "featuresDescription": "平台功能和指南",
+      "membership": "会员",
+      "membershipDescription": "会员等级和定价",
+      "tips": "技巧与最佳实践",
+      "tipsDescription": "成功技巧",
+      "faq": "常见问题",
+      "faqDescription": "常见问题",
+      "challenges": "挑战与解决方案",
+      "challengesDescription": "常见挑战和解决方案",
+      "introduction": "介绍",
+      "introductionDescription": "关于巴基斯坦出口商"
+    }
+  }
+}
+

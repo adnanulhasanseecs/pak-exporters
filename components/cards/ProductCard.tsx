@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useRouter } from "@/i18n/routing";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,12 +9,14 @@ import { ROUTES } from "@/lib/constants";
 import { IMAGE_PLACEHOLDER } from "@/lib/constants";
 import type { ProductListItem } from "@/types/product";
 import { Verified, Award, TrendingUp, Star, Shield } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface ProductCardProps {
   product: ProductListItem;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const t = useTranslations();
   const router = useRouter();
 
   const handleCompanyClick = (e: React.MouseEvent) => {
@@ -52,19 +53,19 @@ export function ProductCard({ product }: ProductCardProps) {
                 {product.company.membershipTier === "platinum" && (
                   <Badge variant="default" className="bg-gray-600">
                     <Star className="h-3 w-3 mr-1" />
-                    Platinum
+                    {t("products.membershipTiers.platinum")}
                   </Badge>
                 )}
                 {product.company.membershipTier === "gold" && (
                   <Badge variant="default" className="bg-yellow-500">
                     <Award className="h-3 w-3 mr-1" />
-                    Gold
+                    {t("products.membershipTiers.gold")}
                   </Badge>
                 )}
                 {product.company.membershipTier === "silver" && (
                   <Badge variant="default" className="bg-slate-400">
                     <Shield className="h-3 w-3 mr-1" />
-                    Silver
+                    {t("products.membershipTiers.silver")}
                   </Badge>
                 )}
               </div>
@@ -73,7 +74,7 @@ export function ProductCard({ product }: ProductCardProps) {
               <div className="absolute top-2 right-2">
                 <Badge variant="default" className="bg-yellow-500">
                   <Award className="h-3 w-3 mr-1" />
-                  Gold
+                  {t("products.membershipTiers.gold")}
                 </Badge>
               </div>
             )}
@@ -93,7 +94,7 @@ export function ProductCard({ product }: ProductCardProps) {
               <div className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 mb-2">
                 <TrendingUp className="h-3 w-3" />
                 <span className="font-medium">
-                  {product.salesData.soldLast7Days.toLocaleString()} sold in last 7 days
+                  {t("products.soldLast7Days", { count: product.salesData.soldLast7Days.toLocaleString() })}
                 </span>
               </div>
             )}
@@ -105,7 +106,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   </span>
                   {product.price.minOrderQuantity && (
                     <p className="text-xs text-muted-foreground">
-                      Min. Order: {product.price.minOrderQuantity}
+                      {t("products.minOrder")}: {product.price.minOrderQuantity}
                     </p>
                   )}
                 </div>

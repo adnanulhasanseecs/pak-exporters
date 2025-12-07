@@ -1,9 +1,11 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { ROUTES, APP_CONFIG } from "@/lib/constants";
 import { KeyboardShortcuts } from "@/components/accessibility/KeyboardShortcuts";
+import { useTranslations } from "next-intl";
 
 export function Footer() {
+  const t = useTranslations();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -31,20 +33,20 @@ export function Footer() {
               </div>
             </Link>
             <p className="text-sm text-muted-foreground">
-              Pakistan&apos;s First Export Marketplace. Connecting exporters with global buyers since 2019.
+              {t("footer.description")}
             </p>
           </div>
 
           {/* Quick Links */}
           <nav aria-label="Quick links">
-            <h2 className="font-semibold mb-4 text-base">Quick Links</h2>
+            <h2 className="font-semibold mb-4 text-base">{t("footer.quickLinks")}</h2>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
                   href={ROUTES.categories}
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Browse Categories
+                  {t("footer.browseCategories")}
                 </Link>
               </li>
               <li>
@@ -52,7 +54,7 @@ export function Footer() {
                   href={ROUTES.companies}
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Find Suppliers
+                  {t("footer.findSuppliers")}
                 </Link>
               </li>
               <li>
@@ -60,7 +62,15 @@ export function Footer() {
                   href={ROUTES.rfq}
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Submit RFQ
+                  {t("footer.submitRfq")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={ROUTES.blog}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {t("footer.blog")}
                 </Link>
               </li>
               <li>
@@ -68,7 +78,7 @@ export function Footer() {
                   href={ROUTES.membership}
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Membership Tiers
+                  {t("footer.membershipTiers")}
                 </Link>
               </li>
             </ul>
@@ -76,14 +86,14 @@ export function Footer() {
 
           {/* Resources */}
           <nav aria-label="Resources">
-            <h2 className="font-semibold mb-4 text-base">Resources</h2>
+            <h2 className="font-semibold mb-4 text-base">{t("footer.support")}</h2>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
                   href={ROUTES.about}
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  About Us
+                  {t("footer.aboutUs")}
                 </Link>
               </li>
               <li>
@@ -91,7 +101,7 @@ export function Footer() {
                   href={ROUTES.contact}
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Contact Us
+                  {t("footer.contactUs")}
                 </Link>
               </li>
               <li>
@@ -99,7 +109,7 @@ export function Footer() {
                   href={ROUTES.faq}
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  FAQ
+                  {t("footer.faq")}
                 </Link>
               </li>
               <li>
@@ -107,7 +117,7 @@ export function Footer() {
                   href={ROUTES.terms}
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Terms of Service
+                  {t("footer.terms")}
                 </Link>
               </li>
               <li>
@@ -115,7 +125,7 @@ export function Footer() {
                   href={ROUTES.privacy}
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Privacy Policy
+                  {t("footer.privacy")}
                 </Link>
               </li>
             </ul>
@@ -123,12 +133,12 @@ export function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h2 className="font-semibold mb-4 text-base">Contact Info</h2>
+            <h2 className="font-semibold mb-4 text-base">{t("footer.contactInfo")}</h2>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>Email: {APP_CONFIG.contact.email}</li>
-              <li>Phone: {APP_CONFIG.contact.phone}</li>
-              <li>Address: {APP_CONFIG.contact.address}</li>
-              <li>Hours: {APP_CONFIG.contact.workingHours}</li>
+              <li>{t("footer.email")}: {APP_CONFIG.contact.email}</li>
+              <li>{t("footer.phone")}: {APP_CONFIG.contact.phone}</li>
+              <li>{t("footer.address")}: {APP_CONFIG.contact.address}</li>
+              <li>{t("footer.hours")}: {APP_CONFIG.contact.workingHours}</li>
             </ul>
           </div>
         </div>
@@ -136,7 +146,7 @@ export function Footer() {
         <div className="mt-8 pt-8 border-t">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © {currentYear} PAK EXPORTERS REGISTERED TRADEMARK. All rights reserved.
+              {t("footer.trademark", { year: currentYear })}
             </p>
             <div className="flex items-center gap-4">
               <KeyboardShortcuts />
@@ -144,23 +154,23 @@ export function Footer() {
                 <Link
                   href="/linkedin"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label="Visit our LinkedIn page"
+                  aria-label={`Visit our ${t("footer.linkedin")} page`}
                 >
-                  LinkedIn
+                  {t("footer.linkedin")}
                 </Link>
                 <Link
                   href="/twitter"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label="Visit our Twitter page"
+                  aria-label={`Visit our ${t("footer.twitter")} page`}
                 >
-                  Twitter
+                  {t("footer.twitter")}
                 </Link>
                 <Link
                   href="/facebook"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label="Visit our Facebook page"
+                  aria-label={`Visit our ${t("footer.facebook")} page`}
                 >
-                  Facebook
+                  {t("footer.facebook")}
                 </Link>
               </div>
             </div>

@@ -1,6 +1,6 @@
 /**
  * Membership application API service
- * Mock implementation - ready for backend integration
+ * Real implementation using Next.js API routes
  */
 
 import type {
@@ -8,12 +8,7 @@ import type {
   MembershipApplicationListResponse,
 } from "@/types/membership";
 import type { PaginationParams } from "@/types/api";
-import membershipApplicationsData from "@/services/mocks/membership-applications.json";
-
-/**
- * Mock delay to simulate API call
- */
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+import { API_ENDPOINTS } from "@/lib/constants";
 
 /**
  * Fetch all membership applications with filters and pagination
@@ -22,53 +17,39 @@ export async function fetchMembershipApplications(
   filters?: { status?: "pending" | "approved" | "rejected" },
   pagination?: PaginationParams
 ): Promise<MembershipApplicationListResponse> {
-  await delay(300);
-
-  // Load from localStorage if available (client-side)
-  if (typeof window !== "undefined") {
-    try {
-      const stored = localStorage.getItem("membership-applications");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        // Update the in-memory data
-        (membershipApplicationsData as any[]).length = 0;
-        (membershipApplicationsData as any[]).push(...parsed);
-      }
-    } catch (error) {
-      console.error("Error loading from localStorage:", error);
-    }
-  }
-
-  let filteredApplications = [...(membershipApplicationsData as MembershipApplication[])];
-
-  // Apply filters
+  const params = new URLSearchParams();
   if (filters?.status) {
-    filteredApplications = filteredApplications.filter(
-      (app) => app.status === filters.status
-    );
+    params.append("status", filters.status);
+  }
+  if (pagination?.page) {
+    params.append("page", pagination.page.toString());
+  }
+  if (pagination?.pageSize) {
+    params.append("pageSize", pagination.pageSize.toString());
   }
 
-  // Sort by submitted date (newest first)
-  filteredApplications.sort(
-    (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
+  const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(
+    `${API_ENDPOINTS.membership || "/api/membership"}?${params.toString()}`,
+    {
+      method: "GET",
+      headers,
+    }
   );
 
-  // Pagination
-  const page = pagination?.page || 1;
-  const pageSize = pagination?.pageSize || 20;
-  const startIndex = (page - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const paginatedApplications = filteredApplications.slice(startIndex, endIndex);
-  const total = filteredApplications.length;
-  const totalPages = Math.ceil(total / pageSize);
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "Failed to fetch membership applications");
+  }
 
-  return {
-    applications: paginatedApplications,
-    total,
-    page,
-    pageSize,
-    totalPages,
-  };
+  return response.json();
 }
 
 /**
@@ -77,17 +58,28 @@ export async function fetchMembershipApplications(
 export async function fetchMembershipApplication(
   id: string
 ): Promise<MembershipApplication> {
-  await delay(200);
-
-  const application = (membershipApplicationsData as MembershipApplication[]).find(
-    (app) => app.id === id
-  );
-
-  if (!application) {
-    throw new Error(`Membership application with id ${id} not found`);
+  const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
-  return application;
+  const response = await fetch(
+    `${API_ENDPOINTS.membership || "/api/membership"}/${id}`,
+    {
+      method: "GET",
+      headers,
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || `Failed to fetch membership application with id ${id}`);
+  }
+
+  return response.json();
 }
 
 /**
@@ -102,33 +94,29 @@ export async function createMembershipApplication(
     "id" | "userId" | "userEmail" | "userName" | "status" | "submittedAt"
   >
 ): Promise<MembershipApplication> {
-  await delay(300);
-
-  const newApplication: MembershipApplication = {
-    id: `app-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-    userId,
-    userEmail,
-    userName,
-    status: "pending",
-    submittedAt: new Date().toISOString(),
-    ...applicationData,
+  const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
   };
-
-  (membershipApplicationsData as MembershipApplication[]).push(newApplication);
-
-  // Save to localStorage for persistence across page refreshes
-  if (typeof window !== "undefined") {
-    try {
-      const existing = localStorage.getItem("membership-applications");
-      const applications = existing ? JSON.parse(existing) : [];
-      applications.push(newApplication);
-      localStorage.setItem("membership-applications", JSON.stringify(applications));
-    } catch (error) {
-      console.error("Error saving to localStorage:", error);
-    }
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
-  return newApplication;
+  const response = await fetch(`${API_ENDPOINTS.membership || "/api/membership"}`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      companyName: applicationData.companyName,
+      ...applicationData,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "Failed to create membership application");
+  }
+
+  return response.json();
 }
 
 /**
@@ -138,32 +126,31 @@ export async function approveMembershipApplication(
   applicationId: string,
   reviewedBy: string
 ): Promise<MembershipApplication> {
-  await delay(300);
-
-  const applications = membershipApplicationsData as MembershipApplication[];
-  const application = applications.find((app) => app.id === applicationId);
-
-  if (!application) {
-    throw new Error(`Membership application with id ${applicationId} not found`);
+  const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
-  application.status = "approved";
-  application.reviewedAt = new Date().toISOString();
-  application.reviewedBy = reviewedBy;
-
-  // Update localStorage
-  if (typeof window !== "undefined") {
-    try {
-      localStorage.setItem(
-        "membership-applications",
-        JSON.stringify(applications)
-      );
-    } catch (error) {
-      console.error("Error saving to localStorage:", error);
+  const response = await fetch(
+    `${API_ENDPOINTS.membership || "/api/membership"}/${applicationId}`,
+    {
+      method: "PUT",
+      headers,
+      body: JSON.stringify({
+        status: "approved",
+      }),
     }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || `Failed to approve membership application ${applicationId}`);
   }
 
-  return application;
+  return response.json();
 }
 
 /**
@@ -174,39 +161,37 @@ export async function rejectMembershipApplication(
   reviewedBy: string,
   rejectionReason?: string
 ): Promise<MembershipApplication> {
-  await delay(300);
-
-  const applications = membershipApplicationsData as MembershipApplication[];
-  const application = applications.find((app) => app.id === applicationId);
-
-  if (!application) {
-    throw new Error(`Membership application with id ${applicationId} not found`);
+  const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
-  application.status = "rejected";
-  application.reviewedAt = new Date().toISOString();
-  application.reviewedBy = reviewedBy;
-  if (rejectionReason) {
-    application.rejectionReason = rejectionReason;
-  }
-
-  // Update localStorage
-  if (typeof window !== "undefined") {
-    try {
-      localStorage.setItem(
-        "membership-applications",
-        JSON.stringify(applications)
-      );
-    } catch (error) {
-      console.error("Error saving to localStorage:", error);
+  const response = await fetch(
+    `${API_ENDPOINTS.membership || "/api/membership"}/${applicationId}`,
+    {
+      method: "PUT",
+      headers,
+      body: JSON.stringify({
+        status: "rejected",
+        rejectionReason,
+      }),
     }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || `Failed to reject membership application ${applicationId}`);
   }
 
-  return application;
+  return response.json();
 }
 
 /**
  * Load applications from localStorage on client side
+ * @deprecated - Use fetchMembershipApplications instead
  */
 export function loadApplicationsFromStorage(): MembershipApplication[] {
   if (typeof window === "undefined") return [];
@@ -214,11 +199,7 @@ export function loadApplicationsFromStorage(): MembershipApplication[] {
   try {
     const stored = localStorage.getItem("membership-applications");
     if (stored) {
-      const parsed = JSON.parse(stored);
-      // Update the in-memory data
-      (membershipApplicationsData as any[]).length = 0;
-      (membershipApplicationsData as any[]).push(...parsed);
-      return parsed;
+      return JSON.parse(stored);
     }
   } catch (error) {
     console.error("Error loading applications from storage:", error);
@@ -226,4 +207,3 @@ export function loadApplicationsFromStorage(): MembershipApplication[] {
   
   return [];
 }
-

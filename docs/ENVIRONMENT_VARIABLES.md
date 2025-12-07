@@ -48,11 +48,11 @@ This document describes all environment variables used in the Pak-Exporters appl
 | `SMTP_PASSWORD` | SMTP password | `your-password` | No |
 | `SMTP_FROM` | Default sender email | `noreply@pak-exporters.com` | No |
 
-### Database (Future)
+### Database
 
 | Variable | Description | Example | Required |
 |----------|-------------|---------|----------|
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@host:5432/db` | No |
+| `DATABASE_URL` | Database connection string (SQLite for dev, PostgreSQL for prod) | `file:./dev.db` (dev) or `postgresql://user:pass@host:5432/db` (prod) | **Yes** |
 
 ### File Upload
 
@@ -73,7 +73,8 @@ This document describes all environment variables used in the Pak-Exporters appl
 | Variable | Description | Example | Required |
 |----------|-------------|---------|----------|
 | `SESSION_SECRET` | Secret for session encryption | Random string (min 32 chars) | No |
-| `JWT_SECRET` | Secret for JWT tokens | Random string (min 32 chars) | No |
+| `JWT_SECRET` | Secret for JWT tokens | Random string (min 32 chars) | **Yes** (Required in production) |
+| `JWT_EXPIRES_IN` | JWT token expiration time | `7d` (7 days) | No (defaults to 7d) |
 
 ## Security Best Practices
 

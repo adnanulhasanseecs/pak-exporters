@@ -18,7 +18,10 @@ import { canUploadProducts } from "@/lib/membership";
 import { useEffect, useState } from "react";
 import { fetchUserProducts } from "@/services/api/products";
 import { RecentProducts } from "./RecentProducts";
+import { AIInsightsDashboard } from "@/components/placeholders/AIInsightsDashboard";
+import { AIChatAssistant } from "@/components/placeholders/AIChatAssistant";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 // Buyer Dashboard Stats
 const buyerStats = [
@@ -87,6 +90,8 @@ const supplierStats = [
 export function DashboardContent() {
   const router = useRouter();
   const { user } = useAuthStore();
+  const t = useTranslations("dashboard");
+  const tCommon = useTranslations("common");
   const [mounted, setMounted] = useState(false);
   const [productCount, setProductCount] = useState<number | null>(null);
 
@@ -142,12 +147,12 @@ export function DashboardContent() {
     : supplierStats;
 
   const stats = isSupplier ? supplierStatsWithCount : buyerStats;
-  const dashboardTitle = isSupplier ? "Supplier Dashboard" : isBuyer ? "Buyer Dashboard" : "Dashboard";
+  const dashboardTitle = isSupplier ? t("supplierDashboard") : isBuyer ? t("buyerDashboard") : t("title");
   const dashboardDescription = isSupplier
-    ? "Manage your products and track your business performance"
+    ? t("supplierDescription")
     : isBuyer
-    ? "Find suppliers, submit RFQs, and manage your orders"
-    : "Welcome back! Here's your overview.";
+    ? t("buyerDescription")
+    : t("welcomeBack");
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-7xl">
@@ -162,15 +167,15 @@ export function DashboardContent() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold mb-1">Add Your First Product</h3>
+                <h3 className="text-lg font-semibold mb-1">{t("addFirstProduct") || "Add Your First Product"}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Start selling by adding products to your catalog
+                  {t("addFirstProductDescription") || "Start selling by adding products to your catalog"}
                 </p>
               </div>
               <Button asChild>
                 <Link href={ROUTES.dashboardProductNew}>
                   <Upload className="h-4 w-4 mr-2" />
-                  Upload Product
+                  {t("uploadProduct") || "Upload Product"}
                 </Link>
               </Button>
             </div>
@@ -199,6 +204,16 @@ export function DashboardContent() {
         })}
       </div>
 
+      {/* AI Insights Dashboard */}
+      <div className="mb-8">
+        <AIInsightsDashboard
+          insightsCount={0}
+          onViewInsights={() => {
+            // Placeholder - would navigate to full insights page
+          }}
+        />
+      </div>
+
       {/* Recent Activity or Additional Info */}
       <div>
         {isSupplier ? (
@@ -206,18 +221,29 @@ export function DashboardContent() {
         ) : (
           <Card>
             <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>Your latest actions</CardDescription>
+              <CardTitle>{t("recentActivity") || "Recent Activity"}</CardTitle>
+              <CardDescription>{t("recentActivityDescription") || "Your latest actions"}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="text-sm text-muted-foreground">
-                  No recent activity. Start by submitting an RFQ or browsing products.
+                  {t("noRecentActivity") || "No recent activity. Start by submitting an RFQ or browsing products."}
                 </div>
               </div>
             </CardContent>
           </Card>
         )}
+      </div>
+
+      {/* AI Chat Assistant (Floating) */}
+      <div className="fixed bottom-4 right-4 z-50 hidden md:block">
+        <AIChatAssistant
+          isMinimized={true}
+          onSendMessage={(message) => {
+            // Placeholder - would send message to AI
+            console.log("AI Chat message:", message);
+          }}
+        />
       </div>
     </div>
   );

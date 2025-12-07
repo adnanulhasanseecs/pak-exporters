@@ -1,19 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { Toaster } from "@/components/ui/sonner";
 import { APP_CONFIG } from "@/lib/constants";
-import { getGeoMeta, createWebsiteStructuredData } from "@/lib/seo";
-import { StructuredData } from "@/components/seo/StructuredData";
-import { PageTransition } from "@/components/layout/PageTransition";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { SkipNavigation } from "@/components/accessibility/SkipNavigation";
-import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistration";
-import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
-import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
-import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
+import { getGeoMeta } from "@/lib/seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +15,7 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
-  preload: false, // Only preload primary font
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -87,33 +76,21 @@ export const metadata: Metadata = {
   other: getGeoMeta(),
 };
 
+/**
+ * Root Layout - Contains HTML structure required by Next.js
+ * Locale-specific attributes (lang, dir) are set by app/[locale]/layout.tsx via script
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Note: lang and dir attributes will be set dynamically by LocaleHtmlAttributes
+  // in app/[locale]/layout.tsx based on the current locale
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
-      >
-        <StructuredData data={createWebsiteStructuredData()} />
-        <AnalyticsProvider>
-          <ServiceWorkerRegistration />
-          <GoogleAnalytics />
-          <SkipNavigation />
-          <ErrorBoundary>
-          <Header />
-          <main id="main-content" className="flex-1" role="main">
-            <ErrorBoundary>
-              <PageTransition>{children}</PageTransition>
-            </ErrorBoundary>
-          </main>
-          <Footer />
-          </ErrorBoundary>
-          <Toaster />
-          <PWAInstallPrompt />
-        </AnalyticsProvider>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
+        {children}
       </body>
     </html>
   );

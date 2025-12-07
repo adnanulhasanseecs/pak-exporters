@@ -1,0 +1,230 @@
+// Prisma schema for Pak-Exporters B2B Marketplace - PRODUCTION
+// This schema uses PostgreSQL for production
+// For development, use schema.prisma (SQLite)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model
+model User {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  name            String
+  password        String   // hashed password
+  role            String   // buyer, supplier, admin, publisher
+  companyId       String?
+  company         Company? @relation(fields: [companyId], references: [id])
+  avatar          String?
+  membershipStatus String? // pending, approved, rejected, null
+  membershipTier  String? // platinum, gold, silver, starter
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  rfqs            RFQ[]    // RFQs created by buyer
+  rfqResponses    RFQResponse[] // RFQ responses by supplier
+  products        Product[]
+  membershipApplications MembershipApplication[]
+  
+  @@index([email])
+  @@index([role])
+}
+
+// Category model
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  icon        String?
+  parentId    String?
+  parent      Category? @relation("CategoryTree", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryTree")
+  productCount Int      @default(0)
+  level       Int       @default(0)
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relations
+  products    Product[]
+  rfqs        RFQ[]
+  companyCategories CompanyCategory[]
+
+  @@index([slug])
+  @@index([parentId])
+}
+
+// Company/Supplier model
+model Company {
+  id              String              @id @default(cuid())
+  name            String
+  description     String
+  logo            String?
+  coverImage      String?
+  verified        Boolean             @default(false)
+  goldSupplier    Boolean             @default(false)
+  membershipTier  String?             // platinum, gold, silver, starter
+  trustScore      Int?
+  city            String
+  province        String
+  country         String              @default("Pakistan")
+  email           String              @unique
+  phone           String?
+  website         String?
+  yearEstablished Int?
+  employeeCount   String?
+  productCount    Int                 @default(0)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  // Relations
+  users           User[]
+  products        Product[]
+  companyCategories CompanyCategory[]
+
+  @@index([email])
+  @@index([verified])
+  @@index([goldSupplier])
+}
+
+// Product model
+model Product {
+  id               String    @id @default(cuid())
+  name             String
+  description      String
+  shortDescription String?
+  priceAmount      Float
+  priceCurrency    String
+  minOrderQuantity Int?
+  images           String    // JSON string of image URLs
+  status           String    @default("active") // active, inactive, pending
+
+  // Foreign keys
+  categoryId       String
+  companyId        String
+
+  // Relations
+  category         Category  @relation(fields: [categoryId], references: [id])
+  company          Company   @relation(fields: [companyId], references: [id])
+
+  specifications   String?   // JSON string of key-value pairs
+  tags             String?   // JSON string of tags
+  salesData        String?   // JSON string of sales data
+
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([categoryId])
+  @@index([companyId])
+  @@index([status])
+  @@index([name])
+}
+
+// Junction table for Company and Category (many-to-many)
+model CompanyCategory {
+  company    Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId  String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String
+
+  @@id([companyId, categoryId])
+  @@index([companyId])
+  @@index([categoryId])
+}
+
+// RFQ (Request for Quotation) model
+model RFQ {
+  id            String        @id @default(cuid())
+  title         String
+  description   String
+  quantityMin   Int?
+  quantityMax   Int?
+  quantityUnit  String?
+  budgetMin     Float?
+  budgetMax     Float?
+  budgetCurrency String?
+  specifications String?      // JSON string of key-value pairs
+  attachments   String?       // JSON string of attachment URLs
+  status        String        @default("open") // open, closed, awarded, cancelled
+  deadline      DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Foreign keys
+  categoryId    String
+  buyerId       String
+
+  // Relations
+  category      Category      @relation(fields: [categoryId], references: [id])
+  buyer         User          @relation("BuyerRFQs", fields: [buyerId], references: [id])
+  responses     RFQResponse[]
+
+  @@index([categoryId])
+  @@index([buyerId])
+  @@index([status])
+}
+
+// RFQ Response model
+model RFQResponse {
+  id            String    @id @default(cuid())
+  message       String?
+  priceAmount   Float
+  priceCurrency String
+  status        String    @default("pending") // pending, accepted, rejected
+  createdAt     DateTime  @default(now())
+
+  // Foreign keys
+  rfqId         String
+  supplierId    String
+
+  // Relations
+  rfq           RFQ       @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+  supplier      User      @relation("SupplierRFQResponses", fields: [supplierId], references: [id])
+
+  @@index([rfqId])
+  @@index([supplierId])
+  @@index([status])
+}
+
+// Blog/News model
+model BlogPost {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String
+  excerpt     String?
+  author      String?
+  image       String?
+  published   Boolean  @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([slug])
+  @@index([published])
+  @@index([publishedAt])
+}
+
+// Membership Application model
+model MembershipApplication {
+  id          String    @id @default(cuid())
+  userId      String    @unique
+  user        User      @relation(fields: [userId], references: [id])
+  companyName String
+  status      String    @default("pending") // pending, approved, rejected
+  appliedAt   DateTime  @default(now())
+  reviewedAt  DateTime?
+  reviewerId  String?   // ID of admin who reviewed it
+
+  @@index([userId])
+  @@index([status])
+}
+
