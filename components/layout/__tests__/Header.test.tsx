@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { Header } from "../Header";
 
 // Mock next/navigation
@@ -66,7 +65,7 @@ describe("Header", () => {
   it("should render user profile when authenticated", async () => {
     // Re-import and re-mock useAuthStore
     const authModule = await import("@/store/useAuthStore");
-    vi.mocked(authModule).useAuthStore = vi.fn(() => ({
+    (authModule as any).useAuthStore = vi.fn(() => ({
       user: {
         id: "1",
         name: "Test User",

@@ -88,7 +88,7 @@ describe("RecentProducts", () => {
 
   it("should not render for non-supplier users", async () => {
     // Re-mock useAuthStore to return buyer user
-    vi.mocked(await import("@/store/useAuthStore")).useAuthStore = vi.fn(() => ({
+    ((await import("@/store/useAuthStore")) as any).useAuthStore = vi.fn(() => ({
       user: { id: "1", role: "buyer" },
     }));
 

@@ -1,6 +1,18 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import Home from "../../page";
+import Home from "../../[locale]/page";
+
+// Mock next-intl
+vi.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
+}));
+
+// Mock i18n routing
+vi.mock("@/i18n/routing", () => ({
+  Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
+    <a href={href}>{children}</a>
+  ),
+}));
 
 // Mock the components that require data fetching
 vi.mock("@/components/layout/HeroCarousel", () => ({

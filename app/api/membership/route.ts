@@ -7,7 +7,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole, requireAuth } from "@/lib/middleware-auth";
-import type { PaginationParams } from "@/types/api";
 
 export async function GET(request: NextRequest) {
   try {
@@ -51,7 +50,7 @@ export async function GET(request: NextRequest) {
         status: app.status,
         submittedAt: app.createdAt.toISOString(),
         reviewedAt: app.reviewedAt?.toISOString() || undefined,
-        reviewedBy: app.reviewerId || undefined,
+        reviewedBy: app.reviewedBy || undefined,
       })),
       total,
       page,
@@ -79,7 +78,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     // Check if user already has an application
-    const existingApp = await prisma.membershipApplication.findUnique({
+    const existingApp = await prisma.membershipApplication.findFirst({
       where: { userId: user.userId },
     });
 
@@ -95,6 +94,8 @@ export async function POST(request: NextRequest) {
       data: {
         userId: user.userId,
         companyName: body.companyName,
+        companyDescription: body.companyDescription || "",
+        requestedTier: body.requestedTier || "starter",
         status: "pending",
       },
       include: {

@@ -26,24 +26,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: path === ROUTES.home ? 1 : 0.8,
   }));
 
-  const [{ products }, { companies }] = await Promise.all([
-    fetchProducts({}),
-    fetchCompanies(),
-  ]);
+  // Fetch products and companies with error handling
+  // If API calls fail, return only static routes to prevent build errors
+  let productEntries: MetadataRoute.Sitemap = [];
+  let companyEntries: MetadataRoute.Sitemap = [];
 
-  const productEntries: MetadataRoute.Sitemap = products.map((product) => ({
-    url: `${baseUrl}${ROUTES.product(product.id)}`,
-    lastModified: new Date(product.updatedAt || product.createdAt),
-    changeFrequency: "weekly",
-    priority: 0.8,
-  }));
+  try {
+    const [{ products }, { companies }] = await Promise.all([
+      fetchProducts({}, { page: 1, pageSize: 1000 }).catch(() => ({ products: [] })),
+      fetchCompanies(undefined, { page: 1, pageSize: 1000 }).catch(() => ({ companies: [] })),
+    ]);
 
-  const companyEntries: MetadataRoute.Sitemap = companies.map((company) => ({
-    url: `${baseUrl}${ROUTES.company(company.id)}`,
-    lastModified: new Date(company.updatedAt || company.createdAt),
-    changeFrequency: "weekly",
-    priority: 0.7,
-  }));
+    productEntries = products.map((product) => ({
+      url: `${baseUrl}${ROUTES.product(product.id)}`,
+      lastModified: new Date(product.updatedAt || product.createdAt),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    }));
+
+    companyEntries = companies.map((company) => ({
+      url: `${baseUrl}${ROUTES.company(company.id)}`,
+      lastModified: new Date(company.updatedAt || company.createdAt),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    }));
+  } catch (error) {
+    // Log error but don't fail the build
+    console.warn("Sitemap generation: Failed to fetch dynamic content, using static routes only", error);
+  }
 
   return [...staticRoutes, ...productEntries, ...companyEntries];
 }

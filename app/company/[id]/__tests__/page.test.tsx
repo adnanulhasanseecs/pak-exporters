@@ -1,8 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import CompanyPage from "../page";
+import CompanyPage from "../../../[locale]/company/[id]/page";
 import { fetchCompany } from "@/services/api/companies";
 import { fetchProducts } from "@/services/api/products";
+
+// Mock next-intl
+vi.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
+  getTranslations: async () => (key: string) => key,
+}));
 
 // Mock the API services
 vi.mock("@/services/api/companies", () => ({

@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { ROUTES } from "@/lib/constants";
-import { Save, Bell, Lock, User, Mail, Globe } from "lucide-react";
+import { Save, Bell, Lock, User, Globe } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function SettingsPage() {

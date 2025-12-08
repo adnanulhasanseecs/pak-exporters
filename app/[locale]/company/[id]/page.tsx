@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { Link } from "@/i18n/routing";
 import { fetchCompany } from "@/services/api/companies";
 import { fetchProducts } from "@/services/api/products";
 import { Button } from "@/components/ui/button";

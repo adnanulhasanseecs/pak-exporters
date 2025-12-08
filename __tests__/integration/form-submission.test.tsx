@@ -1,11 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { createRFQ } from "@/services/api/rfq";
 import { createCompany } from "@/services/api/companies";
-import { createProduct } from "@/services/api/products";
 
 // Mock dependencies
 const mockPush = vi.fn();
@@ -90,7 +88,7 @@ describe("Form Submission Integration", () => {
         }
 
         setErrors({});
-        const rfq = await createRFQ("buyer-1", "Test Buyer", "buyer@test.com", undefined, {
+        await createRFQ("buyer-1", "Test Buyer", "buyer@test.com", undefined, {
           title: formData.title,
           description: formData.description,
           categoryId: formData.categoryId,
@@ -217,7 +215,7 @@ describe("Form Submission Integration", () => {
 
       const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const company = await createCompany({
+        await createCompany({
           name: formData.name,
           description: formData.description,
           email: formData.email,

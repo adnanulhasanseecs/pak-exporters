@@ -27,8 +27,6 @@ vi.mock("@/services/api/products", () => ({
 }));
 
 describe("DeleteProductButton", () => {
-  const mockOnChange = vi.fn();
-
   beforeEach(() => {
     vi.clearAllMocks();
   });

@@ -3,7 +3,6 @@
  * Prevents brute force attacks by locking accounts after failed login attempts
  */
 
-import { prisma } from "./prisma";
 
 export interface LockoutStatus {
   isLocked: boolean;
@@ -13,7 +12,8 @@ export interface LockoutStatus {
 }
 
 const MAX_FAILED_ATTEMPTS = 5;
-const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
+// Lockout duration: 15 minutes (reserved for future use)
+// const LOCKOUT_DURATION_MS = 15 * 60 * 1000;
 
 /**
  * Track failed login attempt
@@ -46,7 +46,7 @@ export async function trackFailedLoginAttempt(
 /**
  * Get lockout status for an email
  */
-export async function getLockoutStatus(email: string): Promise<LockoutStatus> {
+export async function getLockoutStatus(_email: string): Promise<LockoutStatus> {
   // In production, check database for lockout status
   // For now, return not locked (placeholder)
   // TODO: Implement proper database-backed lockout tracking
@@ -60,7 +60,7 @@ export async function getLockoutStatus(email: string): Promise<LockoutStatus> {
 /**
  * Reset failed login attempts (call on successful login)
  */
-export async function resetFailedLoginAttempts(email: string): Promise<void> {
+export async function resetFailedLoginAttempts(_email: string): Promise<void> {
   // In production, clear failed attempts from database
   // TODO: Implement proper reset mechanism
 }

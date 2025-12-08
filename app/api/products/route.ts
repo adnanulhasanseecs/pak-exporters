@@ -164,6 +164,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Search filter
+    // PostgreSQL supports case-insensitive mode
     if (filters.search) {
       where.OR = [
         { name: { contains: filters.search, mode: "insensitive" } },

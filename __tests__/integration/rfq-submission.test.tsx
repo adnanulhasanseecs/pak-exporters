@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { createRFQ, fetchRFQs } from "@/services/api/rfq";
 import { fetchCategories } from "@/services/api/categories";
@@ -36,7 +35,7 @@ const mockBuyerUser = {
 };
 
 const mockCategories = [
-  { id: "1", name: "Textiles & Apparel", slug: "textiles-apparel" },
+  { id: "1", name: "Textiles & Apparel", slug: "textiles-apparel", productCount: 0, level: 1, order: 1 },
 ];
 
 describe("RFQ Submission Integration", () => {
@@ -70,7 +69,7 @@ describe("RFQ Submission Integration", () => {
       },
       quantity: { min: 1000, max: 1200, unit: "pieces" },
       budget: { min: 8000, max: 12000, currency: "USD" },
-      status: "open",
+      status: "open" as const,
       responses: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -97,7 +96,7 @@ describe("RFQ Submission Integration", () => {
       const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        const rfq = await createRFQ(
+        await createRFQ(
           mockBuyerUser.id,
           mockBuyerUser.name,
           mockBuyerUser.email,

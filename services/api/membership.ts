@@ -86,9 +86,9 @@ export async function fetchMembershipApplication(
  * Create a new membership application
  */
 export async function createMembershipApplication(
-  userId: string,
-  userEmail: string,
-  userName: string,
+  _userId: string,
+  _userEmail: string,
+  _userName: string,
   applicationData: Omit<
     MembershipApplication,
     "id" | "userId" | "userEmail" | "userName" | "status" | "submittedAt"
@@ -106,7 +106,6 @@ export async function createMembershipApplication(
     method: "POST",
     headers,
     body: JSON.stringify({
-      companyName: applicationData.companyName,
       ...applicationData,
     }),
   });
@@ -124,7 +123,7 @@ export async function createMembershipApplication(
  */
 export async function approveMembershipApplication(
   applicationId: string,
-  reviewedBy: string
+  _reviewedBy: string
 ): Promise<MembershipApplication> {
   const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
   const headers: HeadersInit = {
@@ -158,7 +157,7 @@ export async function approveMembershipApplication(
  */
 export async function rejectMembershipApplication(
   applicationId: string,
-  reviewedBy: string,
+  _reviewedBy: string,
   rejectionReason?: string
 ): Promise<MembershipApplication> {
   const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;

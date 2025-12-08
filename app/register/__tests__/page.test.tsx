@@ -1,12 +1,20 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useRouter } from "next/navigation";
-import RegisterPage from "../page";
+import { useRouter } from "@/i18n/routing";
+import RegisterPage from "../../[locale]/register/page";
 
-// Mock next/navigation
-vi.mock("next/navigation", () => ({
+// Mock i18n routing
+vi.mock("@/i18n/routing", () => ({
   useRouter: vi.fn(),
+  Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
+    <a href={href}>{children}</a>
+  ),
+}));
+
+// Mock next-intl
+vi.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
 }));
 
 // Mock sonner
@@ -85,7 +93,7 @@ describe("Register Page", () => {
     render(<RegisterPage />);
     const loginLink = screen.getByRole("link", { name: /sign in/i });
     expect(loginLink).toBeInTheDocument();
-    expect(loginLink).toHaveAttribute("href", "/login");
+    expect(loginLink).toHaveAttribute("href", expect.stringContaining("login"));
   });
 
   it("should update form fields", async () => {

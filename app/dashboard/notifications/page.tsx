@@ -26,15 +26,25 @@ import {
   markNotificationAsRead,
   markAllNotificationsAsRead,
   deleteNotification as deleteNotificationService,
-  getUnreadCount,
   type Notification as ServiceNotification,
 } from "@/services/notification/notification";
+
+// Local notification type for the page
+type PageNotification = {
+  id: string;
+  type: "order" | "rfq" | "message" | "system";
+  title: string;
+  message: string;
+  read: boolean;
+  timestamp: string;
+  actionUrl?: string;
+};
 
 export default function NotificationsPage() {
   const router = useRouter();
   const { user } = useAuthStore();
   const [loading, setLoading] = useState(true);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<PageNotification[]>([]);
   const [filter, setFilter] = useState<"all" | "unread" | "read">("all");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -56,7 +66,7 @@ export default function NotificationsPage() {
       const serviceNotifications: ServiceNotification[] = await getUserNotifications(user.id);
       
       // Convert service notifications to page format
-      const pageNotifications: Notification[] = serviceNotifications.map((notif) => ({
+      const pageNotifications: PageNotification[] = serviceNotifications.map((notif) => ({
         id: notif.id,
         type: mapNotificationType(notif.type),
         title: notif.title,
@@ -68,7 +78,7 @@ export default function NotificationsPage() {
 
       // If no notifications from service, use mock data for demo
       if (pageNotifications.length === 0) {
-        const mockNotifications: Notification[] = [
+        const mockNotifications: PageNotification[] = [
           {
             id: "1",
             type: "order",
@@ -100,7 +110,7 @@ export default function NotificationsPage() {
     }
   };
 
-  const mapNotificationType = (type: string): Notification["type"] => {
+  const mapNotificationType = (type: string): PageNotification["type"] => {
     switch (type) {
       case "order_update":
         return "order";
@@ -168,13 +178,13 @@ export default function NotificationsPage() {
     );
   };
 
-  const getNotificationIcon = (type: Notification["type"]) => {
+  const getNotificationIcon = (type: PageNotification["type"]) => {
     switch (type) {
       case "order":
         return <ShoppingCart className="h-5 w-5" />;
       case "message":
         return <MessageSquare className="h-5 w-5" />;
-      case "product":
+      case "system":
         return <Package className="h-5 w-5" />;
       case "rfq":
         return <Bell className="h-5 w-5" />;
@@ -183,13 +193,13 @@ export default function NotificationsPage() {
     }
   };
 
-  const getNotificationColor = (type: Notification["type"]) => {
+  const getNotificationColor = (type: PageNotification["type"]) => {
     switch (type) {
       case "order":
         return "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400";
       case "message":
         return "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400";
-      case "product":
+      case "system":
         return "bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-400";
       case "rfq":
         return "bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-400";

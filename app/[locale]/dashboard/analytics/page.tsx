@@ -19,7 +19,6 @@ import {
   Download,
 } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { useTranslations } from "next-intl";
 
 interface AnalyticsData {
   overview: {
@@ -49,8 +48,6 @@ interface AnalyticsData {
 export default function AnalyticsPage() {
   const router = useRouter();
   const { user } = useAuthStore();
-  const t = useTranslations("dashboard");
-  const tCommon = useTranslations("common");
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d" | "all">("30d");

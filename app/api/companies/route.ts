@@ -115,6 +115,7 @@ export async function GET(request: NextRequest) {
 
     // Search filter
     if (filters.search) {
+      // PostgreSQL supports case-insensitive mode
       where.OR = [
         { name: { contains: filters.search, mode: "insensitive" } },
         { description: { contains: filters.search, mode: "insensitive" } },
@@ -123,6 +124,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Location filters
+    // PostgreSQL supports case-insensitive mode
     if (filters.location?.city) {
       where.city = { contains: filters.location.city, mode: "insensitive" };
     }

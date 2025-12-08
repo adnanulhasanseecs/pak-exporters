@@ -91,7 +91,6 @@ export function DashboardContent() {
   const router = useRouter();
   const { user } = useAuthStore();
   const t = useTranslations("dashboard");
-  const tCommon = useTranslations("common");
   const [mounted, setMounted] = useState(false);
   const [productCount, setProductCount] = useState<number | null>(null);
 

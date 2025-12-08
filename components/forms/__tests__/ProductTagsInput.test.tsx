@@ -89,10 +89,9 @@ describe("ProductTagsInput", () => {
   });
 
   it("should enforce max tags limit", async () => {
-    const user = userEvent.setup();
     const tags = Array(10).fill("tag").map((t, i) => `${t}-${i}`);
 
-    render(<ProductTagsInput tags={tags} onChange={mockOnChange} maxTags={10} />);
+    render(<ProductTagsInput tags={tags} onChange={vi.fn()} maxTags={10} />);
 
     // When max tags reached, input should not be visible
     expect(screen.queryByPlaceholderText(/add tags/i)).not.toBeInTheDocument();

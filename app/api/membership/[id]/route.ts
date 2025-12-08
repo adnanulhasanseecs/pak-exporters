@@ -38,7 +38,7 @@ export async function GET(
       status: application.status,
       submittedAt: application.createdAt.toISOString(),
       reviewedAt: application.reviewedAt?.toISOString() || undefined,
-      reviewedBy: application.reviewerId || undefined,
+      reviewedBy: application.reviewedBy || undefined,
     });
   } catch (error: any) {
     console.error("Error fetching membership application:", error);
@@ -92,7 +92,7 @@ export async function PUT(
       data: {
         status,
         reviewedAt: new Date(),
-        reviewerId: user.userId,
+        reviewedBy: user.userId,
       },
       include: {
         user: true,
@@ -118,7 +118,7 @@ export async function PUT(
       status: updated.status,
       submittedAt: updated.createdAt.toISOString(),
       reviewedAt: updated.reviewedAt?.toISOString() || undefined,
-      reviewedBy: updated.reviewerId || undefined,
+      reviewedBy: updated.reviewedBy || undefined,
       rejectionReason: rejectionReason || undefined,
     });
   } catch (error: any) {

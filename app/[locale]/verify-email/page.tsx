@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "@/i18n/routing";
+import { useRouter } from "@/i18n/routing";
+import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -16,25 +17,21 @@ export default function VerifyEmailPage() {
   const t = useTranslations("auth.verifyEmail");
   const tCommon = useTranslations("common");
   const [loading, setLoading] = useState(false);
-  const [verifying, setVerifying] = useState(false);
   const [status, setStatus] = useState<"pending" | "verifying" | "success" | "error">("pending");
-  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
     // Check if token is present in URL (from email link)
     const urlToken = searchParams.get("token");
     if (urlToken) {
-      setToken(urlToken);
       handleVerify(urlToken);
     }
   }, [searchParams]);
 
-  const handleVerify = async (verifyToken: string) => {
-    setVerifying(true);
+  const handleVerify = async (_verifyToken: string) => {
     setStatus("verifying");
 
     try {
-      // Mock: Verify email token
+      // Mock: Verify email token (in real app, use _verifyToken)
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       // Simulate success/failure
@@ -56,8 +53,6 @@ export default function VerifyEmailPage() {
       setStatus("error");
       toast.error(tCommon("error"));
       console.error(error);
-    } finally {
-      setVerifying(false);
     }
   };
 

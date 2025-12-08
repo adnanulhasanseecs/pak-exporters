@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import ProductPage, { generateMetadata } from "../page";
+import ProductPage, { generateMetadata } from "../../../[locale]/products/[id]/page";
 import { fetchProduct } from "@/services/api/products";
 
 // Mock dependencies

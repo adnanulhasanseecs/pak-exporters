@@ -16,13 +16,7 @@ export interface UploadResult {
   type: string;
 }
 
-/**
- * Get auth token from localStorage
- */
-function getAuthToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("auth_token");
-}
+// getAuthToken() will be implemented when API endpoint is ready
 
 /**
  * Validate image file
@@ -68,7 +62,8 @@ export async function uploadImage(
     throw new Error(validation.error || "Invalid image file");
   }
 
-  const token = getAuthToken();
+  // Token will be used when API endpoint is implemented
+  // const token = getAuthToken();
   const formData = new FormData();
   formData.append("file", file);
 
@@ -167,7 +162,8 @@ export async function compressImage(
  * @param url - URL of the image to delete
  */
 export async function deleteImage(url: string): Promise<void> {
-  const token = getAuthToken();
+  // Token will be used when API endpoint is implemented
+  // const token = getAuthToken();
   
   // TODO: Implement DELETE /api/upload/[id] endpoint
   // For now, just log (in production, this would call the API to delete from storage)

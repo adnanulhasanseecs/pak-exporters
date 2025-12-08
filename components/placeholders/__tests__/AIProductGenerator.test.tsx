@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { AIProductGenerator } from "../AIProductGenerator";
 
 describe("AIProductGenerator", () => {
@@ -24,7 +23,6 @@ describe("AIProductGenerator", () => {
 
   it("should call onGenerate when button is clicked", async () => {
     const onGenerate = vi.fn();
-    const user = userEvent.setup();
     
     render(<AIProductGenerator onGenerate={onGenerate} />);
     

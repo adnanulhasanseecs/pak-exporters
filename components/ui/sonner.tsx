@@ -36,9 +36,6 @@ const Toaster = ({ ...props }: ToasterProps) => {
           cancelButton:
             "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
         },
-        // Accessibility: Ensure toasts are announced to screen readers
-        role: "status",
-        "aria-live": "polite",
       }}
       // Position to avoid blocking important content
       position="top-right"

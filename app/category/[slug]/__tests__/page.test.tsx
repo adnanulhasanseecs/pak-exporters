@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import CategoryPage from "../page";
+import CategoryPage from "../../../[locale]/category/[slug]/page";
 import { fetchCategoryBySlug } from "@/services/api/categories";
 import { fetchProducts } from "@/services/api/products";
 

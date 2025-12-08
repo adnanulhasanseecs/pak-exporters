@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import { useSearchParams } from "next-intl/navigation";
+import { useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/cards/ProductCard";
 import { CompanyCard } from "@/components/cards/CompanyCard";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,6 @@ function SearchContent() {
   const searchParams = useSearchParams();
   const t = useTranslations("pages.search");
   const tCommon = useTranslations("common");
-  const tNav = useTranslations("nav");
   const initialQuery = searchParams.get("q") || "";
   const [query, setQuery] = useState(initialQuery);
   const [products, setProducts] = useState<ProductListItem[]>([]);

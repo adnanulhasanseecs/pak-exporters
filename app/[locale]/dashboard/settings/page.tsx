@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "@/i18n/routing";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { ROUTES } from "@/lib/constants";
-import { Save, Bell, Lock, User, Mail, Globe } from "lucide-react";
+import { Save, Bell, Lock, User, Globe } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function SettingsPage() {

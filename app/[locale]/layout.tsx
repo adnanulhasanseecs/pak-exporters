@@ -63,12 +63,6 @@ export function generateMetadata(): Metadata {
       ],
     },
     manifest: "/manifest.json",
-    themeColor: "#3b82f6",
-    viewport: {
-      width: "device-width",
-      initialScale: 1,
-      maximumScale: 5,
-    },
     openGraph: {
       type: "website",
       locale: "en_US",
@@ -94,6 +88,13 @@ export function generateMetadata(): Metadata {
     other: getGeoMeta(),
   };
 }
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#3b82f6",
+};
 
 export default async function LocaleLayout({
   children,

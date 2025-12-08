@@ -1,7 +1,13 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import CompaniesPage from "../page";
+import CompaniesPage from "../../[locale]/companies/page";
 import { fetchCompanies } from "@/services/api/companies";
+
+// Mock next-intl
+vi.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
+  getTranslations: async () => (key: string) => key,
+}));
 
 // Mock fetchCompanies
 vi.mock("@/services/api/companies", () => ({
@@ -39,6 +45,8 @@ describe("Companies Page", () => {
       verified: true,
       goldSupplier: false,
       productCount: 10,
+      createdAt: "2024-01-01T00:00:00Z",
+      updatedAt: "2024-01-01T00:00:00Z",
     },
     {
       id: "2",
@@ -50,6 +58,8 @@ describe("Companies Page", () => {
       verified: false,
       goldSupplier: true,
       productCount: 20,
+      createdAt: "2024-01-01T00:00:00Z",
+      updatedAt: "2024-01-01T00:00:00Z",
     },
   ];
 

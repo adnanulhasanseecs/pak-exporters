@@ -26,10 +26,19 @@ import {
   markNotificationAsRead,
   markAllNotificationsAsRead,
   deleteNotification as deleteNotificationService,
-  getUnreadCount,
   type Notification as ServiceNotification,
 } from "@/services/notification/notification";
 import { useTranslations } from "next-intl";
+
+interface PageNotification {
+  id: string;
+  type: "order" | "rfq" | "message" | "system" | "product";
+  title: string;
+  message: string;
+  read: boolean;
+  timestamp: string;
+  actionUrl?: string;
+}
 
 export default function NotificationsPage() {
   const router = useRouter();
@@ -37,7 +46,7 @@ export default function NotificationsPage() {
   const t = useTranslations("dashboard");
   const tCommon = useTranslations("common");
   const [loading, setLoading] = useState(true);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<PageNotification[]>([]);
   const [filter, setFilter] = useState<"all" | "unread" | "read">("all");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -59,7 +68,7 @@ export default function NotificationsPage() {
       const serviceNotifications: ServiceNotification[] = await getUserNotifications(user.id);
       
       // Convert service notifications to page format
-      const pageNotifications: Notification[] = serviceNotifications.map((notif) => ({
+      const pageNotifications: PageNotification[] = serviceNotifications.map((notif) => ({
         id: notif.id,
         type: mapNotificationType(notif.type),
         title: notif.title,
@@ -71,7 +80,7 @@ export default function NotificationsPage() {
 
       // If no notifications from service, use mock data for demo
       if (pageNotifications.length === 0) {
-        const mockNotifications: Notification[] = [
+        const mockNotifications: PageNotification[] = [
           {
             id: "1",
             type: "order",
@@ -103,7 +112,7 @@ export default function NotificationsPage() {
     }
   };
 
-  const mapNotificationType = (type: string): Notification["type"] => {
+  const mapNotificationType = (type: string): PageNotification["type"] => {
     switch (type) {
       case "order_update":
         return "order";
@@ -171,7 +180,7 @@ export default function NotificationsPage() {
     );
   };
 
-  const getNotificationIcon = (type: Notification["type"]) => {
+  const getNotificationIcon = (type: PageNotification["type"]) => {
     switch (type) {
       case "order":
         return <ShoppingCart className="h-5 w-5" />;
@@ -186,7 +195,7 @@ export default function NotificationsPage() {
     }
   };
 
-  const getNotificationColor = (type: Notification["type"]) => {
+  const getNotificationColor = (type: PageNotification["type"]) => {
     switch (type) {
       case "order":
         return "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400";

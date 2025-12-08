@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import PricingPage, { metadata } from "../page";
+import PricingPage, { generateMetadata } from "../../[locale]/pricing/page";
 import { redirect } from "next/navigation";
 
 // Mock next/navigation
@@ -19,11 +19,12 @@ describe("Pricing Page", () => {
     expect(redirect).toBeDefined();
   });
 
-  it("should have redirect metadata", () => {
+  it("should have redirect metadata", async () => {
     // Check that the page component exists
     expect(PricingPage).toBeDefined();
     
     // Check metadata export exists
+    const metadata = await generateMetadata();
     expect(metadata).toBeDefined();
     expect(metadata.title).toContain("Pricing");
   });

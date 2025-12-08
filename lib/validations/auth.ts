@@ -54,9 +54,7 @@ export const registerSchema = z
       .min(2, "Name must be at least 2 characters")
       .max(100, "Name is too long")
       .trim(),
-    role: z.enum(["buyer", "supplier"], {
-      errorMap: () => ({ message: "Role must be either 'buyer' or 'supplier'" }),
-    }),
+    role: z.enum(["buyer", "supplier"]),
     companyName: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {

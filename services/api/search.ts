@@ -6,12 +6,12 @@
 import { fetchProducts } from "./products";
 import { fetchCompanies } from "./companies";
 import { fetchCategories } from "./categories";
-import type { Product } from "@/types/product";
-import type { Company } from "@/types/company";
+import type { ProductListItem } from "@/types/product";
+import type { CompanyListItem } from "@/types/company";
 
 export interface SearchResult {
-  products: Product[];
-  companies: Company[];
+  products: ProductListItem[];
+  companies: CompanyListItem[];
   categories: Array<{
     id: string;
     name: string;
@@ -58,18 +58,22 @@ export async function search(
   }
 
   // Search products
-  const { products } = await fetchProducts({
-    search: searchQuery,
-    limit,
-    categoryId: options?.categoryId,
-    companyId: options?.companyId,
-  });
+  const { products } = await fetchProducts(
+    {
+      search: searchQuery,
+      category: options?.categoryId,
+      companyId: options?.companyId,
+    },
+    { page: 1, pageSize: limit }
+  );
 
   // Search companies
-  const { companies } = await fetchCompanies({
-    search: searchQuery,
-    limit: Math.floor(limit / 2),
-  });
+  const { companies } = await fetchCompanies(
+    {
+      search: searchQuery,
+    },
+    { page: 1, pageSize: Math.floor(limit / 2) }
+  );
 
   // Search categories
   const allCategories = await fetchCategories();
@@ -128,10 +132,12 @@ export async function getSearchSuggestions(
   const suggestions: SearchSuggestion[] = [];
 
   // Get products matching query
-  const { products } = await fetchProducts({
-    search: searchQuery,
-    limit: Math.floor(limit / 2),
-  });
+  const { products } = await fetchProducts(
+    {
+      search: searchQuery,
+    },
+    { page: 1, pageSize: Math.floor(limit / 2) }
+  );
 
   products.forEach((product) => {
     suggestions.push({
@@ -142,10 +148,12 @@ export async function getSearchSuggestions(
   });
 
   // Get companies matching query
-  const { companies } = await fetchCompanies({
-    search: searchQuery,
-    limit: Math.floor(limit / 2),
-  });
+  const { companies } = await fetchCompanies(
+    {
+      search: searchQuery,
+    },
+    { page: 1, pageSize: Math.floor(limit / 2) }
+  );
 
   companies.forEach((company) => {
     suggestions.push({

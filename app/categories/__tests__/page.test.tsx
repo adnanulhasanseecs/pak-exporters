@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import CategoriesPage from "../page";
+import CategoriesPage from "../../[locale]/categories/page";
 import { fetchCategories } from "@/services/api/categories";
 
 // Mock fetchCategories

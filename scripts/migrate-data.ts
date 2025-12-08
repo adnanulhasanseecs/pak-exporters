@@ -7,7 +7,6 @@ import { prisma } from "@/lib/prisma";
 import productsData from "@/services/mocks/products.json";
 import companiesData from "@/services/mocks/companies.json";
 import categoriesData from "@/services/mocks/categories.json";
-import rfqsData from "@/services/mocks/rfqs.json";
 import blogData from "@/services/mocks/blog.json";
 import membershipApplicationsData from "@/services/mocks/membership-applications.json";
 

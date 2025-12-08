@@ -1,12 +1,20 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useRouter } from "next/navigation";
-import LoginPage from "../page";
+import { useRouter } from "@/i18n/routing";
+import LoginPage from "../../[locale]/login/page";
 
-// Mock next/navigation
-vi.mock("next/navigation", () => ({
+// Mock i18n routing
+vi.mock("@/i18n/routing", () => ({
   useRouter: vi.fn(),
+  Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
+    <a href={href}>{children}</a>
+  ),
+}));
+
+// Mock next-intl
+vi.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
 }));
 
 // Mock sonner

@@ -21,7 +21,14 @@ export async function generateMetadata() {
 export default async function CompaniesPage() {
   const t = await getTranslations("companies");
   const tCommon = await getTranslations("common");
-  const { companies } = await fetchCompanies();
+  
+  let companies = [];
+  try {
+    const result = await fetchCompanies();
+    companies = result.companies || [];
+  } catch (error) {
+    console.error("Failed to fetch companies:", error);
+  }
 
   const breadcrumbJsonLd = createBreadcrumbStructuredData([
     { name: tCommon("home"), path: ROUTES.home },
@@ -46,11 +53,19 @@ export default async function CompaniesPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {companies.map((company) => (
-          <CompanyCard key={company.id} company={company} />
-        ))}
-      </div>
+      {companies.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {companies.map((company) => (
+            <CompanyCard key={company.id} company={company} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground text-lg">
+            {t("noCompanies") || "No companies available. Please check your database connection."}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

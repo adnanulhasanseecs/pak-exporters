@@ -3,7 +3,7 @@
  * Tests that all routes are properly set up in [locale] structure
  */
 
-import { readdirSync, statSync, existsSync } from "fs";
+import { statSync, existsSync } from "fs";
 import { join } from "path";
 
 const APP_DIR = join(process.cwd(), "app");
@@ -88,33 +88,6 @@ function testRoute(route: { locale: string; redirect: string | null }): RouteTes
     status,
     message,
   };
-}
-
-function checkImports(filePath: string): { usesI18nRouting: boolean; issues: string[] } {
-  try {
-    const content = require("fs").readFileSync(filePath, "utf-8");
-    const issues: string[] = [];
-    let usesI18nRouting = false;
-    
-    // Check for next/link
-    if (content.includes('from "next/link"') || content.includes("from 'next/link'")) {
-      issues.push("Uses next/link instead of @/i18n/routing");
-    }
-    
-    // Check for next/navigation useRouter
-    if (content.includes('useRouter') && content.includes('from "next/navigation"')) {
-      issues.push("Uses next/navigation useRouter instead of @/i18n/routing");
-    }
-    
-    // Check for @/i18n/routing
-    if (content.includes("@/i18n/routing")) {
-      usesI18nRouting = true;
-    }
-    
-    return { usesI18nRouting, issues };
-  } catch {
-    return { usesI18nRouting: false, issues: ["Could not read file"] };
-  }
 }
 
 console.log("🧪 Testing Route Structure...\n");

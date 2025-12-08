@@ -8,7 +8,6 @@ import {
   Users,
   Award,
   TrendingUp,
-  Zap,
   CheckCircle2,
   BarChart3,
   Building2,

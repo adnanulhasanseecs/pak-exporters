@@ -194,7 +194,7 @@ export async function uploadAvatar(
 /**
  * Delete user account
  */
-export async function deleteUser(userId: string): Promise<void> {
+export async function deleteUser(_userId: string): Promise<void> {
   const token = getAuthToken();
   if (!token) {
     throw new Error("Authentication required");
@@ -208,8 +208,8 @@ export async function deleteUser(userId: string): Promise<void> {
  * Change user password
  */
 export async function changePassword(
-  userId: string,
-  currentPassword: string,
+  _userId: string,
+  _currentPassword: string,
   newPassword: string
 ): Promise<void> {
   if (!newPassword || newPassword.length < 8) {

@@ -50,7 +50,7 @@ export default function NewCompanyPage() {
   const loadCategories = async () => {
     setLoading(true);
     try {
-      const { categories: cats } = await fetchCategories();
+      const cats = await fetchCategories();
       setCategories(cats);
     } catch (error) {
       toast.error("Failed to load categories");

@@ -1,4 +1,4 @@
-import { redirect } from "@/i18n/routing";
+import { redirect } from "next/navigation";
 import { ROUTES } from "@/lib/constants";
 import { getTranslations } from "next-intl/server";
 
@@ -10,9 +10,6 @@ export async function generateMetadata() {
   };
 }
 
-export default function PricingPage() {
+export default async function PricingPage() {
   redirect(ROUTES.membership);
-  // redirect() throws an exception in Next.js, so this return is unreachable
-  // but included for type safety and clarity
-  return null;
 }

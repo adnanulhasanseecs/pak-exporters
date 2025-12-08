@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { fetchCompanies, fetchCompany, createCompany } from "./companies";
 import type { CompanyFilters } from "@/types/company";
 import companiesMockData from "@/services/mocks/companies.json";
-import { fetchCategories } from "./categories";
 
 // Mock fetch globally
 global.fetch = vi.fn();
@@ -81,7 +80,7 @@ describe("fetchCompanies", () => {
       const searchLower = "textile".toLowerCase();
       return (
         company.name.toLowerCase().includes(searchLower) ||
-        company.shortDescription?.toLowerCase().includes(searchLower) ||
+        company.description?.toLowerCase().includes(searchLower) ||
         company.location.city.toLowerCase().includes(searchLower)
       );
     });
@@ -212,7 +211,7 @@ describe("fetchCompanies", () => {
       (company) =>
         company.verified &&
         (company.name.toLowerCase().includes("textile") ||
-          company.shortDescription?.toLowerCase().includes("textile") ||
+          company.description?.toLowerCase().includes("textile") ||
           company.location.city.toLowerCase().includes("textile"))
     );
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({

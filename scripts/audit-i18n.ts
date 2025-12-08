@@ -8,8 +8,8 @@
  *   tsx scripts/audit-i18n.ts
  */
 
-import { readFileSync, readdirSync, statSync, existsSync } from "fs";
-import { join, extname } from "path";
+import { readFileSync, existsSync } from "fs";
+import { join } from "path";
 import { glob } from "glob";
 
 interface AuditResult {
@@ -36,20 +36,7 @@ const I18N_PATTERNS = {
   locale: /useLocale|getLocale/,
 };
 
-const HARDCODED_STRING_PATTERNS = [
-  // Common UI text patterns
-  /(?:>|children:\s*["'])([A-Z][a-z]+(?:\s+[a-z]+)+)["']/g,
-  // Button text
-  /(?:Button|button).*?["']([A-Z][a-z]+(?:\s+[a-z]+)+)["']/g,
-  // Heading text
-  /(?:h[1-6]|Heading).*?["']([A-Z][a-z]+(?:\s+[a-z]+)+)["']/g,
-  // Label text
-  /(?:Label|label).*?["']([A-Z][a-z]+(?:\s+[a-z]+)+)["']/g,
-  // Placeholder text
-  /placeholder=["']([A-Z][a-z]+(?:\s+[a-z]+)+)["']/g,
-  // Title/description
-  /(?:title|description):\s*["']([A-Z][a-z]+(?:\s+[a-z]+)+)["']/g,
-];
+// Removed unused HARDCODED_STRING_PATTERNS constant
 
 const EXCLUDED_PATTERNS = [
   /node_modules/,
@@ -115,7 +102,7 @@ function isExcludedString(str: string): boolean {
   return EXCLUDED_STRINGS.some((excluded) => str.includes(excluded));
 }
 
-function extractHardcodedStrings(content: string, filePath: string): string[] {
+function extractHardcodedStrings(content: string): string[] {
   const strings: string[] = [];
   const lines = content.split("\n");
 
@@ -131,7 +118,7 @@ function extractHardcodedStrings(content: string, filePath: string): string[] {
     /children:\s*["']([A-Z][a-z]+(?:\s+[a-z]+){1,10})["']/g,
   ];
 
-  lines.forEach((line, lineNum) => {
+  lines.forEach((line) => {
     // Skip comments
     if (line.trim().startsWith("//") || line.trim().startsWith("*")) {
       return;
@@ -161,7 +148,7 @@ function checkI18nUsage(content: string): { hasI18n: boolean; usesTranslations: 
 
 function auditFile(filePath: string): AuditResult {
   const content = readFileSync(filePath, "utf-8");
-  const hardcodedStrings = extractHardcodedStrings(content, filePath);
+  const hardcodedStrings = extractHardcodedStrings(content);
   const { hasI18n, usesTranslations } = checkI18nUsage(content);
   
   const issues: Issue[] = [];

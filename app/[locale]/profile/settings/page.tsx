@@ -11,14 +11,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { ROUTES } from "@/lib/constants";
-import { Phone, Building2, ArrowLeft, Save, Upload } from "lucide-react";
+import { Phone, Building2, ArrowLeft, Save, Upload, Mail } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { sanitizeInput, isValidEmail, isValidPhone } from "@/lib/validation";
 
 export default function ProfileSettingsPage() {
   const router = useRouter();
   const { user, setUser } = useAuthStore();
-  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     name: "",

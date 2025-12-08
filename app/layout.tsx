@@ -45,12 +45,6 @@ export const metadata: Metadata = {
     ],
   },
   manifest: "/manifest.json",
-  themeColor: "#3b82f6",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -74,6 +68,13 @@ export const metadata: Metadata = {
     images: ["/logos/logo-white-bg.png"],
   },
   other: getGeoMeta(),
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#3b82f6",
 };
 
 /**

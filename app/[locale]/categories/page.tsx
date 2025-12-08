@@ -18,7 +18,14 @@ export async function generateMetadata() {
 export default async function CategoriesPage() {
   const t = await getTranslations("categories");
   const tCommon = await getTranslations("common");
-  const categories = await fetchCategories();
+  
+  let categories = [];
+  try {
+    categories = await fetchCategories();
+  } catch (error) {
+    console.error("Failed to fetch categories:", error);
+  }
+
   const breadcrumbJsonLd = createBreadcrumbStructuredData([
     { name: tCommon("home"), path: ROUTES.home },
     { name: t("title"), path: ROUTES.categories },
@@ -34,11 +41,19 @@ export default async function CategoriesPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {categories.map((category) => (
-          <CategoryCard key={category.id} category={category} />
-        ))}
-      </div>
+      {categories.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {categories.map((category) => (
+            <CategoryCard key={category.id} category={category} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground text-lg">
+            {t("noCategories") || "No categories available. Please check your database connection."}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

@@ -188,7 +188,7 @@ describe("createRFQ", () => {
       categoryId: "1",
       quantity: { min: 100, max: 500, unit: "pieces" },
       budget: { min: 1000, max: 5000, currency: "USD" },
-      specifications: "Test specifications",
+      specifications: { material: "Cotton", color: "White" },
       deadline: new Date(Date.now() + 86400000).toISOString(),
     };
 
@@ -351,6 +351,7 @@ describe("submitRFQResponse", () => {
       firstRFQ.id,
       "supplier-1",
       "Test Supplier",
+      "supplier@test.com",
       "Supplier Company",
       { amount: 2000, currency: "USD" },
       "Test message"
@@ -379,6 +380,7 @@ describe("submitRFQResponse", () => {
         "non-existent-id",
         "supplier-1",
         "Test Supplier",
+        "supplier@test.com",
         "Supplier Company",
         { amount: 2000, currency: "USD" }
       )
@@ -408,6 +410,7 @@ describe("submitRFQResponse", () => {
       firstRFQ.id,
       "supplier-1",
       "Test Supplier",
+      "supplier@test.com",
       "Supplier Company",
       { amount: 2000, currency: "USD" }
     );

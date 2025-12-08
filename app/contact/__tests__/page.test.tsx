@@ -1,7 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import ContactPage from "../page";
+import ContactPage from "../../[locale]/contact/page";
+
+// Mock next-intl
+vi.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
+  getTranslations: async () => (key: string) => key,
+}));
 
 // Mock sonner
 vi.mock("sonner", () => ({

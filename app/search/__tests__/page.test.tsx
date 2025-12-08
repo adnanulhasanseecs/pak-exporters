@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import SearchPage from "../page";
+import SearchPage from "../../[locale]/search/page";
 import { searchProducts } from "@/services/api/products";
 import { fetchCompanies } from "@/services/api/companies";
 
@@ -12,6 +12,11 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => ({
     get: mockGet,
   }),
+}));
+
+// Mock next-intl
+vi.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
 }));
 
 vi.mock("@/services/api/products");
@@ -53,6 +58,8 @@ const mockCompanies = {
       productCount: 10,
       verified: true,
       goldSupplier: false,
+      createdAt: "2024-01-01T00:00:00Z",
+      updatedAt: "2024-01-01T00:00:00Z",
     },
   ],
   total: 1,
@@ -87,7 +94,7 @@ describe("SearchPage", () => {
 
     const searchInput = screen.getByPlaceholderText(/Search products, suppliers/i);
     const searchButtons = screen.getAllByRole("button", { name: /Search/i });
-    const searchButton = searchButtons.find((btn) => !btn.disabled && btn.textContent?.includes("Search")) || searchButtons[0];
+    const searchButton = searchButtons.find((btn) => !(btn as HTMLButtonElement).disabled && btn.textContent?.includes("Search")) || searchButtons[0];
 
     await user.type(searchInput, "test");
     await user.click(searchButton);
@@ -104,7 +111,7 @@ describe("SearchPage", () => {
 
     const searchInput = screen.getByPlaceholderText(/Search products, suppliers/i);
     const searchButtons = screen.getAllByRole("button", { name: /Search/i });
-    const searchButton = searchButtons.find((btn) => !btn.disabled) || searchButtons[0];
+    const searchButton = searchButtons.find((btn) => !(btn as HTMLButtonElement).disabled) || searchButtons[0];
 
     await user.type(searchInput, "test query");
     await user.click(searchButton);
@@ -133,7 +140,7 @@ describe("SearchPage", () => {
     render(<SearchPage />);
 
     const searchButtons = screen.getAllByRole("button", { name: /Search/i });
-    const searchButton = searchButtons.find((btn) => !btn.disabled) || searchButtons[0];
+    const searchButton = searchButtons.find((btn) => !(btn as HTMLButtonElement).disabled) || searchButtons[0];
     await user.click(searchButton);
 
     // Should not call search APIs with empty query
@@ -148,7 +155,7 @@ describe("SearchPage", () => {
 
     const searchInput = screen.getByPlaceholderText(/Search products, suppliers/i);
     const searchButtons = screen.getAllByRole("button", { name: /Search/i });
-    const searchButton = searchButtons.find((btn) => !btn.disabled) || searchButtons[0];
+    const searchButton = searchButtons.find((btn) => !(btn as HTMLButtonElement).disabled) || searchButtons[0];
 
     await user.type(searchInput, "test");
     await user.click(searchButton);
@@ -168,7 +175,7 @@ describe("SearchPage", () => {
 
     const searchInput = screen.getByPlaceholderText(/Search products, suppliers/i);
     const searchButtons = screen.getAllByRole("button", { name: /Search/i });
-    const searchButton = searchButtons.find((btn) => !btn.disabled && btn.textContent?.includes("Search")) || searchButtons[0];
+    const searchButton = searchButtons.find((btn) => !(btn as HTMLButtonElement).disabled && btn.textContent?.includes("Search")) || searchButtons[0];
 
     await user.type(searchInput, "test");
     await user.click(searchButton);

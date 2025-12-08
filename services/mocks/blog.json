@@ -109,6 +109,45 @@
     "publishedAt": "2024-12-06T00:00:00.000Z",
     "tags": ["faq", "help", "questions", "exporters"],
     "category": "faq"
+  },
+  {
+    "id": "11",
+    "slug": "ai-powered-future-of-b2b-trade",
+    "title": "The AI-Powered Future of B2B Trade: Pak-Exporters Announces Revolutionary Features",
+    "excerpt": "The world of international trade is about to change forever. Discover how Pak-Exporters is building cutting-edge AI-powered features that will transform how Pakistani exporters connect with global buyers.",
+    "content": "We're thrilled to announce that we're building cutting-edge AI-powered features that will transform how Pakistani exporters connect with global buyers. Imagine a marketplace where product descriptions write themselves in seconds, buyers find exactly what they need through natural conversation, trust is quantified and transparent, perfect matches happen automatically, and business insights appear magically. This isn't science fiction. This is the future we're building right now.\\n\\nWe're introducing six revolutionary AI features: AI Product Description Generator, AI Search Assistant, AI Trust & Verification Scores, AI Buyer-Supplier Matchmaking, AI Auto-Tagging & Categorization, and AI Insights Dashboard. These features will save suppliers 70% of their time, increase product visibility by 40%, and improve transaction success rates by 50%.\\n\\nJoin our Early Access Program to be among the first to experience these revolutionary features and help shape the future of B2B trade.",
+    "author": "Pak-Exporters Innovation Team",
+    "publishedAt": "2024-12-07T00:00:00.000Z",
+    "updatedAt": "2024-12-07T00:00:00.000Z",
+    "tags": ["ai", "innovation", "features", "future", "technology", "b2b"],
+    "category": "features",
+    "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  },
+  {
+    "id": "12",
+    "slug": "ai-features-wave-1-product-description-search-trust",
+    "title": "Wave 1 AI Features: Product Descriptions, Smart Search, and Trust Scores",
+    "excerpt": "Discover the first wave of AI features coming to Pak-Exporters in Q1 2025: AI Product Description Generator, AI Search Assistant, and AI Trust & Verification Scores. These game-changing features will save time, increase visibility, and build confidence.",
+    "content": "We're excited to announce the first wave of AI features coming to Pak-Exporters in Q1 2025! These three groundbreaking features will transform how you create listings, search for products, and build trust in the marketplace.\\n\\nThe AI Product Description Generator saves 2-3 hours per product by automatically generating professional, SEO-optimized descriptions in seconds. The AI Search Assistant understands natural language, allowing buyers to search conversationally and get instant, accurate results. The AI Trust & Verification Scores analyze thousands of data points to generate real-time trust scores, helping buyers make confident decisions.\\n\\nThese features work together to create a powerful ecosystem: suppliers save time creating listings, buyers find products faster, and trust is transparent and quantifiable. Join our Early Access Program to be among the first to experience these revolutionary features.",
+    "author": "Pak-Exporters Product Team",
+    "publishedAt": "2024-12-07T00:00:00.000Z",
+    "updatedAt": "2024-12-07T00:00:00.000Z",
+    "tags": ["ai", "features", "product-description", "search", "trust-scores", "wave-1"],
+    "category": "features",
+    "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  },
+  {
+    "id": "13",
+    "slug": "ai-features-wave-2-matchmaking-insights-autotagging",
+    "title": "Wave 2 AI Features: Perfect Matches, Business Intelligence, and Smart Organization",
+    "excerpt": "Wave 2 AI features represent the most advanced capabilities we're building: AI Buyer-Supplier Matchmaking, AI Insights Dashboard, and AI Auto-Tagging. These features create intelligent connections, provide actionable intelligence, and automate organization at scale.",
+    "content": "After the success of Wave 1, we're pushing the boundaries even further with Wave 2 AI features. These features don't just improve workflows—they transform how B2B trade happens.\\n\\nThe AI Buyer-Supplier Matchmaking system analyzes RFQ requirements, supplier capabilities, historical performance, and market trends to automatically connect buyers with the most relevant suppliers, resulting in 85% match accuracy and 4x higher conversion rates. The AI Insights Dashboard provides intelligent analysis and actionable recommendations, helping suppliers improve key metrics by 30% and make data-driven decisions. The AI Auto-Tagging & Categorization system automatically organizes products with 100% accuracy, saving 5-10 minutes per product and improving discoverability by 40%.\\n\\nWhen all Wave 2 features work together, they create a powerful ecosystem: 5x faster supplier discovery, 3x more successful connections, and 2x higher conversion rates. Join our Early Access Program to experience the future of intelligent B2B trade.",
+    "author": "Pak-Exporters Innovation Team",
+    "publishedAt": "2024-12-07T00:00:00.000Z",
+    "updatedAt": "2024-12-07T00:00:00.000Z",
+    "tags": ["ai", "features", "matchmaking", "insights", "auto-tagging", "wave-2", "intelligence"],
+    "category": "features",
+    "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
   }
 ]
 

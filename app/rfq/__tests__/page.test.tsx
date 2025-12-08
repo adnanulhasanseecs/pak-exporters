@@ -1,18 +1,26 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import RFQPage from "../page";
+import RFQPage from "../../[locale]/rfq/page";
 import { useAuthStore } from "@/store/useAuthStore";
 import { fetchCategories } from "@/services/api/categories";
 import { toast } from "sonner";
 
 // Mock dependencies
-vi.mock("next/navigation", () => ({
+vi.mock("@/i18n/routing", () => ({
   useRouter: () => ({
     push: vi.fn(),
     replace: vi.fn(),
     prefetch: vi.fn(),
   }),
+  Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
+    <a href={href}>{children}</a>
+  ),
+}));
+
+// Mock next-intl
+vi.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
 }));
 
 vi.mock("@/store/useAuthStore");
@@ -29,8 +37,8 @@ vi.mock("sonner", () => ({
 }));
 
 const mockCategories = [
-  { id: "1", name: "Textiles & Apparel", slug: "textiles-apparel" },
-  { id: "2", name: "Electronics", slug: "electronics" },
+  { id: "1", name: "Textiles & Apparel", slug: "textiles-apparel", productCount: 10, level: 1, order: 1 },
+  { id: "2", name: "Electronics", slug: "electronics", productCount: 5, level: 1, order: 2 },
 ];
 
 const mockBuyerUser = {

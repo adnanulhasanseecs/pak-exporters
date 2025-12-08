@@ -322,7 +322,6 @@ export class EnhancedRateLimiter {
   private requests: Map<string, number[]> = new Map();
   private readonly windowMs: number;
   private readonly maxRequests: number;
-  private readonly blockDurationMs: number;
 
   constructor(
     windowMs: number = 60000, // 1 minute

@@ -480,6 +480,15 @@
     "twitter": "Twitter",
     "facebook": "Facebook"
   },
+  "error": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again or contact support if the problem persists.",
+    "tryAgain": "Try Again",
+    "goBack": "Go Back",
+    "goHome": "Home",
+    "needHelp": "Need help?",
+    "contactSupport": "Contact Support"
+  },
   "errors": {
     "404": {
       "title": "Page Not Found",

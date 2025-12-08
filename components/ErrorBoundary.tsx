@@ -46,6 +46,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     // Log error to console in development
     if (process.env.NODE_ENV === "development") {
       console.error("ErrorBoundary caught an error:", error, errorInfo);
+      console.error("Error stack:", error.stack);
     }
 
     // Call optional error handler
@@ -53,7 +54,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       this.props.onError(error, errorInfo);
     }
 
-    // In production, you would send this to an error tracking service
+    // In production, log to error tracking service (industry standard)
+    // TODO: Integrate Sentry or similar service
     // Example: Sentry.captureException(error, { contexts: { react: errorInfo } });
 
     this.setState({

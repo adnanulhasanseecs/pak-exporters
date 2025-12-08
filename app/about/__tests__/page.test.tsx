@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import AboutPage from "../page";
+import AboutPage from "../../[locale]/about/page";
 
 describe("About Page", () => {
   it("should render the about page", () => {

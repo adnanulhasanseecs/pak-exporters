@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { searchProducts, fetchProduct } from "@/services/api/products";
 import { fetchCompanies } from "@/services/api/companies";
@@ -62,6 +61,8 @@ const mockCompanies = {
       productCount: 50,
       verified: true,
       goldSupplier: false,
+      createdAt: "2024-01-01T00:00:00Z",
+      updatedAt: "2024-01-01T00:00:00Z",
     },
   ],
   total: 1,
@@ -89,7 +90,7 @@ describe("Product Search Integration", () => {
     
     // Mock search results
     vi.mocked(searchProducts).mockResolvedValue(mockProducts as any);
-    vi.mocked(fetchCompanies).mockResolvedValue(mockCompanies);
+    vi.mocked(fetchCompanies).mockResolvedValue(mockCompanies as any);
     
     // Mock product detail
     vi.mocked(fetchProduct).mockResolvedValue({
@@ -171,7 +172,7 @@ describe("Product Search Integration", () => {
       (p) => p.category.slug === "textiles"
     );
     vi.mocked(searchProducts).mockResolvedValue(filteredProducts as any);
-    vi.mocked(fetchCompanies).mockResolvedValue(mockCompanies);
+    vi.mocked(fetchCompanies).mockResolvedValue(mockCompanies as any);
 
     // Simulate category filter in search
     const SearchWithFilter = () => {

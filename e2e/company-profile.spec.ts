@@ -27,7 +27,6 @@ test.describe("Company Profile View", () => {
     await page.waitForLoadState("networkidle");
     
     // Check for company description or details
-    const description = page.getByText(/description|about|company/i).first();
     // May or may not be visible, but page should load
     await expect(page.locator("h1")).toBeVisible();
   });
@@ -37,7 +36,6 @@ test.describe("Company Profile View", () => {
     await page.waitForLoadState("networkidle");
     
     // Check for products section or heading
-    const productsSection = page.getByText(/products|our products|product catalog/i).first();
     // Products section may exist
     await expect(page.locator("h1")).toBeVisible();
   });
@@ -47,7 +45,6 @@ test.describe("Company Profile View", () => {
     await page.waitForLoadState("networkidle");
     
     // Check for location information (city, country, etc.)
-    const locationInfo = page.getByText(/pakistan|karachi|lahore|islamabad/i).first();
     // Location may be visible
     await expect(page.locator("h1")).toBeVisible();
   });
@@ -57,7 +54,6 @@ test.describe("Company Profile View", () => {
     await page.waitForLoadState("networkidle");
     
     // Check for contact button or email
-    const contactButton = page.getByRole("button", { name: /contact|get in touch|email/i }).first();
     // Contact button may exist
     await expect(page.locator("h1")).toBeVisible();
   });
@@ -67,7 +63,6 @@ test.describe("Company Profile View", () => {
     await page.waitForLoadState("networkidle");
     
     // Check for verified badge (may or may not be visible)
-    const verifiedBadge = page.getByText(/verified|trusted|gold supplier/i).first();
     // Just verify page loads correctly
     await expect(page.locator("h1")).toBeVisible();
   });
@@ -95,7 +90,6 @@ test.describe("Company Profile View", () => {
     await page.waitForLoadState("networkidle");
     
     // Check for breadcrumb navigation
-    const breadcrumb = page.locator('nav[aria-label*="breadcrumb"], [role="navigation"]').first();
     // Breadcrumb may exist
     await expect(page.locator("h1")).toBeVisible();
   });
@@ -105,7 +99,6 @@ test.describe("Company Profile View", () => {
     await page.waitForLoadState("networkidle");
     
     // Check for trust score component (may or may not be visible)
-    const trustScore = page.getByText(/trust score|trust|verification/i).first();
     // Just verify page loads
     await expect(page.locator("h1")).toBeVisible();
   });

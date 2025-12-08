@@ -25,6 +25,22 @@ function transformCategory(category: any): any {
 
 export async function GET(request: NextRequest) {
   try {
+    // Test database connection
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+    } catch (dbError: any) {
+      console.error("Database connection error:", dbError);
+      return NextResponse.json(
+        { 
+          error: "Database connection failed", 
+          message: process.env.NODE_ENV === "development" 
+            ? `Database error: ${dbError.message}. Please ensure the database is initialized. Run 'npm run db:generate && npm run db:migrate && npm run db:seed'`
+            : "Database unavailable"
+        },
+        { status: 500 }
+      );
+    }
+
     const searchParams = request.nextUrl.searchParams;
     const tree = searchParams.get("tree") === "true";
 
@@ -62,7 +78,12 @@ export async function GET(request: NextRequest) {
   } catch (error: any) {
     console.error("Error fetching categories:", error);
     return NextResponse.json(
-      { error: "Failed to fetch categories", message: error.message },
+      { 
+        error: "Failed to fetch categories", 
+        message: process.env.NODE_ENV === "development" 
+          ? error.message 
+          : "An error occurred while fetching categories"
+      },
       { status: 500 }
     );
   }

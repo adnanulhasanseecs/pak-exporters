@@ -51,10 +51,33 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     membershipTier: params.membershipTier as "platinum" | "gold" | "silver" | "starter" | undefined,
   };
 
-  const [productsData, categories] = await Promise.all([
-    fetchProducts(filters, { page, pageSize }),
-    fetchCategories(),
-  ]);
+  let productsData: { products: any[]; total: number; totalPages: number };
+  let categories: any[] = [];
+  
+  try {
+    const [productsResult, categoriesResult] = await Promise.allSettled([
+      fetchProducts(filters, { page, pageSize }),
+      fetchCategories(),
+    ]);
+
+    if (productsResult.status === "fulfilled") {
+      productsData = productsResult.value;
+    } else {
+      console.error("Failed to fetch products:", productsResult.reason);
+      productsData = { products: [], total: 0, totalPages: 0 };
+    }
+
+    if (categoriesResult.status === "fulfilled") {
+      categories = categoriesResult.value;
+    } else {
+      console.error("Failed to fetch categories:", categoriesResult.reason);
+      categories = [];
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    productsData = { products: [], total: 0, totalPages: 0 };
+    categories = [];
+  }
 
   const { products, total, totalPages } = productsData;
 

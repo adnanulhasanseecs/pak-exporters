@@ -5,7 +5,6 @@
 
 import type {
   Company,
-  CompanyListItem,
   CompanyFilters,
   CompanyListResponse,
 } from "@/types/company";

@@ -226,7 +226,7 @@ export async function DELETE(
 ) {
   try {
     // Require authentication
-    const authResult = await requireAuth(request);
+    const authResult = await requireAuth(_request);
     if (authResult.response) {
       return authResult.response;
     }

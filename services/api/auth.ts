@@ -71,7 +71,7 @@ export async function register(data: RegisterData): Promise<AuthResponse> {
 /**
  * Logout user (invalidate token)
  */
-export async function logout(token: string): Promise<void> {
+export async function logout(_token: string): Promise<void> {
   // Remove token from localStorage
   if (typeof window !== "undefined") {
     localStorage.removeItem("auth_token");

@@ -9,7 +9,7 @@ test.describe("Product Search → View → Contact Journey", () => {
     await expect(page.getByText("Search")).toBeVisible();
 
     // Step 2: Perform search
-    const searchInput = page.getByPlaceholderText(/Search products, suppliers/i);
+    const searchInput = page.getByPlaceholder(/Search products, suppliers/i);
     await searchInput.fill("cotton");
     await page.getByRole("button", { name: /Search/i }).last().click();
 

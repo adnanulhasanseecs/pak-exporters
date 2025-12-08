@@ -115,7 +115,8 @@ export default function RFQRespondPage() {
         rfqId,
         user.id,
         user.name,
-        user.companyId || "Unknown Company", // In real app, get from user profile
+        user.email,
+        user.companyId || "Unknown Company",
         {
           amount: parseFloat(formData.price),
           currency: formData.currency,

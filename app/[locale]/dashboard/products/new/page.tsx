@@ -14,7 +14,37 @@ export const metadata = createPageMetadata({
 });
 
 async function CreateProductContent() {
-  const categories = await fetchCategories();
+  let categories = [];
+  
+  try {
+    categories = await fetchCategories();
+  } catch (error) {
+    console.error("Failed to fetch categories:", error);
+    // Return error message to user
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold mb-2">Add New Product</h1>
+            <p className="text-muted-foreground">
+              Create a new product listing for your catalog
+            </p>
+          </div>
+          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-6">
+            <h2 className="text-lg font-semibold mb-2 text-destructive">
+              Failed to Load Categories
+            </h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Unable to fetch categories. Please check your database connection and try again.
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Error: {error instanceof Error ? error.message : "Unknown error"}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">

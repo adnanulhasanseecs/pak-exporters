@@ -45,8 +45,6 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         // Consistent viewport for visual tests
         viewport: { width: 1280, height: 720 },
-        // Disable animations for consistent screenshots
-        reducedMotion: "reduce",
         // Consistent color scheme
         colorScheme: "light",
       },
@@ -56,7 +54,6 @@ export default defineConfig({
       use: {
         ...devices["Desktop Firefox"],
         viewport: { width: 1280, height: 720 },
-        reducedMotion: "reduce",
         colorScheme: "light",
       },
     },
@@ -65,7 +62,6 @@ export default defineConfig({
       use: {
         ...devices["Desktop Safari"],
         viewport: { width: 1280, height: 720 },
-        reducedMotion: "reduce",
         colorScheme: "light",
       },
     },
@@ -74,7 +70,6 @@ export default defineConfig({
       name: "mobile-chrome-visual",
       use: {
         ...devices["Pixel 5"],
-        reducedMotion: "reduce",
         colorScheme: "light",
       },
     },

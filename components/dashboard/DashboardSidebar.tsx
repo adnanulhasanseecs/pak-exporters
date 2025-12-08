@@ -38,7 +38,6 @@ export function DashboardSidebar() {
   if (!user) return null;
 
   const isSupplier = user.role === "supplier";
-  const isBuyer = user.role === "buyer";
 
   const supplierNavItems: NavItem[] = [
     {

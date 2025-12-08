@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 
 // Mock dependencies
@@ -160,16 +159,6 @@ describe("Authentication Integration", () => {
 
   it("should handle login flow with redirect", async () => {
     const user = userEvent.setup();
-
-    const mockSupplierUser = {
-      id: "1",
-      email: "supplier@test.com",
-      name: "Test Supplier",
-      role: "supplier" as const,
-      membershipStatus: "pending" as const,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
 
     const LoginForm = () => {
       const [email, setEmail] = React.useState("");

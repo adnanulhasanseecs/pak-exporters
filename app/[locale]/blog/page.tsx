@@ -2,7 +2,6 @@ import { fetchBlogPosts } from "@/services/api/blog";
 import { createItemListStructuredData } from "@/lib/seo";
 import { StructuredData } from "@/components/seo/StructuredData";
 import { BlogPageClient } from "@/components/blog/BlogPageClient";
-import type { BlogPost } from "@/types/blog";
 import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 

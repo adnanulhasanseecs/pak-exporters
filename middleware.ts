@@ -21,13 +21,19 @@ export function middleware(request: NextRequest) {
   const response = intlResponse;
 
   // Add security headers (some are also in next.config.ts, but middleware allows dynamic headers)
-  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  // Use crypto.randomUUID() if available, otherwise fallback to a random string
+  let nonce: string;
+  try {
+    nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  } catch {
+    // Fallback for environments where crypto.randomUUID() is not available
+    nonce = Buffer.from(`${Date.now()}-${Math.random()}`).toString("base64");
+  }
 
   // Get client IP for rate limiting
   const clientIP =
     request.headers.get("x-forwarded-for")?.split(",")[0] ||
     request.headers.get("x-real-ip") ||
-    request.ip ||
     "unknown";
 
   // Rate limiting for API routes
@@ -69,7 +75,14 @@ export function middleware(request: NextRequest) {
   response.headers.set("X-Content-Security-Policy-Nonce", nonce);
 
   // Additional security headers
-  response.headers.set("X-Request-ID", crypto.randomUUID());
+  let requestId: string;
+  try {
+    requestId = crypto.randomUUID();
+  } catch {
+    // Fallback for environments where crypto.randomUUID() is not available
+    requestId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+  }
+  response.headers.set("X-Request-ID", requestId);
 
   return response;
 }
