@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
       });
 
       // Build tree structure (only root categories with children)
-      const rootCategories = allCategories.filter((cat) => !cat.parentId);
+      const rootCategories = allCategories.filter((cat: any) => !cat.parentId);
       const categoryTree = rootCategories.map(transformCategory);
 
       return NextResponse.json({
