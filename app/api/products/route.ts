@@ -307,8 +307,13 @@ export async function GET(request: NextRequest) {
     // Fallback to JSON mock data on any error
     try {
       const searchParams = new URL(request.url).searchParams;
-      const page = parseInt(searchParams.get("page") || "1", 10);
-      const pageSize = parseInt(searchParams.get("pageSize") || "20", 10);
+      let page = parseInt(searchParams.get("page") || "1", 10);
+      let pageSize = parseInt(searchParams.get("pageSize") || "20", 10);
+      
+      // Validate pagination values (same as main path)
+      if (!page || page < 1) page = 1;
+      if (!pageSize || pageSize < 1) pageSize = 20;
+      
       const category = searchParams.get("category");
       const search = searchParams.get("search");
       const minPrice = searchParams.get("minPrice");
