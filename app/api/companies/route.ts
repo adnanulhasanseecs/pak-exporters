@@ -166,7 +166,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Transform to API format
-    const transformedCompanies = companies.map((company) => transformCompany(company, false));
+    const transformedCompanies = companies.map((company: any) => transformCompany(company, false));
 
     return NextResponse.json({
       companies: transformedCompanies,
