@@ -124,12 +124,13 @@ export async function GET(request: NextRequest) {
         return (a.order || 0) - (b.order || 0);
       });
       return NextResponse.json(sortedCategories);
-    } catch (fallbackError) {
+    } catch (fallbackError: any) {
+      console.error("Error in JSON fallback:", fallbackError);
       return NextResponse.json(
         { 
           error: "Failed to fetch categories", 
           message: process.env.NODE_ENV === "development" 
-            ? error.message 
+            ? fallbackError.message 
             : "An error occurred while fetching categories"
         },
         { status: 500 }
