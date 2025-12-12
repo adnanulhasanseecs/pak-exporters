@@ -15,6 +15,8 @@
     "build": "npm run validate:encoding && next build",
     "build:check": "tsx scripts/vercel-build-check.ts",
     "prebuild": "npm run type-check:strict",
+    "deploy:vercel": "tsx scripts/deploy-vercel.ts",
+    "deploy:vercel:prod": "tsx scripts/deploy-vercel.ts -- --prod",
     "start": "next start",
     "start:port": "next start -p",
     "lint": "eslint",
