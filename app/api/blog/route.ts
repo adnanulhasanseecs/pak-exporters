@@ -26,13 +26,8 @@ export async function GET(request: NextRequest) {
         },
       });
 
-      // Check if database posts have categories (they don't currently)
-      // If database posts exist but have no categories, fall through to JSON
-      // This ensures we get all posts with proper categories
-      const dbPostsHaveCategories = posts.length > 0 && posts.some((post: any) => post.category);
-      
-      if (dbPostsHaveCategories) {
-        // Database posts have categories, use them
+      // If database has posts, use them (even if they don't have categories)
+      if (posts.length > 0) {
         return NextResponse.json(
           posts.map((post: any) => ({
             id: post.id,
@@ -51,7 +46,7 @@ export async function GET(request: NextRequest) {
           }))
         );
       }
-      // If database posts exist but have no categories, fall through to JSON fallback
+      // If database is empty, fall through to JSON fallback
     } catch (dbError: any) {
       // Database not available or error, fall back to JSON
       console.warn("Database not available, using JSON fallback:", dbError.message);

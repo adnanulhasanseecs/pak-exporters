@@ -241,6 +241,18 @@ export async function GET(request: NextRequest) {
       throw new Error(`Failed to count products: ${countError.message}`);
     }
 
+    // If database is empty, fall back to JSON
+    if (total === 0) {
+      console.warn("Database has no products, falling back to JSON mock data");
+      useDatabase = false;
+    }
+
+    // If we're not using database, fall back to JSON (handled below)
+    if (!useDatabase) {
+      // This will be handled by the fallback logic after the try-catch
+      throw new Error("Using JSON fallback - database empty");
+    }
+
     // Get products with error handling
     let products: any[];
     try {

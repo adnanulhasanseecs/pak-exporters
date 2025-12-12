@@ -72,6 +72,17 @@ export async function GET(request: NextRequest) {
         ],
       });
 
+      // If database is empty, fall back to JSON
+      if (allCategories.length === 0) {
+        console.warn("Database has no categories, falling back to JSON mock data");
+        const categories = categoriesData as any[];
+        const rootCategories = categories.filter((cat: any) => !cat.parentId);
+        return NextResponse.json({
+          categories: rootCategories,
+          total: categories.length,
+        });
+      }
+
       // Build tree structure (only root categories with children)
       const rootCategories = allCategories.filter((cat: any) => !cat.parentId);
       const categoryTree = rootCategories.map(transformCategory);
@@ -88,6 +99,17 @@ export async function GET(request: NextRequest) {
           { order: "asc" },
         ],
       });
+
+      // If database is empty, fall back to JSON
+      if (categories.length === 0) {
+        console.warn("Database has no categories, falling back to JSON mock data");
+        const categoriesFromJson = categoriesData as any[];
+        const sortedCategories = [...categoriesFromJson].sort((a, b) => {
+          if (a.level !== b.level) return a.level - b.level;
+          return (a.order || 0) - (b.order || 0);
+        });
+        return NextResponse.json(sortedCategories);
+      }
 
       return NextResponse.json(categories.map(transformCategory));
     }
