@@ -136,8 +136,10 @@ async function migrateData() {
         });
         if (category && product.category?.id) {
           categoryId = category.id;
-          const categoryKey: string = product.category.id;
-          categoryMap.set(categoryKey, categoryId); // Cache for future use
+          const categoryKey = product.category.id;
+          if (typeof categoryKey === 'string') {
+            categoryMap.set(categoryKey, categoryId); // Cache for future use
+          }
         }
       }
 
@@ -152,8 +154,10 @@ async function migrateData() {
           });
           if (existingCompany && product.company?.id) {
             companyId = existingCompany.id;
-            const companyKey: string = product.company.id;
-            companyMap.set(companyKey, companyId);
+            const companyKey = product.company.id;
+            if (typeof companyKey === 'string') {
+              companyMap.set(companyKey, companyId);
+            }
           } else {
             // Create missing company from product data
             const newCompany = await prisma.company.create({
@@ -171,8 +175,8 @@ async function migrateData() {
               },
             });
             companyId = newCompany.id;
-            if (product.company?.id) {
-              const companyKey: string = product.company.id;
+            const companyKey = product.company?.id;
+            if (companyKey && typeof companyKey === 'string') {
               companyMap.set(companyKey, companyId);
             }
             console.log(`  ➕ Created missing company: ${product.company.name} (ID: ${product.company?.id || 'N/A'})`);
