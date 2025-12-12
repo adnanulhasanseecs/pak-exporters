@@ -136,10 +136,8 @@ async function migrateData() {
         });
         if (category && product.category?.id) {
           categoryId = category.id;
-          const categoryKey = product.category.id;
-          if (typeof categoryKey === 'string') {
-            categoryMap.set(categoryKey, categoryId); // Cache for future use
-          }
+          // TypeScript strict mode: we've already checked product.category?.id exists
+          categoryMap.set(product.category.id!, categoryId); // Cache for future use
         }
       }
 
@@ -154,10 +152,8 @@ async function migrateData() {
           });
           if (existingCompany && product.company?.id) {
             companyId = existingCompany.id;
-            const companyKey = product.company.id;
-            if (typeof companyKey === 'string') {
-              companyMap.set(companyKey, companyId);
-            }
+            // TypeScript strict mode: we've already checked product.company?.id exists
+            companyMap.set(product.company.id!, companyId);
           } else {
             // Create missing company from product data
             const newCompany = await prisma.company.create({
@@ -175,9 +171,9 @@ async function migrateData() {
               },
             });
             companyId = newCompany.id;
-            const companyKey = product.company?.id;
-            if (companyKey && typeof companyKey === 'string') {
-              companyMap.set(companyKey, companyId);
+            // TypeScript strict mode: check and use non-null assertion
+            if (product.company?.id) {
+              companyMap.set(product.company.id!, companyId);
             }
             console.log(`  ➕ Created missing company: ${product.company.name} (ID: ${product.company?.id || 'N/A'})`);
           }
