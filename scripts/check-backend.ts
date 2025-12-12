@@ -21,14 +21,23 @@ async function checkBackend() {
     console.log("   💡 Create a .env file with: DATABASE_URL=\"file:./prisma/dev.db\"");
   }
 
-  // 2. Check database file
+  // 2. Check database file (only for SQLite)
   console.log("\n2. Database File:");
-  const dbPath = dbUrl?.replace("file:", "") || "prisma/dev.db";
-  if (existsSync(dbPath)) {
-    console.log(`   ✅ Database file exists: ${dbPath}`);
+  if (dbUrl?.startsWith("file:")) {
+    // SQLite database
+    const dbPath = dbUrl.replace("file:", "");
+    if (existsSync(dbPath)) {
+      console.log(`   ✅ Database file exists: ${dbPath}`);
+    } else {
+      console.log(`   ❌ Database file NOT found: ${dbPath}`);
+      console.log("   💡 Run: npm run db:migrate");
+    }
+  } else if (dbUrl?.startsWith("postgresql://") || dbUrl?.startsWith("postgres://")) {
+    // PostgreSQL database (connection string, not a file)
+    console.log(`   ✅ PostgreSQL connection string configured`);
+    console.log(`   📍 Using remote database (not a local file)`);
   } else {
-    console.log(`   ❌ Database file NOT found: ${dbPath}`);
-    console.log("   💡 Run: npm run db:migrate");
+    console.log(`   ⚠️  Unknown database type: ${dbUrl?.substring(0, 20)}...`);
   }
 
   // 3. Check Prisma client
