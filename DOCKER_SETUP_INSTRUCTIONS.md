@@ -44,7 +44,7 @@ docker logs pak-exporters-db
 Add/update this line in your `.env` file:
 
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/pak_exporters?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/pak_exporters?schema=public"
 ```
 
 ### 6. Initialize Database

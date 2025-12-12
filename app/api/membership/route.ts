@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json({
-      applications: applications.map((app) => ({
+      applications: applications.map((app: any) => ({
         id: app.id,
         userId: app.userId,
         userEmail: app.user.email,

@@ -1,4 +1,4 @@
-# Fast Error Detection Guide
+run# Fast Error Detection Guide
 
 ## The Problem
 Running `npm run build` is slow and finds errors one-by-one, wasting time.

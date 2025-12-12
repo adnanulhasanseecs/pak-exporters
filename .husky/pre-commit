@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit checks..."
+
+# Run strict type check
+echo "📝 Type checking..."
+npm run type-check:strict || {
+  echo "❌ Type check failed! Fix errors before committing."
+  exit 1
+}
+
+# Run build check (matches Vercel)
+echo "🏗️  Running build check (matches Vercel)..."
+npm run build:check || {
+  echo "❌ Build check failed! Fix errors before committing."
+  exit 1
+}
+
+echo "✅ All checks passed!"
+

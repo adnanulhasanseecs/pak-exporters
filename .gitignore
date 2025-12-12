@@ -81,3 +81,5 @@ lerna-debug.log*
 
 # Error reports
 /error-reports/
+
+.vercel
