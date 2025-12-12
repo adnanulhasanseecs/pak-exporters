@@ -313,6 +313,7 @@ export async function GET(request: NextRequest) {
       const search = searchParams.get("search");
       const minPrice = searchParams.get("minPrice");
       const maxPrice = searchParams.get("maxPrice");
+      const companyId = searchParams.get("companyId");
       const verifiedOnly = searchParams.get("verifiedOnly");
       const goldSupplierOnly = searchParams.get("goldSupplierOnly");
       const membershipTier = searchParams.get("membershipTier");
@@ -339,6 +340,9 @@ export async function GET(request: NextRequest) {
       }
       if (maxPrice) {
         products = products.filter((p) => p.price?.amount <= parseFloat(maxPrice));
+      }
+      if (companyId) {
+        products = products.filter((p) => p.company?.id === companyId);
       }
       if (verifiedOnly === "true") {
         products = products.filter((p) => p.company?.verified === true);
