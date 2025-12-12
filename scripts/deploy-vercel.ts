@@ -126,17 +126,25 @@ async function deploy() {
   if (!skipChecks) {
     logStep(1, "Pre-Deployment Checks");
 
-    // 1.1: Check Git status
+    // 1.1: Check Git status (only tracked files)
     logInfo("Checking Git status...");
     try {
-      const gitStatus = runCommand("git status --porcelain", { silent: true });
-      if (gitStatus) {
-        logWarning("You have uncommitted changes:");
-        console.log(gitStatus);
+      // Check for modified tracked files (staged or unstaged)
+      const modifiedFiles = runCommand("git diff --name-only", { silent: true });
+      const stagedFiles = runCommand("git diff --cached --name-only", { silent: true });
+      
+      if (modifiedFiles || stagedFiles) {
+        logWarning("You have uncommitted changes to tracked files:");
+        if (modifiedFiles) {
+          console.log(modifiedFiles.split("\n").map((f: string) => `  M ${f}`).join("\n"));
+        }
+        if (stagedFiles) {
+          console.log(stagedFiles.split("\n").map((f: string) => `  A ${f}`).join("\n"));
+        }
         logError("Please commit or stash your changes before deploying.");
         process.exit(1);
       }
-      logSuccess("No uncommitted changes");
+      logSuccess("No uncommitted changes to tracked files");
     } catch (error) {
       logWarning("Not a Git repository or Git not available");
     }
