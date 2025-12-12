@@ -134,7 +134,7 @@ async function migrateData() {
         const category = await prisma.category.findUnique({
           where: { slug: product.category.slug },
         });
-        if (category) {
+        if (category && product.category?.id) {
           categoryId = category.id;
           categoryMap.set(product.category.id, categoryId); // Cache for future use
         }
@@ -149,7 +149,7 @@ async function migrateData() {
           const existingCompany = await prisma.company.findUnique({
             where: { email: companyEmail },
           });
-          if (existingCompany) {
+          if (existingCompany && product.company?.id) {
             companyId = existingCompany.id;
             companyMap.set(product.company.id, companyId);
           } else {
@@ -169,8 +169,10 @@ async function migrateData() {
               },
             });
             companyId = newCompany.id;
-            companyMap.set(product.company.id, companyId);
-            console.log(`  ➕ Created missing company: ${product.company.name} (ID: ${product.company.id})`);
+            if (product.company?.id) {
+              companyMap.set(product.company.id, companyId);
+            }
+            console.log(`  ➕ Created missing company: ${product.company.name} (ID: ${product.company?.id || 'N/A'})`);
           }
         } catch (error: any) {
           console.warn(`  ⚠️  Could not create company for product ${product.id}: ${error.message}`);
@@ -279,7 +281,7 @@ async function migrateData() {
       // Assign categories that aren't already linked
       for (const categoryId of productCategories.values()) {
         const existingLink = company.companyCategories.find(
-          (link) => link.categoryId === categoryId
+          (link: any) => link.categoryId === categoryId
         );
         if (!existingLink) {
           await prisma.companyCategory.create({
