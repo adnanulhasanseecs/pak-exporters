@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import categoriesData from "@/services/mocks/categories.json";
 
 // Transform database category to API format
 function transformCategory(category: any): any {
@@ -26,24 +27,39 @@ function transformCategory(category: any): any {
 export async function GET(request: NextRequest) {
   try {
     // Test database connection
+    let useDatabase = true;
     try {
       await prisma.$queryRaw`SELECT 1`;
     } catch (dbError: any) {
-      console.error("Database connection error:", dbError);
-      return NextResponse.json(
-        { 
-          error: "Database connection failed", 
-          message: process.env.NODE_ENV === "development" 
-            ? `Database error: ${dbError.message}. Please ensure the database is initialized. Run 'npm run db:generate && npm run db:migrate && npm run db:seed'`
-            : "Database unavailable"
-        },
-        { status: 500 }
-      );
+      console.warn("Database connection failed, falling back to JSON mock data:", dbError.message);
+      useDatabase = false;
     }
 
     const searchParams = request.nextUrl.searchParams;
     const tree = searchParams.get("tree") === "true";
 
+    // If database is not available, use JSON fallback
+    if (!useDatabase) {
+      const categories = categoriesData as any[];
+      
+      if (tree) {
+        // Build tree structure (only root categories with children)
+        const rootCategories = categories.filter((cat: any) => !cat.parentId);
+        return NextResponse.json({
+          categories: rootCategories,
+          total: categories.length,
+        });
+      } else {
+        // Return flat list sorted by level and order
+        const sortedCategories = [...categories].sort((a, b) => {
+          if (a.level !== b.level) return a.level - b.level;
+          return (a.order || 0) - (b.order || 0);
+        });
+        return NextResponse.json(sortedCategories);
+      }
+    }
+
+    // Use database
     if (tree) {
       // Return category tree with parent-child relationships
       const allCategories = await prisma.category.findMany({
@@ -77,15 +93,26 @@ export async function GET(request: NextRequest) {
     }
   } catch (error: any) {
     console.error("Error fetching categories:", error);
-    return NextResponse.json(
-      { 
-        error: "Failed to fetch categories", 
-        message: process.env.NODE_ENV === "development" 
-          ? error.message 
-          : "An error occurred while fetching categories"
-      },
-      { status: 500 }
-    );
+    
+    // Fallback to JSON on any error
+    try {
+      const categories = categoriesData as any[];
+      const sortedCategories = [...categories].sort((a, b) => {
+        if (a.level !== b.level) return a.level - b.level;
+        return (a.order || 0) - (b.order || 0);
+      });
+      return NextResponse.json(sortedCategories);
+    } catch (fallbackError) {
+      return NextResponse.json(
+        { 
+          error: "Failed to fetch categories", 
+          message: process.env.NODE_ENV === "development" 
+            ? error.message 
+            : "An error occurred while fetching categories"
+        },
+        { status: 500 }
+      );
+    }
   }
 }
 

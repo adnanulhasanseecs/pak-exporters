@@ -9,6 +9,7 @@ import { prisma } from "@/lib/prisma";
 import type { ProductFilters, CreateProductInput } from "@/types/product";
 import type { PaginationParams } from "@/types/api";
 import { requireRole } from "@/lib/middleware-auth";
+import productsData from "@/services/mocks/products.json";
 
 // Helper to parse JSON fields from database
 function parseJsonField<T>(field: string | null): T | undefined {
@@ -67,51 +68,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Test database connection (Prisma connects lazily, so we'll test with a simple query)
+    let useDatabase = true;
     try {
       // Try a simple query to test connection
       await prisma.$queryRaw`SELECT 1`;
     } catch (connectError: any) {
-      console.error("Database connection failed:", connectError);
-      console.error("DATABASE_URL:", process.env.DATABASE_URL ? "Set" : "Not set");
-      console.error("Error code:", connectError.code);
-      console.error("Error name:", connectError.name);
-      
-      // Check if it's a missing database file error
-      if (connectError.message?.includes("no such file") || 
-          connectError.message?.includes("ENOENT") ||
-          connectError.code === "ENOENT") {
-        return NextResponse.json(
-          { 
-            error: "Database file not found",
-            message: "The database file does not exist. Please run 'npm run db:migrate' to create it.",
-            hint: "Run: npm run db:migrate && npm run db:seed"
-          },
-          { status: 503 }
-        );
-      }
-      
-      // Check if Prisma client is not generated
-      if (connectError.message?.includes("PrismaClient") || 
-          connectError.message?.includes("not generated")) {
-        return NextResponse.json(
-          { 
-            error: "Prisma client not generated",
-            message: "Prisma client needs to be generated. Run 'npm run db:generate'",
-            hint: "Run: npm run db:generate"
-          },
-          { status: 503 }
-        );
-      }
-      
-      return NextResponse.json(
-        { 
-          error: "Database connection failed",
-          message: connectError.message,
-          code: connectError.code,
-          hint: "Make sure DATABASE_URL is set in .env file and run 'npm run db:migrate' and 'npm run db:seed'"
-        },
-        { status: 503 }
-      );
+      console.warn("Database connection failed, falling back to JSON mock data:", connectError.message);
+      useDatabase = false;
     }
 
     const searchParams = request.nextUrl.searchParams;
@@ -147,6 +110,75 @@ export async function GET(request: NextRequest) {
     // Ensure pagination values are valid
     if (!pagination.page || pagination.page < 1) pagination.page = 1;
     if (!pagination.pageSize || pagination.pageSize < 1) pagination.pageSize = 20;
+
+    // If database is not available, use JSON fallback
+    if (!useDatabase) {
+      let products = productsData as any[];
+      
+      // Apply filters
+      if (filters.category) {
+        products = products.filter((p) => 
+          p.category?.slug === filters.category || p.category?.id === filters.category
+        );
+      }
+      if (filters.search) {
+        const searchLower = filters.search.toLowerCase();
+        products = products.filter((p) =>
+          p.name?.toLowerCase().includes(searchLower) ||
+          p.description?.toLowerCase().includes(searchLower) ||
+          p.shortDescription?.toLowerCase().includes(searchLower)
+        );
+      }
+      if (filters.minPrice !== undefined) {
+        products = products.filter((p) => p.price?.amount >= filters.minPrice!);
+      }
+      if (filters.maxPrice !== undefined) {
+        products = products.filter((p) => p.price?.amount <= filters.maxPrice!);
+      }
+      if (filters.companyId) {
+        products = products.filter((p) => p.company?.id === filters.companyId);
+      }
+      if (filters.verifiedOnly) {
+        products = products.filter((p) => p.company?.verified === true);
+      }
+      if (filters.goldSupplierOnly) {
+        products = products.filter((p) => p.company?.goldSupplier === true);
+      }
+      if (filters.membershipTier) {
+        products = products.filter((p) => p.company?.membershipTier === filters.membershipTier);
+      }
+      if (filters.tags && filters.tags.length > 0) {
+        products = products.filter((p) => {
+          const productTags = p.tags || [];
+          return filters.tags!.some((tag) => productTags.includes(tag));
+        });
+      }
+
+      // Only show active products
+      products = products.filter((p) => p.status !== "inactive");
+
+      // Apply pagination
+      const total = products.length;
+      const skip = (pagination.page - 1) * pagination.pageSize;
+      const paginatedProducts = products.slice(skip, skip + pagination.pageSize);
+
+      // Transform to API format (omit full description for list view)
+      const productListItems = paginatedProducts.map((product) => {
+        const { description, specifications, ...rest } = product;
+        return {
+          ...rest,
+          description: product.shortDescription || undefined,
+        };
+      });
+
+      return NextResponse.json({
+        products: productListItems,
+        total,
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+        totalPages: Math.ceil(total / pagination.pageSize),
+      });
+    }
 
     // Build Prisma query
     const where: any = {
@@ -258,63 +290,95 @@ export async function GET(request: NextRequest) {
       totalPages: Math.ceil(total / pageSize),
     });
   } catch (error: any) {
-    // Log full error details for debugging
-    console.error("=".repeat(50));
-    console.error("❌ ERROR FETCHING PRODUCTS");
-    console.error("=".repeat(50));
-    console.error("Error message:", error.message);
-    console.error("Error name:", error.name);
-    console.error("Error code:", error.code);
-    console.error("Error stack:", error.stack);
-    console.error("DATABASE_URL:", process.env.DATABASE_URL ? "✅ Set" : "❌ Not set");
-    console.error("Prisma available:", prisma ? "✅ Yes" : "❌ No");
+    console.error("Error fetching products from database, falling back to JSON:", error.message);
     
-    // Try to get more details from Prisma errors
-    if (error.code) {
-      console.error("Prisma error code:", error.code);
+    // Fallback to JSON mock data on any error
+    try {
+      const searchParams = new URL(request.url).searchParams;
+      const page = parseInt(searchParams.get("page") || "1", 10);
+      const pageSize = parseInt(searchParams.get("pageSize") || "20", 10);
+      const category = searchParams.get("category");
+      const search = searchParams.get("search");
+      const minPrice = searchParams.get("minPrice");
+      const maxPrice = searchParams.get("maxPrice");
+      const verifiedOnly = searchParams.get("verifiedOnly");
+      const goldSupplierOnly = searchParams.get("goldSupplierOnly");
+      const membershipTier = searchParams.get("membershipTier");
+      const tags = searchParams.get("tags");
+
+      let products = productsData as any[];
+      
+      // Apply filters
+      if (category) {
+        products = products.filter((p) => 
+          p.category?.slug === category || p.category?.id === category
+        );
+      }
+      if (search) {
+        const searchLower = search.toLowerCase();
+        products = products.filter((p) =>
+          p.name?.toLowerCase().includes(searchLower) ||
+          p.description?.toLowerCase().includes(searchLower) ||
+          p.shortDescription?.toLowerCase().includes(searchLower)
+        );
+      }
+      if (minPrice) {
+        products = products.filter((p) => p.price?.amount >= parseFloat(minPrice));
+      }
+      if (maxPrice) {
+        products = products.filter((p) => p.price?.amount <= parseFloat(maxPrice));
+      }
+      if (verifiedOnly === "true") {
+        products = products.filter((p) => p.company?.verified === true);
+      }
+      if (goldSupplierOnly === "true") {
+        products = products.filter((p) => p.company?.goldSupplier === true);
+      }
+      if (membershipTier) {
+        products = products.filter((p) => p.company?.membershipTier === membershipTier);
+      }
+      if (tags) {
+        const tagList = tags.split(",");
+        products = products.filter((p) => {
+          const productTags = p.tags || [];
+          return tagList.some((tag) => productTags.includes(tag));
+        });
+      }
+
+      // Only show active products
+      products = products.filter((p) => p.status !== "inactive");
+
+      // Apply pagination
+      const total = products.length;
+      const skip = (page - 1) * pageSize;
+      const paginatedProducts = products.slice(skip, skip + pageSize);
+
+      // Transform to API format
+      const productListItems = paginatedProducts.map((product) => {
+        const { description, specifications, ...rest } = product;
+        return {
+          ...rest,
+          description: product.shortDescription || undefined,
+        };
+      });
+
+      return NextResponse.json({
+        products: productListItems,
+        total,
+        page,
+        pageSize,
+        totalPages: Math.ceil(total / pageSize),
+      });
+    } catch (fallbackError: any) {
+      console.error("Error in JSON fallback:", fallbackError);
+      return NextResponse.json(
+        { 
+          error: "Failed to fetch products",
+          message: process.env.NODE_ENV === "development" ? fallbackError.message : undefined,
+        },
+        { status: 500 }
+      );
     }
-    if (error.meta) {
-      console.error("Prisma error meta:", JSON.stringify(error.meta, null, 2));
-    }
-    console.error("=".repeat(50));
-    
-    // Determine the specific error type and provide helpful hints
-    let errorMessage = "Failed to fetch products";
-    let hint = "";
-    
-    if (error.code === "P1001" || error.message?.includes("Can't reach database server")) {
-      errorMessage = "Database server is not reachable";
-      hint = "Check if the database file exists and DATABASE_URL is correct";
-    } else if (error.code === "P1002" || error.message?.includes("Connection timeout")) {
-      errorMessage = "Database connection timeout";
-      hint = "The database might be locked or unavailable";
-    } else if (error.code === "P1003" || error.message?.includes("Database file")) {
-      errorMessage = "Database file not found";
-      hint = "Run: npm run db:migrate to create the database";
-    } else if (error.message?.includes("PrismaClient") || error.message?.includes("not generated")) {
-      errorMessage = "Prisma client not generated";
-      hint = "Run: npm run db:generate";
-    } else if (error.message?.includes("table") && error.message?.includes("does not exist")) {
-      errorMessage = "Database tables not found";
-      hint = "Run: npm run db:migrate to create tables, then npm run db:seed to add data";
-    } else {
-      errorMessage = error.message || "Failed to fetch products";
-      hint = "Check server logs for details";
-    }
-    
-    // Return detailed error in development, generic in production
-    const isDev = process.env.NODE_ENV === "development";
-    
-    return NextResponse.json(
-      { 
-        error: isDev ? errorMessage : "Failed to fetch products",
-        message: isDev ? error.message : undefined,
-        hint: isDev ? hint : undefined,
-        code: isDev ? error.code : undefined,
-        ...(isDev && error.stack && { stack: error.stack }),
-      },
-      { status: 500 }
-    );
   }
 }
 
