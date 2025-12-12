@@ -4,6 +4,7 @@ import { ROUTES } from "@/lib/constants";
 import { createPageMetadata, createBreadcrumbStructuredData } from "@/lib/seo";
 import { StructuredData } from "@/components/seo/StructuredData";
 import { getTranslations } from "next-intl/server";
+import type { Category } from "@/types/category";
 
 export async function generateMetadata() {
   const t = await getTranslations("categories");
@@ -19,7 +20,7 @@ export default async function CategoriesPage() {
   const t = await getTranslations("categories");
   const tCommon = await getTranslations("common");
   
-  let categories = [];
+  let categories: Category[] = [];
   try {
     categories = await fetchCategories();
   } catch (error) {

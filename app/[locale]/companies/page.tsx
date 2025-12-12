@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react";
 import { createPageMetadata, createBreadcrumbStructuredData } from "@/lib/seo";
 import { StructuredData } from "@/components/seo/StructuredData";
 import { getTranslations } from "next-intl/server";
+import type { CompanyListItem } from "@/types/company";
 
 export async function generateMetadata() {
   const t = await getTranslations("companies");
@@ -22,7 +23,7 @@ export default async function CompaniesPage() {
   const t = await getTranslations("companies");
   const tCommon = await getTranslations("common");
   
-  let companies = [];
+  let companies: CompanyListItem[] = [];
   try {
     const result = await fetchCompanies();
     companies = result.companies || [];
