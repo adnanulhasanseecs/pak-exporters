@@ -13,6 +13,14 @@ const globalForPrisma = globalThis as unknown as {
 // Prisma Accelerate is better for serverless environments like Vercel
 const databaseUrl = process.env.DATABASE_PRISMA_DATABASE_URL || process.env.DATABASE_URL;
 
+// CRITICAL: Override DATABASE_URL in process.env to ensure Prisma uses the correct connection
+// This is necessary because Prisma Client reads from process.env.DATABASE_URL at runtime
+// even if we specify datasources.url in the constructor
+if (databaseUrl && databaseUrl !== process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = databaseUrl;
+  console.log(`[Prisma Init] Overrode process.env.DATABASE_URL with ${databaseUrl.includes('accelerate') ? 'Prisma Accelerate' : 'Vercel Postgres'} URL`);
+}
+
 // Log connection info (without exposing credentials)
 console.log("[Prisma Init] Environment check:", {
   DATABASE_PRISMA_DATABASE_URL: process.env.DATABASE_PRISMA_DATABASE_URL ? "✅ Set" : "❌ NOT set",
@@ -40,16 +48,31 @@ if (databaseUrl) {
   console.error("   Available env vars:", Object.keys(process.env).filter(k => k.includes("DATABASE")).join(", ") || "none");
 }
 
+// Create Prisma Client with explicit connection string override
+// This ensures we use the correct database URL even if schema was generated with wrong one
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
     datasources: {
       db: {
-        url: databaseUrl,
+        url: databaseUrl || process.env.DATABASE_URL || "",
       },
     },
     log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
   });
+
+// Verify the connection string is being used correctly
+if (databaseUrl) {
+  console.log(`✅ [Prisma Init] PrismaClient created with connection override`);
+  try {
+    const urlObj = new URL(databaseUrl);
+    console.log(`   Override URL host: ${urlObj.hostname}:${urlObj.port || 'default'}`);
+  } catch (e) {
+    // Ignore URL parsing errors
+  }
+} else {
+  console.error("❌ [Prisma Init] No database URL available for PrismaClient override!");
+}
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
