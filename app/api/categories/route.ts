@@ -43,35 +43,12 @@ export async function GET(request: NextRequest) {
       const categories = categoriesData as any[];
       
       if (tree) {
-        // Build tree structure (only root categories with children)
-        // First, build a map of categories by ID for efficient lookup
-        const categoryMap = new Map<string, any>();
-        categories.forEach((cat: any) => {
-          categoryMap.set(cat.id, { ...cat, children: [] });
-        });
-        
-        // Build parent-child relationships
-        const rootCategories: any[] = [];
-        categories.forEach((cat: any) => {
-          const categoryWithChildren = categoryMap.get(cat.id)!;
-          if (cat.parentId) {
-            const parent = categoryMap.get(cat.parentId);
-            if (parent) {
-              parent.children.push(categoryWithChildren);
-            }
-          } else {
-            rootCategories.push(categoryWithChildren);
-          }
-        });
-        
-        // Sort root categories and their children
-        rootCategories.sort((a, b) => (a.order || 0) - (b.order || 0));
-        rootCategories.forEach((cat: any) => {
-          cat.children.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
-        });
+        // Mock data only contains root-level categories (no parentId relationships)
+        // Return all categories as root categories with empty children arrays
+        const sortedCategories = [...categories].sort((a, b) => (a.order || 0) - (b.order || 0));
         
         // Transform to match API format (using transformCategory for consistency)
-        const categoryTree = rootCategories.map(transformCategory);
+        const categoryTree = sortedCategories.map((cat) => transformCategory({ ...cat, children: [] }));
         
         return NextResponse.json({
           categories: categoryTree,
@@ -83,7 +60,8 @@ export async function GET(request: NextRequest) {
           if (a.level !== b.level) return a.level - b.level;
           return (a.order || 0) - (b.order || 0);
         });
-        return NextResponse.json(sortedCategories);
+        // Apply transformCategory for consistency with database responses
+        return NextResponse.json(sortedCategories.map(transformCategory));
       }
     }
 
@@ -105,35 +83,12 @@ export async function GET(request: NextRequest) {
         console.warn("Database has no categories, falling back to JSON mock data");
         const categories = categoriesData as any[];
         
-        // Build tree structure (only root categories with children)
-        // First, build a map of categories by ID for efficient lookup
-        const categoryMap = new Map<string, any>();
-        categories.forEach((cat: any) => {
-          categoryMap.set(cat.id, { ...cat, children: [] });
-        });
-        
-        // Build parent-child relationships
-        const rootCategories: any[] = [];
-        categories.forEach((cat: any) => {
-          const categoryWithChildren = categoryMap.get(cat.id)!;
-          if (cat.parentId) {
-            const parent = categoryMap.get(cat.parentId);
-            if (parent) {
-              parent.children.push(categoryWithChildren);
-            }
-          } else {
-            rootCategories.push(categoryWithChildren);
-          }
-        });
-        
-        // Sort root categories and their children
-        rootCategories.sort((a, b) => (a.order || 0) - (b.order || 0));
-        rootCategories.forEach((cat: any) => {
-          cat.children.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
-        });
+        // Mock data only contains root-level categories (no parentId relationships)
+        // Return all categories as root categories with empty children arrays
+        const sortedCategories = [...categories].sort((a, b) => (a.order || 0) - (b.order || 0));
         
         // Transform to match API format (using transformCategory for consistency)
-        const categoryTree = rootCategories.map(transformCategory);
+        const categoryTree = sortedCategories.map((cat) => transformCategory({ ...cat, children: [] }));
         
         return NextResponse.json({
           categories: categoryTree,
@@ -166,7 +121,8 @@ export async function GET(request: NextRequest) {
           if (a.level !== b.level) return a.level - b.level;
           return (a.order || 0) - (b.order || 0);
         });
-        return NextResponse.json(sortedCategories);
+        // Apply transformCategory for consistency with database responses
+        return NextResponse.json(sortedCategories.map(transformCategory));
       }
 
       return NextResponse.json(categories.map(transformCategory));
@@ -181,7 +137,8 @@ export async function GET(request: NextRequest) {
         if (a.level !== b.level) return a.level - b.level;
         return (a.order || 0) - (b.order || 0);
       });
-      return NextResponse.json(sortedCategories);
+      // Apply transformCategory for consistency with database responses
+      return NextResponse.json(sortedCategories.map(transformCategory));
     } catch (fallbackError: any) {
       console.error("Error in JSON fallback:", fallbackError);
       return NextResponse.json(
@@ -196,4 +153,3 @@ export async function GET(request: NextRequest) {
     }
   }
 }
-
