@@ -8,22 +8,47 @@
  */
 
 // CRITICAL: Set DATABASE_URL BEFORE importing PrismaClient
-// Use DATABASE_PRISMA_DATABASE_URL (Prisma Accelerate) if available, otherwise DATABASE_URL
-// Prisma Accelerate is better for serverless environments like Vercel
-const databaseUrl = process.env.DATABASE_PRISMA_DATABASE_URL || process.env.DATABASE_URL;
+// Prisma Client reads process.env.DATABASE_URL during initialization, so we MUST override it first
 
-// Override process.env.DATABASE_URL IMMEDIATELY to ensure Prisma uses correct connection
-if (databaseUrl) {
-  // Remove any localhost references - this is critical for Vercel
-  if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('localhost')) {
-    console.warn(`[Prisma Init] WARNING: Found localhost in DATABASE_URL, overriding with: ${databaseUrl.includes('accelerate') ? 'Prisma Accelerate' : 'Vercel Postgres'}`);
+// Priority order:
+// 1. DATABASE_PRISMA_DATABASE_URL (Prisma Accelerate - best for serverless)
+// 2. DATABASE_URL (but reject if it's localhost in production)
+// 3. Error if neither is available
+
+let databaseUrl: string | undefined;
+
+// First, try Prisma Accelerate (best for Vercel)
+if (process.env.DATABASE_PRISMA_DATABASE_URL) {
+  databaseUrl = process.env.DATABASE_PRISMA_DATABASE_URL;
+  console.log(`[Prisma Init] Using DATABASE_PRISMA_DATABASE_URL (Prisma Accelerate)`);
+} else if (process.env.DATABASE_URL) {
+  // Check if DATABASE_URL is localhost (invalid for production)
+  const dbUrl = process.env.DATABASE_URL;
+  if (dbUrl.includes('localhost') && process.env.NODE_ENV === 'production') {
+    console.error("❌ [Prisma Init] CRITICAL: DATABASE_URL points to localhost in production!");
+    console.error(`   Current value: ${dbUrl.substring(0, 50)}...`);
+    console.error("   This will NOT work on Vercel.");
+    console.error("   Solution: Set DATABASE_PRISMA_DATABASE_URL or fix DATABASE_URL in Vercel environment variables.");
+    throw new Error("DATABASE_URL cannot point to localhost in production. Set DATABASE_PRISMA_DATABASE_URL or fix DATABASE_URL in Vercel.");
   }
-  process.env.DATABASE_URL = databaseUrl;
-  console.log(`[Prisma Init] Set process.env.DATABASE_URL to ${databaseUrl.includes('accelerate') ? 'Prisma Accelerate' : 'Vercel Postgres'} connection`);
+  databaseUrl = dbUrl;
+  console.log(`[Prisma Init] Using DATABASE_URL`);
 } else {
   console.error("❌ [Prisma Init] No database URL available!");
   console.error("   DATABASE_PRISMA_DATABASE_URL:", process.env.DATABASE_PRISMA_DATABASE_URL ? "Set" : "NOT set");
   console.error("   DATABASE_URL:", process.env.DATABASE_URL ? "Set" : "NOT set");
+  throw new Error("DATABASE_URL or DATABASE_PRISMA_DATABASE_URL must be set");
+}
+
+// CRITICAL: Override process.env.DATABASE_URL IMMEDIATELY
+// This ensures Prisma Client uses the correct connection string
+process.env.DATABASE_URL = databaseUrl;
+
+// Log the override for debugging
+if (databaseUrl.includes('accelerate')) {
+  console.log(`[Prisma Init] ✅ Overrode process.env.DATABASE_URL with Prisma Accelerate connection`);
+} else {
+  console.log(`[Prisma Init] ✅ Overrode process.env.DATABASE_URL with Vercel Postgres connection`);
 }
 
 // NOW import PrismaClient - it will read from the overridden process.env.DATABASE_URL
