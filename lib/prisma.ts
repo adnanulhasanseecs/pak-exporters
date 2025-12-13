@@ -1,25 +1,37 @@
 /**
  * Prisma Client Singleton
  * Ensures only one instance of Prisma Client is created
+ * 
+ * CRITICAL: This file MUST set DATABASE_URL before importing PrismaClient
+ * because Prisma Client reads the connection string from process.env.DATABASE_URL
+ * during initialization, even if we specify datasources.url in the constructor.
  */
 
+// CRITICAL: Set DATABASE_URL BEFORE importing PrismaClient
+// Use DATABASE_PRISMA_DATABASE_URL (Prisma Accelerate) if available, otherwise DATABASE_URL
+// Prisma Accelerate is better for serverless environments like Vercel
+const databaseUrl = process.env.DATABASE_PRISMA_DATABASE_URL || process.env.DATABASE_URL;
+
+// Override process.env.DATABASE_URL IMMEDIATELY to ensure Prisma uses correct connection
+if (databaseUrl) {
+  // Remove any localhost references - this is critical for Vercel
+  if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('localhost')) {
+    console.warn(`[Prisma Init] WARNING: Found localhost in DATABASE_URL, overriding with: ${databaseUrl.includes('accelerate') ? 'Prisma Accelerate' : 'Vercel Postgres'}`);
+  }
+  process.env.DATABASE_URL = databaseUrl;
+  console.log(`[Prisma Init] Set process.env.DATABASE_URL to ${databaseUrl.includes('accelerate') ? 'Prisma Accelerate' : 'Vercel Postgres'} connection`);
+} else {
+  console.error("❌ [Prisma Init] No database URL available!");
+  console.error("   DATABASE_PRISMA_DATABASE_URL:", process.env.DATABASE_PRISMA_DATABASE_URL ? "Set" : "NOT set");
+  console.error("   DATABASE_URL:", process.env.DATABASE_URL ? "Set" : "NOT set");
+}
+
+// NOW import PrismaClient - it will read from the overridden process.env.DATABASE_URL
 import { PrismaClient } from "@prisma/client";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
-
-// Use DATABASE_PRISMA_DATABASE_URL (Prisma Accelerate) if available, otherwise DATABASE_URL
-// Prisma Accelerate is better for serverless environments like Vercel
-const databaseUrl = process.env.DATABASE_PRISMA_DATABASE_URL || process.env.DATABASE_URL;
-
-// CRITICAL: Override DATABASE_URL in process.env to ensure Prisma uses the correct connection
-// This is necessary because Prisma Client reads from process.env.DATABASE_URL at runtime
-// even if we specify datasources.url in the constructor
-if (databaseUrl && databaseUrl !== process.env.DATABASE_URL) {
-  process.env.DATABASE_URL = databaseUrl;
-  console.log(`[Prisma Init] Overrode process.env.DATABASE_URL with ${databaseUrl.includes('accelerate') ? 'Prisma Accelerate' : 'Vercel Postgres'} URL`);
-}
 
 // Log connection info (without exposing credentials)
 console.log("[Prisma Init] Environment check:", {
