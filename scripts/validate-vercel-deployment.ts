@@ -7,7 +7,6 @@
  *   Or run automatically in prebuild/precommit hooks
  */
 
-import { execSync } from "child_process";
 import { existsSync } from "fs";
 import { join } from "path";
 
@@ -51,10 +50,7 @@ function validateEnvironmentVariables() {
     "NEXT_PUBLIC_APP_URL",
   ];
 
-  const optionalVars = [
-    "NODE_ENV",
-    "VERCEL_URL", // Set automatically by Vercel
-  ];
+  // Optional variables are checked individually below
 
   // Check required variables
   for (const varName of requiredVars) {
