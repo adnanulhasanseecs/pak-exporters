@@ -1,3 +1,9 @@
+// Force dynamic rendering on Vercel to ensure Prisma queries run at request-time
+// This prevents build-time database queries and ensures fresh data on every request
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import { Link } from "@/i18n/routing";
 import { Suspense } from "react";
 import { ProductCard } from "@/components/cards/ProductCard";
@@ -22,7 +28,7 @@ export async function generateMetadata() {
 }
 
 interface ProductsPageProps {
-  searchParams: Promise<{
+  searchParams: {
     page?: string;
     category?: string;
     search?: string;
@@ -31,53 +37,30 @@ interface ProductsPageProps {
     verifiedOnly?: string;
     goldSupplierOnly?: string;
     membershipTier?: string;
-  }>;
+  };
 }
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
-  const params = await searchParams;
+  // searchParams is a plain object (not a Promise) in Next.js App Router
   const t = await getTranslations("products");
   const tCommon = await getTranslations("common");
-  const page = parseInt(params.page || "1", 10);
+  const page = parseInt(searchParams.page || "1", 10);
   const pageSize = PAGINATION.defaultPageSize;
 
   const filters = {
-    category: params.category,
-    search: params.search,
-    minPrice: params.minPrice ? parseFloat(params.minPrice) : undefined,
-    maxPrice: params.maxPrice ? parseFloat(params.maxPrice) : undefined,
-    verifiedOnly: params.verifiedOnly === "true",
-    goldSupplierOnly: params.goldSupplierOnly === "true",
-    membershipTier: params.membershipTier as "platinum" | "gold" | "silver" | "starter" | undefined,
+    category: searchParams.category,
+    search: searchParams.search,
+    minPrice: searchParams.minPrice ? parseFloat(searchParams.minPrice) : undefined,
+    maxPrice: searchParams.maxPrice ? parseFloat(searchParams.maxPrice) : undefined,
+    verifiedOnly: searchParams.verifiedOnly === "true",
+    goldSupplierOnly: searchParams.goldSupplierOnly === "true",
+    membershipTier: searchParams.membershipTier as "platinum" | "gold" | "silver" | "starter" | undefined,
   };
 
-  let productsData: { products: any[]; total: number; totalPages: number };
-  let categories: any[] = [];
-  
-  try {
-    const [productsResult, categoriesResult] = await Promise.allSettled([
-      getProductsFromDb(filters, { page, pageSize }),
-      getCategoriesFromDb(),
-    ]);
-
-    if (productsResult.status === "fulfilled") {
-      productsData = productsResult.value;
-    } else {
-      console.error("Failed to fetch products:", productsResult.reason);
-      productsData = { products: [], total: 0, totalPages: 0 };
-    }
-
-    if (categoriesResult.status === "fulfilled") {
-      categories = categoriesResult.value;
-    } else {
-      console.error("Failed to fetch categories:", categoriesResult.reason);
-      categories = [];
-    }
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    productsData = { products: [], total: 0, totalPages: 0 };
-    categories = [];
-  }
+  // Call Prisma queries directly - allow errors to throw instead of silently swallowing
+  // This ensures we see database connection issues immediately rather than empty pages
+  const productsData = await getProductsFromDb(filters, { page, pageSize });
+  const categories = await getCategoriesFromDb();
 
   const { products, total, totalPages } = productsData;
 
@@ -133,7 +116,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   {page > 1 ? (
                     <Button variant="outline" asChild>
                       <Link
-                        href={`/products?page=${page - 1}${params.category ? `&category=${params.category}` : ""}${params.search ? `&search=${params.search}` : ""}${params.membershipTier ? `&membershipTier=${params.membershipTier}` : ""}`}
+                        href={`/products?page=${page - 1}${searchParams.category ? `&category=${searchParams.category}` : ""}${searchParams.search ? `&search=${searchParams.search}` : ""}${searchParams.membershipTier ? `&membershipTier=${searchParams.membershipTier}` : ""}`}
                       >
                         {t("previous")}
                       </Link>
@@ -149,7 +132,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   {page < totalPages ? (
                     <Button variant="outline" asChild>
                       <Link
-                        href={`/products?page=${page + 1}${params.category ? `&category=${params.category}` : ""}${params.search ? `&search=${params.search}` : ""}${params.membershipTier ? `&membershipTier=${params.membershipTier}` : ""}`}
+                        href={`/products?page=${page + 1}${searchParams.category ? `&category=${searchParams.category}` : ""}${searchParams.search ? `&search=${searchParams.search}` : ""}${searchParams.membershipTier ? `&membershipTier=${searchParams.membershipTier}` : ""}`}
                       >
                         {t("next")}
                       </Link>
@@ -165,7 +148,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           ) : (
             <div className="text-center py-12">
               <p className="text-muted-foreground text-lg">{t("noProducts")}</p>
-              {params.search && (
+              {searchParams.search && (
                 <p className="text-sm text-muted-foreground mt-2">
                   {t("noProductsMessage")}
                 </p>
