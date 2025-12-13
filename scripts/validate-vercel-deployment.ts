@@ -10,6 +10,18 @@
 import { existsSync } from "fs";
 import { join } from "path";
 
+// Load environment variables from .env.local (Vercel) or .env (local)
+const envLocalPath = join(process.cwd(), ".env.local");
+const envPath = join(process.cwd(), ".env");
+
+if (existsSync(envLocalPath)) {
+  require("dotenv").config({ path: envLocalPath });
+  console.log("📁 Loaded .env.local (Vercel environment variables)\n");
+} else if (existsSync(envPath)) {
+  require("dotenv").config({ path: envPath });
+  console.log("📁 Loaded .env (local environment variables)\n");
+}
+
 interface ValidationResult {
   passed: boolean;
   errors: string[];
@@ -43,11 +55,24 @@ function addSuccess(message: string) {
 function validateEnvironmentVariables() {
   console.log("\n📋 Validating Environment Variables...\n");
 
+  // Check if we're running locally or on Vercel
+  const isVercel = !!process.env.VERCEL;
+  const hasEnvLocal = existsSync(join(process.cwd(), ".env.local"));
+  
+  if (!isVercel && !hasEnvLocal) {
+    console.log("⚠️  Running locally without .env.local");
+    console.log("   Validation will check local .env file (if exists)");
+    console.log("   For Vercel validation, run: vercel env pull .env.local first\n");
+  }
+
   const requiredVars = [
     "DATABASE_URL",
-    "DATABASE_PRISMA_DATABASE_URL", // Optional but recommended
     "JWT_SECRET",
     "NEXT_PUBLIC_APP_URL",
+  ];
+  
+  const recommendedVars = [
+    "DATABASE_PRISMA_DATABASE_URL", // Optional but recommended
   ];
 
   // Optional variables are checked individually below
@@ -56,7 +81,12 @@ function validateEnvironmentVariables() {
   for (const varName of requiredVars) {
     const value = process.env[varName];
     if (!value) {
-      addError(`Required environment variable ${varName} is not set`);
+      // Only error if we're on Vercel or have .env.local (meaning we expect vars)
+      if (isVercel || hasEnvLocal) {
+        addError(`Required environment variable ${varName} is not set`);
+      } else {
+        addWarning(`${varName} is not set locally (will be checked on Vercel)`);
+      }
     } else {
       addSuccess(`${varName} is set`);
       
@@ -97,12 +127,21 @@ function validateEnvironmentVariables() {
     }
   }
 
-  // Check optional but recommended variables
-  if (!process.env.DATABASE_PRISMA_DATABASE_URL) {
-    addWarning("DATABASE_PRISMA_DATABASE_URL is not set (recommended for Vercel)");
-    addWarning("   Consider using Prisma Accelerate for better serverless performance");
-  } else {
-    addSuccess("DATABASE_PRISMA_DATABASE_URL is set (Prisma Accelerate)");
+  // Check recommended variables
+  for (const varName of recommendedVars) {
+    const value = process.env[varName];
+    if (!value) {
+      if (isVercel || hasEnvLocal) {
+        addWarning(`${varName} is not set (recommended for Vercel)`);
+        if (varName === "DATABASE_PRISMA_DATABASE_URL") {
+          addWarning("   Consider using Prisma Accelerate for better serverless performance");
+        }
+      }
+    } else {
+      if (varName === "DATABASE_PRISMA_DATABASE_URL") {
+        addSuccess("DATABASE_PRISMA_DATABASE_URL is set (Prisma Accelerate)");
+      }
+    }
   }
 
   // Check VERCEL_URL (should be set automatically by Vercel)
