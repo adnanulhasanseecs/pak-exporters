@@ -14,18 +14,20 @@ function getBaseUrl(): string {
   // In server context, use environment variable or default
   if (typeof window === "undefined") {
     // Server-side: Node.js fetch requires absolute URLs
-    if (process.env.NEXT_PUBLIC_APP_URL) {
-      return process.env.NEXT_PUBLIC_APP_URL;
-    }
-    // For Vercel deployments
+    // CRITICAL: For preview deployments, prioritize VERCEL_URL over NEXT_PUBLIC_APP_URL
+    // This ensures preview deployments call their own API, not production
     if (process.env.VERCEL_URL) {
       return `https://${process.env.VERCEL_URL}`;
+    }
+    // For production, use NEXT_PUBLIC_APP_URL if set
+    if (process.env.NEXT_PUBLIC_APP_URL) {
+      return process.env.NEXT_PUBLIC_APP_URL;
     }
     // Use APP_CONFIG.url as fallback (includes correct port configuration)
     return APP_CONFIG.url;
   }
   
-  // Client-side: use current origin
+  // Client-side: use current origin (always correct for the current deployment)
   return window.location.origin;
 }
 
