@@ -1,5 +1,5 @@
 import { CategoryCard } from "@/components/cards/CategoryCard";
-import { fetchCategories } from "@/services/api/categories";
+import { getCategoriesFromDb } from "@/services/db/categories";
 import { ROUTES } from "@/lib/constants";
 import { createPageMetadata, createBreadcrumbStructuredData } from "@/lib/seo";
 import { StructuredData } from "@/components/seo/StructuredData";
@@ -22,7 +22,7 @@ export default async function CategoriesPage() {
   
   let categories: Category[] = [];
   try {
-    categories = await fetchCategories();
+    categories = await getCategoriesFromDb();
   } catch (error) {
     console.error("Failed to fetch categories:", error);
   }

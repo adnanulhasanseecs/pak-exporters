@@ -1,4 +1,4 @@
-import { fetchBlogPosts } from "@/services/api/blog";
+import { getBlogPostsFromDb } from "@/services/db/blog";
 import { createItemListStructuredData } from "@/lib/seo";
 import { StructuredData } from "@/components/seo/StructuredData";
 import { BlogPageClient } from "@/components/blog/BlogPageClient";
@@ -17,7 +17,7 @@ export default async function BlogPage() {
   let posts: any[] = [];
   
   try {
-    posts = await fetchBlogPosts();
+    posts = await getBlogPostsFromDb(true);
   } catch (error) {
     console.error("Failed to fetch blog posts:", error);
     // posts remains empty array, page will show "no posts" message

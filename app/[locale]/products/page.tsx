@@ -2,8 +2,8 @@ import { Link } from "@/i18n/routing";
 import { Suspense } from "react";
 import { ProductCard } from "@/components/cards/ProductCard";
 import { ProductFilters } from "@/components/filters/ProductFilters";
-import { fetchProducts } from "@/services/api/products";
-import { fetchCategories } from "@/services/api/categories";
+import { getProductsFromDb } from "@/services/db/products";
+import { getCategoriesFromDb } from "@/services/db/categories";
 import { PAGINATION, ROUTES } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { createPageMetadata, createBreadcrumbStructuredData } from "@/lib/seo";
@@ -56,8 +56,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   
   try {
     const [productsResult, categoriesResult] = await Promise.allSettled([
-      fetchProducts(filters, { page, pageSize }),
-      fetchCategories(),
+      getProductsFromDb(filters, { page, pageSize }),
+      getCategoriesFromDb(),
     ]);
 
     if (productsResult.status === "fulfilled") {

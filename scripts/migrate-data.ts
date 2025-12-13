@@ -1,7 +1,25 @@
 /**
  * Data Migration Script
  * Imports JSON data from services/mocks/*.json into the database
+ * 
+ * Usage:
+ *   npm run db:seed                    # Uses .env or .env.local
+ *   DATABASE_URL=... npm run db:seed   # Override DATABASE_URL
  */
+
+// Load .env.local first (Vercel), then .env (local)
+import { existsSync } from "fs";
+import { join } from "path";
+const envLocalPath = join(process.cwd(), ".env.local");
+const envPath = join(process.cwd(), ".env");
+
+if (existsSync(envLocalPath)) {
+  require("dotenv").config({ path: envLocalPath });
+  console.log("📁 Using .env.local (Vercel environment variables)");
+} else if (existsSync(envPath)) {
+  require("dotenv").config({ path: envPath });
+  console.log("📁 Using .env (local environment variables)");
+}
 
 import { prisma } from "@/lib/prisma";
 import productsData from "@/services/mocks/products.json";
