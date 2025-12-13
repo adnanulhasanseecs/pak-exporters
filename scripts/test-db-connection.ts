@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+// Use the singleton from lib/prisma.ts to ensure correct connection string
+// This ensures we use the same connection logic as the app (no localhost on Vercel)
+import { prisma } from "@/lib/prisma";
 
 async function testConnection() {
   try {

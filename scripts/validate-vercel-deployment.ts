@@ -92,13 +92,20 @@ function validateEnvironmentVariables() {
       
       // Validate specific variables
       if (varName === "DATABASE_URL") {
-        if (value.includes("localhost")) {
-          addError(`DATABASE_URL points to localhost: ${value.substring(0, 50)}...`);
+        // CRITICAL: Check for localhost, 127.0.0.1, or ::1
+        const isLocalhost = value.includes("localhost") || 
+                           value.includes("127.0.0.1") || 
+                           value.includes("::1") ||
+                           /localhost:\d+/.test(value);
+        
+        if (isLocalhost) {
+          addError(`DATABASE_URL points to localhost: ${value.substring(0, 80)}...`);
           addError("   This will NOT work on Vercel. Use Vercel Postgres or Prisma Accelerate.");
+          addError("   Fix: Set DATABASE_PRISMA_DATABASE_URL or update DATABASE_URL in Vercel environment variables.");
         } else if (value.includes("file:")) {
           addError(`DATABASE_URL points to a file (SQLite): ${value.substring(0, 50)}...`);
           addError("   SQLite is not supported on Vercel. Use PostgreSQL.");
-        } else if (!value.includes("postgres://") && !value.includes("postgresql://")) {
+        } else if (!value.includes("postgres://") && !value.includes("postgresql://") && !value.includes("prisma+postgres://")) {
           addWarning(`DATABASE_URL format may be incorrect: ${value.substring(0, 50)}...`);
         } else {
           addSuccess(`DATABASE_URL format looks correct (PostgreSQL)`);
@@ -139,7 +146,19 @@ function validateEnvironmentVariables() {
       }
     } else {
       if (varName === "DATABASE_PRISMA_DATABASE_URL") {
-        addSuccess("DATABASE_PRISMA_DATABASE_URL is set (Prisma Accelerate)");
+        // CRITICAL: Check for localhost in Prisma Accelerate URL too
+        const isLocalhost = value.includes("localhost") || 
+                           value.includes("127.0.0.1") || 
+                           value.includes("::1");
+        
+        if (isLocalhost) {
+          addError(`DATABASE_PRISMA_DATABASE_URL points to localhost: ${value.substring(0, 80)}...`);
+          addError("   This will NOT work on Vercel. Fix DATABASE_PRISMA_DATABASE_URL in Vercel environment variables.");
+        } else if (!value.includes("prisma+postgres://") && !value.includes("accelerate")) {
+          addWarning(`DATABASE_PRISMA_DATABASE_URL format may be incorrect (should be Prisma Accelerate URL)`);
+        } else {
+          addSuccess("DATABASE_PRISMA_DATABASE_URL is set (Prisma Accelerate)");
+        }
       }
     }
   }
