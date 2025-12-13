@@ -43,6 +43,7 @@
     "db:generate:prod": "prisma generate --no-engine",
     "db:seed": "tsx scripts/migrate-data.ts",
     "db:verify": "tsx scripts/verify-relationships.ts",
+    "db:diagnose": "tsx scripts/diagnose-prisma-connection.ts",
     "db:studio": "prisma studio",
     "db:backup": "tsx scripts/backup-database.ts",
     "db:restore": "tsx scripts/restore-database.ts",
