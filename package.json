@@ -39,6 +39,7 @@
     "server:status": "powershell -ExecutionPolicy Bypass -File ./scripts/manage-pak-exporters.ps1 status",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
+    "db:generate:prod": "prisma generate --no-engine",
     "db:seed": "tsx scripts/migrate-data.ts",
     "db:verify": "tsx scripts/verify-relationships.ts",
     "db:studio": "prisma studio",
