@@ -56,13 +56,35 @@ export async function fetchProducts(
 ): Promise<ProductListResponse> {
   const queryString = buildQueryString(filters, pagination);
   const url = `${API_ENDPOINTS.products}${queryString ? `?${queryString}` : ""}`;
+  const fullUrl = getApiUrl(url);
 
-  const response = await fetch(getApiUrl(url), {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  // Log URL construction in development
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[fetchProducts] Fetching from: ${fullUrl}`);
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(fullUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (fetchError: any) {
+    console.error(`[fetchProducts] Fetch failed for URL: ${fullUrl}`, {
+      error: fetchError.message,
+      stack: fetchError.stack,
+      baseUrl: typeof window === "undefined" 
+        ? (process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL || "unknown")
+        : window.location.origin,
+    });
+    throw new Error(
+      `Failed to fetch products: ${fetchError.message}. ` +
+      `URL: ${fullUrl}. ` +
+      `This might be a network issue or the API route might be password-protected on Vercel.`
+    );
+  }
 
   if (!response.ok) {
     // Check if response is JSON before parsing

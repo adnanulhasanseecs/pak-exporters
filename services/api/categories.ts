@@ -21,12 +21,35 @@ function getApiUrl(endpoint: string): string {
  * Fetch all categories
  */
 export async function fetchCategories(): Promise<Category[]> {
-  const response = await fetch(getApiUrl(API_ENDPOINTS.categories), {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const fullUrl = getApiUrl(API_ENDPOINTS.categories);
+  
+  // Log URL construction in development
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[fetchCategories] Fetching from: ${fullUrl}`);
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(fullUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (fetchError: any) {
+    console.error(`[fetchCategories] Fetch failed for URL: ${fullUrl}`, {
+      error: fetchError.message,
+      stack: fetchError.stack,
+      baseUrl: typeof window === "undefined" 
+        ? (process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL || "unknown")
+        : window.location.origin,
+    });
+    throw new Error(
+      `Failed to fetch categories: ${fetchError.message}. ` +
+      `URL: ${fullUrl}. ` +
+      `This might be a network issue or the API route might be password-protected on Vercel.`
+    );
+  }
 
   if (!response.ok) {
     const contentType = response.headers.get("content-type");

@@ -22,14 +22,36 @@ function getApiUrl(endpoint: string): string {
  */
 export async function fetchBlogPosts(): Promise<BlogPost[]> {
   const endpoint = `${API_ENDPOINTS.blog || "/api/blog"}?published=true`;
+  const fullUrl = getApiUrl(endpoint);
   
-  const response = await fetch(getApiUrl(endpoint), {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    cache: "no-store", // Always fetch fresh data for blog posts
-  });
+  // Log URL construction in development
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[fetchBlogPosts] Fetching from: ${fullUrl}`);
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(fullUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store", // Always fetch fresh data for blog posts
+    });
+  } catch (fetchError: any) {
+    console.error(`[fetchBlogPosts] Fetch failed for URL: ${fullUrl}`, {
+      error: fetchError.message,
+      stack: fetchError.stack,
+      baseUrl: typeof window === "undefined" 
+        ? (process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL || "unknown")
+        : window.location.origin,
+    });
+    throw new Error(
+      `Failed to fetch blog posts: ${fetchError.message}. ` +
+      `URL: ${fullUrl}. ` +
+      `This might be a network issue or the API route might be password-protected on Vercel.`
+    );
+  }
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ error: "Failed to fetch blog posts" }));
