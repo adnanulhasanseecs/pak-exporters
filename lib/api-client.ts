@@ -13,33 +13,51 @@ import { APP_CONFIG } from "@/lib/constants";
 function getBaseUrl(): string {
   // In server context, use environment variable or default
   if (typeof window === "undefined") {
+    // Log available environment variables for debugging (first call only)
+    if (!(globalThis as any).__apiBaseUrlLogged) {
+      console.log("[getBaseUrl] Environment check:", {
+        VERCEL_URL: process.env.VERCEL_URL || "NOT set",
+        NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || "NOT set",
+        NODE_ENV: process.env.NODE_ENV || "not set",
+        APP_CONFIG_url: APP_CONFIG.url,
+      });
+      (globalThis as any).__apiBaseUrlLogged = true;
+    }
+    
     // Server-side on Vercel: Use VERCEL_URL if available (most reliable)
     if (process.env.VERCEL_URL) {
-      return `https://${process.env.VERCEL_URL}`;
+      const vercelUrl = `https://${process.env.VERCEL_URL}`;
+      console.log(`[getBaseUrl] Using VERCEL_URL: ${vercelUrl}`);
+      return vercelUrl;
     }
     
     // For production deployments, use NEXT_PUBLIC_APP_URL if set
     if (process.env.NEXT_PUBLIC_APP_URL) {
       // CRITICAL: Never use localhost in production
-      if (process.env.NEXT_PUBLIC_APP_URL.includes('localhost') && process.env.NODE_ENV === 'production') {
-        console.error("❌ [getBaseUrl] NEXT_PUBLIC_APP_URL points to localhost in production!");
+      if (process.env.NEXT_PUBLIC_APP_URL.includes('localhost')) {
+        console.error("❌ [getBaseUrl] NEXT_PUBLIC_APP_URL points to localhost!");
+        console.error(`   Value: ${process.env.NEXT_PUBLIC_APP_URL}`);
         console.error("   This will cause ECONNREFUSED errors on Vercel.");
         // Try VERCEL_URL as fallback
         if (process.env.VERCEL_URL) {
+          console.log(`[getBaseUrl] Falling back to VERCEL_URL: https://${process.env.VERCEL_URL}`);
           return `https://${process.env.VERCEL_URL}`;
         }
-        throw new Error("NEXT_PUBLIC_APP_URL cannot point to localhost in production. Set VERCEL_URL or fix NEXT_PUBLIC_APP_URL.");
+        throw new Error("NEXT_PUBLIC_APP_URL cannot point to localhost. Set VERCEL_URL or fix NEXT_PUBLIC_APP_URL in Vercel environment variables.");
       }
+      console.log(`[getBaseUrl] Using NEXT_PUBLIC_APP_URL: ${process.env.NEXT_PUBLIC_APP_URL}`);
       return process.env.NEXT_PUBLIC_APP_URL;
     }
     
-    // Last resort: Use APP_CONFIG.url (but warn if it's localhost in production)
-    if (APP_CONFIG.url.includes('localhost') && process.env.NODE_ENV === 'production') {
-      console.error("❌ [getBaseUrl] APP_CONFIG.url points to localhost in production!");
+    // Last resort: Use APP_CONFIG.url (but fail if it's localhost in production)
+    if (APP_CONFIG.url.includes('localhost')) {
+      console.error("❌ [getBaseUrl] APP_CONFIG.url points to localhost!");
+      console.error(`   Value: ${APP_CONFIG.url}`);
       console.error("   This will cause ECONNREFUSED errors on Vercel.");
-      throw new Error("Cannot use localhost URL in production. Set VERCEL_URL or NEXT_PUBLIC_APP_URL environment variable.");
+      throw new Error("Cannot use localhost URL. Set VERCEL_URL or NEXT_PUBLIC_APP_URL environment variable in Vercel.");
     }
     
+    console.log(`[getBaseUrl] Using APP_CONFIG.url: ${APP_CONFIG.url}`);
     return APP_CONFIG.url;
   }
   
