@@ -7,9 +7,9 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  // Use DATABASE_PRISMA_DATABASE_URL (Prisma Accelerate) - better for serverless/Vercel
-  // Falls back to DATABASE_URL via Prisma client initialization in lib/prisma.ts
-  url      = env("DATABASE_PRISMA_DATABASE_URL")
+  // Use DATABASE_URL as fallback - Prisma Client will override with DATABASE_PRISMA_DATABASE_URL if available
+  // The actual connection string is set at runtime in lib/prisma.ts
+  url      = env("DATABASE_URL")
 }
 
 // User model

@@ -9,7 +9,7 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    // Use DATABASE_PRISMA_DATABASE_URL (Prisma Accelerate) if available, fallback to DATABASE_URL
-    url: env("DATABASE_PRISMA_DATABASE_URL") || env("DATABASE_URL"),
+    // Use DATABASE_URL - runtime override in lib/prisma.ts will use DATABASE_PRISMA_DATABASE_URL if available
+    url: env("DATABASE_URL"),
   },
 });
