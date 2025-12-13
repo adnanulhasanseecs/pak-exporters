@@ -70,9 +70,27 @@ export async function GET(request: NextRequest) {
     // Test database connection (Prisma connects lazily, so we'll test with a simple query)
     let useDatabase = true;
     try {
+      // Log connection attempt
+      const dbUrl = process.env.DATABASE_PRISMA_DATABASE_URL || process.env.DATABASE_URL;
+      if (dbUrl) {
+        const urlObj = new URL(dbUrl);
+        console.log(`[API] Testing database connection to: ${urlObj.hostname}:${urlObj.port || 'default'}`);
+      }
+      
       // Try a simple query to test connection
       await prisma.$queryRaw`SELECT 1`;
+      console.log("[API] Database connection successful");
     } catch (connectError: any) {
+      console.error("[API] Database connection failed:", {
+        message: connectError.message,
+        code: connectError.code,
+        meta: connectError.meta,
+        dbUrl: process.env.DATABASE_PRISMA_DATABASE_URL 
+          ? "DATABASE_PRISMA_DATABASE_URL is set" 
+          : process.env.DATABASE_URL 
+          ? "DATABASE_URL is set" 
+          : "No database URL found"
+      });
       console.warn("Database connection failed, falling back to JSON mock data:", connectError.message);
       useDatabase = false;
     }
