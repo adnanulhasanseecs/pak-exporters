@@ -14,7 +14,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function BlogPage() {
-  const posts = await fetchBlogPosts();
+  let posts: any[] = [];
+  
+  try {
+    posts = await fetchBlogPosts();
+  } catch (error) {
+    console.error("Failed to fetch blog posts:", error);
+    // posts remains empty array, page will show "no posts" message
+  }
 
   const itemListJsonLd = createItemListStructuredData(
     posts.map((post) => ({

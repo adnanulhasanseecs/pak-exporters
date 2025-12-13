@@ -241,16 +241,95 @@ export async function GET(request: NextRequest) {
       throw new Error(`Failed to count products: ${countError.message}`);
     }
 
-    // If database is empty, fall back to JSON
+    // If database is empty, fall back to JSON immediately
     if (total === 0) {
-      console.warn("Database has no products, falling back to JSON mock data");
-      useDatabase = false;
-    }
+      console.warn("Database has no products (total=0), falling back to JSON mock data");
+      // Don't throw - directly use JSON fallback logic
+      // Parse search params again for fallback
+      const searchParams = request.nextUrl.searchParams;
+      let page = parseInt(searchParams.get("page") || "1", 10);
+      let pageSize = parseInt(searchParams.get("pageSize") || "20", 10);
+      
+      // Validate pagination values
+      if (!page || page < 1) page = 1;
+      if (!pageSize || pageSize < 1) pageSize = 20;
+      
+      const category = searchParams.get("category");
+      const search = searchParams.get("search");
+      const minPrice = searchParams.get("minPrice");
+      const maxPrice = searchParams.get("maxPrice");
+      const companyId = searchParams.get("companyId");
+      const verifiedOnly = searchParams.get("verifiedOnly");
+      const goldSupplierOnly = searchParams.get("goldSupplierOnly");
+      const membershipTier = searchParams.get("membershipTier");
+      const tags = searchParams.get("tags");
 
-    // If we're not using database, fall back to JSON (handled below)
-    if (!useDatabase) {
-      // This will be handled by the fallback logic after the try-catch
-      throw new Error("Using JSON fallback - database empty");
+      let products = productsData as any[];
+      
+      // Apply filters
+      if (category) {
+        products = products.filter((p) => 
+          p.category?.slug === category || p.category?.id === category
+        );
+      }
+      if (search) {
+        const searchLower = search.toLowerCase();
+        products = products.filter((p) =>
+          p.name?.toLowerCase().includes(searchLower) ||
+          p.description?.toLowerCase().includes(searchLower) ||
+          p.shortDescription?.toLowerCase().includes(searchLower)
+        );
+      }
+      if (minPrice) {
+        products = products.filter((p) => p.price?.amount >= parseFloat(minPrice));
+      }
+      if (maxPrice) {
+        products = products.filter((p) => p.price?.amount <= parseFloat(maxPrice));
+      }
+      if (companyId) {
+        products = products.filter((p) => p.company?.id === companyId);
+      }
+      if (verifiedOnly === "true") {
+        products = products.filter((p) => p.company?.verified === true);
+      }
+      if (goldSupplierOnly === "true") {
+        products = products.filter((p) => p.company?.goldSupplier === true);
+      }
+      if (membershipTier) {
+        products = products.filter((p) => p.company?.membershipTier === membershipTier);
+      }
+      if (tags) {
+        const tagList = tags.split(",");
+        products = products.filter((p) => {
+          const productTags = p.tags || [];
+          return tagList.some((tag) => productTags.includes(tag));
+        });
+      }
+
+      // Only show active products
+      products = products.filter((p) => p.status !== "inactive");
+
+      // Apply pagination
+      const total = products.length;
+      const skip = (page - 1) * pageSize;
+      const paginatedProducts = products.slice(skip, skip + pageSize);
+
+      // Transform to API format
+      const productListItems = paginatedProducts.map((product) => {
+        const { description, specifications, ...rest } = product;
+        return {
+          ...rest,
+          description: product.shortDescription || undefined,
+        };
+      });
+
+      return NextResponse.json({
+        products: productListItems,
+        total,
+        page,
+        pageSize,
+        totalPages: Math.ceil(total / pageSize),
+      });
     }
 
     // Get products with error handling
