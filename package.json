@@ -14,7 +14,7 @@
     "quick-check": "npm run type-check && npm run validate:encoding",
     "build": "npm run validate:encoding && next build",
     "build:check": "tsx scripts/vercel-build-check.ts",
-    "prebuild": "npm run type-check:strict && npm run db:generate",
+    "prebuild": "npm run type-check:strict && npm run db:generate:prod",
     "postinstall": "prisma generate",
     "deploy:vercel": "tsx scripts/deploy-vercel.ts",
     "deploy:vercel:prod": "tsx scripts/deploy-vercel.ts -- --prod",
