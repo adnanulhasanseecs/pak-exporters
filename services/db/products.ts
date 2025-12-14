@@ -60,16 +60,86 @@ export async function getProductsFromDb(
   filters?: ProductFilters,
   pagination?: PaginationParams
 ): Promise<ProductListResponse> {
+  // STEP 1: Diagnostic logging to prove function runs and database connection
+  console.log("[getProductsFromDb] Function called");
+  console.log("[getProductsFromDb] NODE_ENV:", process.env.NODE_ENV || "not set");
+  
+  // Log database host (never credentials)
+  if (process.env.DATABASE_URL) {
+    try {
+      const dbUrl = new URL(process.env.DATABASE_URL);
+      console.log("[getProductsFromDb] DB host:", dbUrl.hostname);
+      console.log("[getProductsFromDb] DB port:", dbUrl.port || "default");
+    } catch (e) {
+      console.log("[getProductsFromDb] DB URL format:", process.env.DATABASE_URL.substring(0, 50) + "...");
+    }
+  } else {
+    console.error("[getProductsFromDb] DATABASE_URL is NOT set!");
+  }
+
   try {
     // Test database connection
     await prisma.$queryRaw`SELECT 1`;
+    console.log("[getProductsFromDb] Database connection test: SUCCESS");
+    
+    // STEP 3: Verify schema alignment - check if Product table exists and its structure
+    try {
+      // Check if Product table exists (PostgreSQL)
+      const tableCheck = await prisma.$queryRaw<Array<{ table_name: string }>>`
+        SELECT table_name 
+        FROM information_schema.tables 
+        WHERE table_schema = 'public' 
+        AND table_name IN ('Product', 'product', 'products', 'Products')
+      `;
+      console.log("[getProductsFromDb] Schema check - Found tables:", tableCheck);
+      
+      // Check Product table columns
+      const columnCheck = await prisma.$queryRaw<Array<{ column_name: string; data_type: string }>>`
+        SELECT column_name, data_type
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+        AND table_name IN ('Product', 'product', 'products', 'Products')
+        ORDER BY ordinal_position
+        LIMIT 10
+      `;
+      console.log("[getProductsFromDb] Schema check - Product table columns:", columnCheck);
+    } catch (schemaError: any) {
+      console.warn("[getProductsFromDb] Schema check failed (may not be PostgreSQL):", schemaError.message);
+    }
   } catch (error: any) {
+    console.error("[getProductsFromDb] Database connection test: FAILED", error.message);
     console.warn("[getProductsFromDb] Database not available, using JSON fallback:", error.message);
     // Fall back to JSON mock data
     return getProductsFromJson(filters, pagination);
   }
 
   try {
+    // STEP 2: TEMPORARILY BYPASS ALL FILTERS to prove if ANY products exist
+    // This is a diagnostic query - will be removed after diagnosis
+    console.log("[getProductsFromDb] Running diagnostic query: prisma.product.findMany({ take: 5 })");
+    const diagnosticProducts = await prisma.product.findMany({ take: 5 });
+    console.log("[getProductsFromDb] Diagnostic query result:", {
+      count: diagnosticProducts.length,
+      ids: diagnosticProducts.map(p => p.id),
+      names: diagnosticProducts.map(p => p.name),
+    });
+
+    // If diagnostic query returns 0, the database is empty or schema mismatch
+    if (diagnosticProducts.length === 0) {
+      console.error("[getProductsFromDb] DIAGNOSIS: Database has ZERO products. This is a DB/schema/migration issue.");
+      // Still return empty result instead of falling back to JSON
+      return {
+        products: [],
+        total: 0,
+        page: 1,
+        pageSize: 20,
+        totalPages: 0,
+      };
+    }
+
+    // If diagnostic query returns products, continue with normal filtered query
+    console.log("[getProductsFromDb] Diagnostic query SUCCESS: Found products. Proceeding with filtered query.");
+
     const page = pagination?.page || 1;
     const pageSize = pagination?.pageSize || 20;
     const skip = (page - 1) * pageSize;
@@ -122,6 +192,8 @@ export async function getProductsFromDb(
       where.company = { ...where.company, membershipTier: filters.membershipTier };
     }
 
+    console.log("[getProductsFromDb] Filtered query where clause:", JSON.stringify(where, null, 2));
+
     // Fetch products
     const [products, total] = await Promise.all([
       prisma.product.findMany({
@@ -139,6 +211,11 @@ export async function getProductsFromDb(
       prisma.product.count({ where }),
     ]);
 
+    console.log("[getProductsFromDb] Filtered query result:", {
+      productsFound: products.length,
+      totalCount: total,
+    });
+
     const transformedProducts = products.map(transformProduct);
     const totalPages = Math.ceil(total / pageSize);
 
@@ -151,6 +228,7 @@ export async function getProductsFromDb(
     };
   } catch (error: any) {
     console.error("[getProductsFromDb] Error fetching products:", error);
+    console.error("[getProductsFromDb] Error stack:", error.stack);
     // Fall back to JSON mock data
     return getProductsFromJson(filters, pagination);
   }
