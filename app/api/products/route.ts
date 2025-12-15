@@ -15,7 +15,6 @@ import { prisma } from "@/lib/prisma";
 import type { ProductFilters, CreateProductInput } from "@/types/product";
 import type { PaginationParams } from "@/types/api";
 import { requireRole } from "@/lib/middleware-auth";
-import productsData from "@/services/mocks/products.json";
 
 // Helper to parse JSON fields from database
 function parseJsonField<T>(field: string | null): T | undefined {
@@ -101,76 +100,7 @@ export async function GET(request: NextRequest) {
     if (!pagination.page || pagination.page < 1) pagination.page = 1;
     if (!pagination.pageSize || pagination.pageSize < 1) pagination.pageSize = 20;
 
-    // If database is not available, use JSON fallback
-    if (!useDatabase) {
-      let products = productsData as any[];
-      
-      // Apply filters
-      if (filters.category) {
-        products = products.filter((p) => 
-          p.category?.slug === filters.category || p.category?.id === filters.category
-        );
-      }
-      if (filters.search) {
-        const searchLower = filters.search.toLowerCase();
-        products = products.filter((p) =>
-          p.name?.toLowerCase().includes(searchLower) ||
-          p.description?.toLowerCase().includes(searchLower) ||
-          p.shortDescription?.toLowerCase().includes(searchLower)
-        );
-      }
-      if (filters.minPrice !== undefined) {
-        products = products.filter((p) => p.price?.amount >= filters.minPrice!);
-      }
-      if (filters.maxPrice !== undefined) {
-        products = products.filter((p) => p.price?.amount <= filters.maxPrice!);
-      }
-      if (filters.companyId) {
-        products = products.filter((p) => p.company?.id === filters.companyId);
-      }
-      if (filters.verifiedOnly) {
-        products = products.filter((p) => p.company?.verified === true);
-      }
-      if (filters.goldSupplierOnly) {
-        products = products.filter((p) => p.company?.goldSupplier === true);
-      }
-      if (filters.membershipTier) {
-        products = products.filter((p) => p.company?.membershipTier === filters.membershipTier);
-      }
-      if (filters.tags && filters.tags.length > 0) {
-        products = products.filter((p) => {
-          const productTags = p.tags || [];
-          return filters.tags!.some((tag) => productTags.includes(tag));
-        });
-      }
-
-      // Only show active products
-      products = products.filter((p) => p.status !== "inactive");
-
-      // Apply pagination
-      const total = products.length;
-      const skip = (pagination.page - 1) * pagination.pageSize;
-      const paginatedProducts = products.slice(skip, skip + pagination.pageSize);
-
-      // Transform to API format (omit full description for list view)
-      const productListItems = paginatedProducts.map((product) => {
-        const { description, specifications, ...rest } = product;
-        return {
-          ...rest,
-          description: product.shortDescription || undefined,
-        };
-      });
-
-      return NextResponse.json({
-        products: productListItems,
-        total,
-        page: pagination.page,
-        pageSize: pagination.pageSize,
-        totalPages: Math.ceil(total / pagination.pageSize),
-      });
-    }
-
-    // Build Prisma query
+    // Build Prisma query - products are publicly readable
     const where: any = {
       status: "active", // Only show active products by default
     };
@@ -222,110 +152,9 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * pageSize;
     const take = pageSize;
 
-    // Get total count with error handling
-    let total: number;
-    try {
-      total = await prisma.product.count({ where });
-    } catch (countError: any) {
-      console.error("Error counting products:", countError);
-      throw new Error(`Failed to count products: ${countError.message}`);
-    }
-
-    // If database is empty, fall back to JSON immediately
-    if (total === 0) {
-      console.warn("Database has no products (total=0), falling back to JSON mock data");
-      // Don't throw - directly use JSON fallback logic
-      // Parse search params again for fallback
-      const searchParams = request.nextUrl.searchParams;
-      let page = parseInt(searchParams.get("page") || "1", 10);
-      let pageSize = parseInt(searchParams.get("pageSize") || "20", 10);
-      
-      // Validate pagination values
-      if (!page || page < 1) page = 1;
-      if (!pageSize || pageSize < 1) pageSize = 20;
-      
-      const category = searchParams.get("category");
-      const search = searchParams.get("search");
-      const minPrice = searchParams.get("minPrice");
-      const maxPrice = searchParams.get("maxPrice");
-      const companyId = searchParams.get("companyId");
-      const verifiedOnly = searchParams.get("verifiedOnly");
-      const goldSupplierOnly = searchParams.get("goldSupplierOnly");
-      const membershipTier = searchParams.get("membershipTier");
-      const tags = searchParams.get("tags");
-
-      let products = productsData as any[];
-      
-      // Apply filters
-      if (category) {
-        products = products.filter((p) => 
-          p.category?.slug === category || p.category?.id === category
-        );
-      }
-      if (search) {
-        const searchLower = search.toLowerCase();
-        products = products.filter((p) =>
-          p.name?.toLowerCase().includes(searchLower) ||
-          p.description?.toLowerCase().includes(searchLower) ||
-          p.shortDescription?.toLowerCase().includes(searchLower)
-        );
-      }
-      if (minPrice) {
-        products = products.filter((p) => p.price?.amount >= parseFloat(minPrice));
-      }
-      if (maxPrice) {
-        products = products.filter((p) => p.price?.amount <= parseFloat(maxPrice));
-      }
-      if (companyId) {
-        products = products.filter((p) => p.company?.id === companyId);
-      }
-      if (verifiedOnly === "true") {
-        products = products.filter((p) => p.company?.verified === true);
-      }
-      if (goldSupplierOnly === "true") {
-        products = products.filter((p) => p.company?.goldSupplier === true);
-      }
-      if (membershipTier) {
-        products = products.filter((p) => p.company?.membershipTier === membershipTier);
-      }
-      if (tags) {
-        const tagList = tags.split(",");
-        products = products.filter((p) => {
-          const productTags = p.tags || [];
-          return tagList.some((tag) => productTags.includes(tag));
-        });
-      }
-
-      // Only show active products
-      products = products.filter((p) => p.status !== "inactive");
-
-      // Apply pagination
-      const total = products.length;
-      const skip = (page - 1) * pageSize;
-      const paginatedProducts = products.slice(skip, skip + pageSize);
-
-      // Transform to API format
-      const productListItems = paginatedProducts.map((product) => {
-        const { description, specifications, ...rest } = product;
-        return {
-          ...rest,
-          description: product.shortDescription || undefined,
-        };
-      });
-
-      return NextResponse.json({
-        products: productListItems,
-        total,
-        page,
-        pageSize,
-        totalPages: Math.ceil(total / pageSize),
-      });
-    }
-
-    // Get products with error handling
-    let products: any[];
-    try {
-      products = await prisma.product.findMany({
+    // Get total count and products - fail fast on errors
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
         where,
         skip,
         take,
@@ -336,11 +165,9 @@ export async function GET(request: NextRequest) {
         orderBy: {
           createdAt: "desc",
         },
-      });
-    } catch (findError: any) {
-      console.error("Error finding products:", findError);
-      throw new Error(`Failed to fetch products: ${findError.message}`);
-    }
+      }),
+      prisma.product.count({ where }),
+    ]);
 
     // Filter by tags if needed (in memory for SQLite)
     let filteredProducts = products;
@@ -363,12 +190,6 @@ export async function GET(request: NextRequest) {
       };
     });
 
-    console.log("[API /products GET] Success - returning products:", {
-      count: productListItems.length,
-      total,
-      page,
-    });
-    
     return NextResponse.json({
       products: productListItems,
       total,
@@ -377,105 +198,15 @@ export async function GET(request: NextRequest) {
       totalPages: Math.ceil(total / pageSize),
     });
   } catch (error: any) {
-    console.error("[API /products GET] Error fetching products from database, falling back to JSON:", error.message);
-    console.error("[API /products GET] Error stack:", error.stack);
-    
-    // Fallback to JSON mock data on any error
-    try {
-      const searchParams = new URL(request.url).searchParams;
-      let page = parseInt(searchParams.get("page") || "1", 10);
-      let pageSize = parseInt(searchParams.get("pageSize") || "20", 10);
-      
-      // Validate pagination values (same as main path)
-      if (!page || page < 1) page = 1;
-      if (!pageSize || pageSize < 1) pageSize = 20;
-      
-      const category = searchParams.get("category");
-      const search = searchParams.get("search");
-      const minPrice = searchParams.get("minPrice");
-      const maxPrice = searchParams.get("maxPrice");
-      const companyId = searchParams.get("companyId");
-      const verifiedOnly = searchParams.get("verifiedOnly");
-      const goldSupplierOnly = searchParams.get("goldSupplierOnly");
-      const membershipTier = searchParams.get("membershipTier");
-      const tags = searchParams.get("tags");
-
-      let products = productsData as any[];
-      
-      // Apply filters
-      if (category) {
-        products = products.filter((p) => 
-          p.category?.slug === category || p.category?.id === category
-        );
-      }
-      if (search) {
-        const searchLower = search.toLowerCase();
-        products = products.filter((p) =>
-          p.name?.toLowerCase().includes(searchLower) ||
-          p.description?.toLowerCase().includes(searchLower) ||
-          p.shortDescription?.toLowerCase().includes(searchLower)
-        );
-      }
-      if (minPrice) {
-        products = products.filter((p) => p.price?.amount >= parseFloat(minPrice));
-      }
-      if (maxPrice) {
-        products = products.filter((p) => p.price?.amount <= parseFloat(maxPrice));
-      }
-      if (companyId) {
-        products = products.filter((p) => p.company?.id === companyId);
-      }
-      if (verifiedOnly === "true") {
-        products = products.filter((p) => p.company?.verified === true);
-      }
-      if (goldSupplierOnly === "true") {
-        products = products.filter((p) => p.company?.goldSupplier === true);
-      }
-      if (membershipTier) {
-        products = products.filter((p) => p.company?.membershipTier === membershipTier);
-      }
-      if (tags) {
-        const tagList = tags.split(",");
-        products = products.filter((p) => {
-          const productTags = p.tags || [];
-          return tagList.some((tag) => productTags.includes(tag));
-        });
-      }
-
-      // Only show active products
-      products = products.filter((p) => p.status !== "inactive");
-
-      // Apply pagination
-      const total = products.length;
-      const skip = (page - 1) * pageSize;
-      const paginatedProducts = products.slice(skip, skip + pageSize);
-
-      // Transform to API format
-      const productListItems = paginatedProducts.map((product) => {
-        const { description, specifications, ...rest } = product;
-        return {
-          ...rest,
-          description: product.shortDescription || undefined,
-        };
-      });
-
-      return NextResponse.json({
-        products: productListItems,
-        total,
-        page,
-        pageSize,
-        totalPages: Math.ceil(total / pageSize),
-      });
-    } catch (fallbackError: any) {
-      console.error("Error in JSON fallback:", fallbackError);
-      return NextResponse.json(
-        { 
-          error: "Failed to fetch products",
-          message: process.env.NODE_ENV === "development" ? fallbackError.message : undefined,
-        },
-        { status: 500 }
-      );
-    }
+    // In production, fail fast - do not mask database errors
+    console.error("Error fetching products:", error);
+    return NextResponse.json(
+      { 
+        error: "Failed to fetch products",
+        message: process.env.NODE_ENV === "development" ? error.message : undefined,
+      },
+      { status: 500 }
+    );
   }
 }
 
