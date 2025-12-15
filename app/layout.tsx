@@ -44,7 +44,6 @@ export const metadata: Metadata = {
       { url: "/favicon.png", sizes: "180x180", type: "image/png" },
     ],
   },
-  manifest: "/manifest.json",
   openGraph: {
     type: "website",
     locale: "en_US",
