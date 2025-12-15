@@ -13,6 +13,42 @@ import { routing } from "@/i18n/routing";
 const intlMiddleware = createMiddleware(routing);
 
 export function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  
+  // PUBLIC CATALOG ROUTES - Bypass middleware entirely for read-only pages
+  // These routes must work without authentication, cookies, or headers
+  const publicCatalogRoutes = [
+    "/products",
+    "/categories",
+    "/blog",
+    "/category/",
+    "/company/",
+    "/search",
+    "/about",
+    "/contact",
+  ];
+  
+  // Check if this is a public catalog route (with or without locale prefix)
+  const isPublicCatalogRoute = publicCatalogRoutes.some((route) => {
+    // Match exact route or route with locale prefix (e.g., /en/products, /ur/products)
+    return pathname === route || 
+           pathname.startsWith(route) ||
+           /^\/[a-z]{2}\/products/.test(pathname) ||
+           /^\/[a-z]{2}\/categories/.test(pathname) ||
+           /^\/[a-z]{2}\/blog/.test(pathname) ||
+           /^\/[a-z]{2}\/category\//.test(pathname) ||
+           /^\/[a-z]{2}\/company\//.test(pathname) ||
+           /^\/[a-z]{2}\/search/.test(pathname);
+  });
+  
+  // If public catalog route, only apply i18n routing and return immediately
+  // This ensures SSR can run without any auth checks or middleware interference
+  if (isPublicCatalogRoute) {
+    const intlResponse = intlMiddleware(request);
+    return intlResponse;
+  }
+  
+  // For all other routes, apply full middleware processing
   // First, handle i18n routing - this will handle locale detection and redirects
   const intlResponse = intlMiddleware(request);
   
@@ -90,12 +126,15 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
+     * Match request paths but EXCLUDE:
+     * - api routes (handled separately in middleware)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - public files (public folder)
+     * 
+     * Public catalog routes (products, categories, blog) are matched but
+     * bypassed early in middleware function for SSR compatibility
      */
     "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)).*)",
   ],
