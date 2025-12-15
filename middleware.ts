@@ -1,3 +1,8 @@
+/**
+ * Next.js Middleware
+ * Handles i18n routing, security, CSRF protection, rate limiting, and request validation
+ */
+
 import createMiddleware from "next-intl/middleware";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
@@ -10,8 +15,8 @@ const intlMiddleware = createMiddleware(routing);
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // PUBLIC CATALOG ROUTES - bypass middleware for SSR
-  const isPublicCatalogRoute =
+  // PUBLIC CATALOG ROUTES & STATIC ASSETS - Early bypass
+  const isPublicOrStaticRoute =
     pathname === "/" ||
     pathname === "/products" ||
     pathname === "/categories" ||
@@ -21,8 +26,11 @@ export function middleware(request: NextRequest) {
     pathname === "/contact" ||
     pathname === "/companies" ||
     pathname === "/rfq" ||
-    pathname === "/manifest.json" || // <-- add manifest.json
-    // Locale-prefixed public routes
+    pathname === "/manifest.json" ||
+    pathname === "/favicon.ico" ||
+    /^\/_next\/static\//.test(pathname) ||
+    /^\/_next\/image\//.test(pathname) ||
+    /\.(svg|png|jpg|jpeg|gif|webp|ico)$/.test(pathname) ||
     /^\/[a-z]{2}\/?$/.test(pathname) ||
     /^\/[a-z]{2}\/products(\/|$)/.test(pathname) ||
     /^\/[a-z]{2}\/categories(\/|$)/.test(pathname) ||
@@ -33,39 +41,31 @@ export function middleware(request: NextRequest) {
     /^\/[a-z]{2}\/about(\/|$)/.test(pathname) ||
     /^\/[a-z]{2}\/contact(\/|$)/.test(pathname) ||
     /^\/[a-z]{2}\/companies(\/|$)/.test(pathname) ||
-    /^\/[a-z]{2}\/rfq(\/|$)/.test(pathname) ||
-    // Legacy routes without locale
-    /^\/products(\/|$)/.test(pathname) ||
-    /^\/categories(\/|$)/.test(pathname) ||
-    /^\/blog(\/|$)/.test(pathname) ||
-    /^\/category\/.+/.test(pathname) ||
-    /^\/company\/.+/.test(pathname) ||
-    /^\/search(\/|$)/.test(pathname);
+    /^\/[a-z]{2}\/rfq(\/|$)/.test(pathname);
 
-  // If public catalog route, apply ONLY i18n routing
-  if (isPublicCatalogRoute) {
-    return intlMiddleware(request);
+  if (isPublicOrStaticRoute) {
+    return NextResponse.next();
   }
 
-  // --- Protected routes ---
+  // Full middleware processing for protected routes
   const intlResponse = intlMiddleware(request);
   const response = intlResponse;
 
-  // Add nonce for CSP
+  // Add nonce header
   let nonce: string;
   try {
     nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   } catch {
     nonce = Buffer.from(`${Date.now()}-${Math.random()}`).toString("base64");
   }
-  response.headers.set("X-Content-Security-Policy-Nonce", nonce);
 
   // Rate limiting for API routes
+  const clientIP =
+    request.headers.get("x-forwarded-for")?.split(",")[0] ||
+    request.headers.get("x-real-ip") ||
+    "unknown";
+
   if (request.nextUrl.pathname.startsWith("/api/")) {
-    const clientIP =
-      request.headers.get("x-forwarded-for")?.split(",")[0] ||
-      request.headers.get("x-real-ip") ||
-      "unknown";
     const rateLimit = enhancedRateLimiter.check(clientIP);
     if (!rateLimit.allowed) {
       response.headers.set("X-RateLimit-Limit", "100");
@@ -80,22 +80,25 @@ export function middleware(request: NextRequest) {
     response.headers.set("X-RateLimit-Remaining", "99");
   }
 
-  // CSRF protection for state-changing requests
+  // CSRF protection
   if (["POST", "PUT", "PATCH", "DELETE"].includes(request.method)) {
     const origin = request.headers.get("origin");
     const referer = request.headers.get("referer");
+
     if (process.env.NODE_ENV === "production") {
       const expectedOrigin = process.env.NEXT_PUBLIC_APP_URL || "https://pak-exporters.com";
       if (origin && !origin.startsWith(expectedOrigin)) {
         return new NextResponse("Invalid origin", { status: 403 });
       }
     }
+
     if (referer && !referer.startsWith(request.nextUrl.origin)) {
       return new NextResponse("Invalid referer", { status: 403 });
     }
   }
 
-  // Add request ID header
+  // Add nonce & request ID headers
+  response.headers.set("X-Content-Security-Policy-Nonce", nonce);
   let requestId: string;
   try {
     requestId = crypto.randomUUID();
@@ -109,7 +112,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Exclude static assets and public files
-    "/((?!api|_next/static|_next/image|favicon.ico|manifest.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)).*)",
   ],
 };
