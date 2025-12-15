@@ -15,37 +15,46 @@ const intlMiddleware = createMiddleware(routing);
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   
-  // PUBLIC CATALOG ROUTES - Bypass middleware entirely for read-only pages
-  // These routes must work without authentication, cookies, or headers
-  const publicCatalogRoutes = [
-    "/products",
-    "/categories",
-    "/blog",
-    "/category/",
-    "/company/",
-    "/search",
-    "/about",
-    "/contact",
-  ];
+  // PUBLIC CATALOG ROUTES - Bypass all middleware processing for read-only pages
+  // These routes must work during SSR without authentication, cookies, or headers
+  // This is critical for Vercel Edge Middleware compatibility and SSR performance
+  const isPublicCatalogRoute = 
+    // Home page
+    pathname === "/" ||
+    // Exact public routes (with or without locale)
+    pathname === "/products" ||
+    pathname === "/categories" ||
+    pathname === "/blog" ||
+    pathname === "/search" ||
+    pathname === "/about" ||
+    pathname === "/contact" ||
+    pathname === "/companies" ||
+    pathname === "/rfq" ||
+    // Public routes with locale prefix (e.g., /en/products, /ur/products)
+    /^\/[a-z]{2}\/?$/.test(pathname) || // Home with locale
+    /^\/[a-z]{2}\/products(\/|$)/.test(pathname) || // Products listing and detail
+    /^\/[a-z]{2}\/categories(\/|$)/.test(pathname) || // Categories listing
+    /^\/[a-z]{2}\/blog(\/|$)/.test(pathname) || // Blog listing and detail
+    /^\/[a-z]{2}\/category\/.+/.test(pathname) || // Category detail pages
+    /^\/[a-z]{2}\/company\/.+/.test(pathname) || // Company detail pages
+    /^\/[a-z]{2}\/search(\/|$)/.test(pathname) || // Search
+    /^\/[a-z]{2}\/about(\/|$)/.test(pathname) || // About
+    /^\/[a-z]{2}\/contact(\/|$)/.test(pathname) || // Contact
+    /^\/[a-z]{2}\/companies(\/|$)/.test(pathname) || // Companies listing
+    /^\/[a-z]{2}\/rfq(\/|$)/.test(pathname) || // RFQ
+    // Public routes without locale (legacy redirects)
+    /^\/products(\/|$)/.test(pathname) ||
+    /^\/categories(\/|$)/.test(pathname) ||
+    /^\/blog(\/|$)/.test(pathname) ||
+    /^\/category\/.+/.test(pathname) ||
+    /^\/company\/.+/.test(pathname) ||
+    /^\/search(\/|$)/.test(pathname);
   
-  // Check if this is a public catalog route (with or without locale prefix)
-  const isPublicCatalogRoute = publicCatalogRoutes.some((route) => {
-    // Match exact route or route with locale prefix (e.g., /en/products, /ur/products)
-    return pathname === route || 
-           pathname.startsWith(route) ||
-           /^\/[a-z]{2}\/products/.test(pathname) ||
-           /^\/[a-z]{2}\/categories/.test(pathname) ||
-           /^\/[a-z]{2}\/blog/.test(pathname) ||
-           /^\/[a-z]{2}\/category\//.test(pathname) ||
-           /^\/[a-z]{2}\/company\//.test(pathname) ||
-           /^\/[a-z]{2}\/search/.test(pathname);
-  });
-  
-  // If public catalog route, only apply i18n routing and return immediately
-  // This ensures SSR can run without any auth checks or middleware interference
+  // If public catalog route, ONLY apply i18n routing and return immediately
+  // This ensures SSR can run without any auth checks, CSRF validation, or middleware interference
+  // Critical for Vercel Edge Middleware and serverless function performance
   if (isPublicCatalogRoute) {
-    const intlResponse = intlMiddleware(request);
-    return intlResponse;
+    return intlMiddleware(request);
   }
   
   // For all other routes, apply full middleware processing
@@ -133,8 +142,9 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public files (public folder)
      * 
-     * Public catalog routes (products, categories, blog) are matched but
-     * bypassed early in middleware function for SSR compatibility
+     * Public catalog routes are matched but bypassed early in middleware
+     * for SSR compatibility. Protected routes (dashboard, admin, account) are
+     * processed with full middleware (auth, CSRF, rate limiting).
      */
     "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)).*)",
   ],
