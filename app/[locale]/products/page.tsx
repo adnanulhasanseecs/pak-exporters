@@ -57,10 +57,22 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     membershipTier: searchParams.membershipTier as "platinum" | "gold" | "silver" | "starter" | undefined,
   };
 
+  // Diagnostic logging
+  console.log("[ProductsPage] filters:", filters);
+  console.log("[ProductsPage] pagination:", { page, pageSize });
+
   // Call Prisma queries directly - errors will throw and show error page
   // Products are publicly readable - no authentication required
   const productsData = await getProductsFromDb(filters, { page, pageSize });
   const categories = await getCategoriesFromDb();
+
+  // Diagnostic logging
+  console.log("[ProductsPage] productsData:", {
+    productsCount: productsData.products.length,
+    total: productsData.total,
+    page: productsData.page,
+    totalPages: productsData.totalPages,
+  });
 
   const { products, total, totalPages } = productsData;
 

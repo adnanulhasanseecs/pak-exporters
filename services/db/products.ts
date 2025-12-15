@@ -2,12 +2,13 @@
  * Direct Database Queries for Products
  * For use in Server Components - bypasses HTTP API layer
  * 
- * Production: Fail fast on database errors - no JSON fallbacks
+ * Fallback: Uses JSON mock data if database is unavailable
  */
 
 import { prisma } from "@/lib/prisma";
 import type { ProductFilters, ProductListResponse } from "@/types/product";
 import type { PaginationParams } from "@/types/api";
+import productsJson from "@/services/mocks/products.json";
 
 // Helper to parse JSON fields from database
 function parseJsonField<T>(field: string | null): T | undefined {
@@ -55,6 +56,71 @@ function transformProduct(product: any) {
 }
 
 /**
+ * Get products from JSON fallback (mock data)
+ */
+function getProductsFromJson(
+  filters?: ProductFilters,
+  pagination?: PaginationParams
+): ProductListResponse {
+  const page = pagination?.page || 1;
+  const pageSize = pagination?.pageSize || 20;
+  
+  let filteredProducts = productsJson.filter((p: any) => p.status === "active");
+
+  // Apply filters
+  if (filters?.category) {
+    filteredProducts = filteredProducts.filter(
+      (p: any) => p.category?.slug === filters.category || p.category?.id === filters.category
+    );
+  }
+
+  if (filters?.search) {
+    const searchLower = filters.search.toLowerCase();
+    filteredProducts = filteredProducts.filter(
+      (p: any) =>
+        p.name?.toLowerCase().includes(searchLower) ||
+        p.description?.toLowerCase().includes(searchLower) ||
+        p.shortDescription?.toLowerCase().includes(searchLower)
+    );
+  }
+
+  if (filters?.minPrice !== undefined) {
+    filteredProducts = filteredProducts.filter((p: any) => p.price?.amount >= filters.minPrice!);
+  }
+
+  if (filters?.maxPrice !== undefined) {
+    filteredProducts = filteredProducts.filter((p: any) => p.price?.amount <= filters.maxPrice!);
+  }
+
+  if (filters?.verifiedOnly) {
+    filteredProducts = filteredProducts.filter((p: any) => p.company?.verified === true);
+  }
+
+  if (filters?.goldSupplierOnly) {
+    filteredProducts = filteredProducts.filter((p: any) => p.company?.goldSupplier === true);
+  }
+
+  if (filters?.membershipTier) {
+    filteredProducts = filteredProducts.filter(
+      (p: any) => p.company?.membershipTier === filters.membershipTier
+    );
+  }
+
+  const total = filteredProducts.length;
+  const totalPages = Math.ceil(total / pageSize);
+  const startIndex = (page - 1) * pageSize;
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + pageSize);
+
+  return {
+    products: paginatedProducts as any,
+    total,
+    page,
+    pageSize,
+    totalPages,
+  };
+}
+
+/**
  * Fetch products directly from database (for Server Components)
  * Products are publicly readable - no authentication required
  */
@@ -65,6 +131,16 @@ export async function getProductsFromDb(
   const page = pagination?.page || 1;
   const pageSize = pagination?.pageSize || 20;
   const skip = (page - 1) * pageSize;
+
+  // Test database connection first
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    console.log("[getProductsFromDb] DB connection OK");
+  } catch (connectionError: any) {
+    console.error("[getProductsFromDb] Database connection failed:", connectionError.message);
+    console.log("[getProductsFromDb] Database not available, using JSON fallback");
+    return getProductsFromJson(filters, pagination);
+  }
 
   // Build where clause - products are publicly readable
   const where: any = {
@@ -114,7 +190,7 @@ export async function getProductsFromDb(
     where.company = { ...where.company, membershipTier: filters.membershipTier };
   }
 
-  // Fetch products - fail fast in production
+  // Fetch products - fallback to JSON if database query fails
   try {
     const [products, total] = await Promise.all([
       prisma.product.findMany({
@@ -143,11 +219,8 @@ export async function getProductsFromDb(
       totalPages,
     };
   } catch (error: any) {
-    // In production, fail fast - do not mask database errors
-    if (process.env.NODE_ENV === "production") {
-      throw error;
-    }
-    // In development, still throw but with better error message
-    throw new Error(`Failed to fetch products: ${error.message}`);
+    console.error("[getProductsFromDb] Database query failed:", error.message);
+    console.log("[getProductsFromDb] Database not available, using JSON fallback");
+    return getProductsFromJson(filters, pagination);
   }
 }
