@@ -201,7 +201,14 @@ function validatePrisma() {
   // Check schema for correct provider
   try {
     const schemaContent = require("fs").readFileSync(schemaPath, "utf-8");
-    if (!schemaContent.includes('provider = "postgresql"')) {
+    // Check for PostgreSQL provider (handle various spacing: "provider =", "provider  =", etc.)
+    const hasPostgresql = /provider\s*=\s*["']postgresql["']/.test(schemaContent);
+    const hasSqlite = /provider\s*=\s*["']sqlite["']/i.test(schemaContent);
+    
+    if (hasSqlite) {
+      addError('Prisma schema uses SQLite provider');
+      addError("   SQLite is not supported on Vercel. Update schema.prisma to use PostgreSQL.");
+    } else if (!hasPostgresql) {
       addError('Prisma schema does not use PostgreSQL provider');
       addError("   SQLite is not supported on Vercel. Update schema.prisma to use PostgreSQL.");
     } else {
