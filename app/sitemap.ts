@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
 import { APP_CONFIG, ROUTES } from "@/lib/constants";
-import { fetchProducts } from "@/services/api/products";
-import { fetchCompanies } from "@/services/api/companies";
+// Use direct DB queries instead of HTTP API calls to avoid auth issues
+import { getProductsFromDb } from "@/services/db/products";
+import { getCategoriesFromDb } from "@/services/db/categories";
+import { prisma } from "@/lib/prisma";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = (APP_CONFIG.url || "http://localhost:3000").replace(/\/$/, "");
@@ -27,14 +29,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Fetch products and companies with error handling
-  // If API calls fail, return only static routes to prevent build errors
+  // Use direct DB queries instead of HTTP API calls to avoid auth issues
   let productEntries: MetadataRoute.Sitemap = [];
   let companyEntries: MetadataRoute.Sitemap = [];
 
   try {
-    const [{ products }, { companies }] = await Promise.all([
-      fetchProducts({}, { page: 1, pageSize: 1000 }).catch(() => ({ products: [] })),
-      fetchCompanies(undefined, { page: 1, pageSize: 1000 }).catch(() => ({ companies: [] })),
+    // Use direct DB queries - no HTTP requests, no auth required
+    const [{ products }, companies] = await Promise.all([
+      getProductsFromDb({}, { page: 1, pageSize: 1000 }).catch(() => ({ products: [] })),
+      prisma.company.findMany({ take: 1000 }).catch(() => []),
     ]);
 
     productEntries = products.map((product) => ({

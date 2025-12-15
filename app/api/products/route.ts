@@ -1,7 +1,13 @@
 /**
  * Products API Route
- * GET /api/products - List products with filters and pagination
+ * GET /api/products - List products with filters and pagination (PUBLIC - NO AUTH REQUIRED)
  * POST /api/products - Create a new product (requires authentication)
+ * 
+ * IMPORTANT: GET requests are PUBLIC and do NOT require authentication.
+ * This endpoint is used by:
+ * - Public product listings
+ * - Search functionality
+ * - Sitemap generation (now uses direct DB queries)
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -57,10 +63,21 @@ function transformProduct(product: any) {
 }
 
 export async function GET(request: NextRequest) {
+  // STEP 1 & 4: Diagnostic logging to identify auth issues
+  console.log("[API /products GET] Request received");
+  console.log("[API /products GET] Path:", request.nextUrl.pathname);
+  console.log("[API /products GET] Method:", request.method);
+  console.log("[API /products GET] NODE_ENV:", process.env.NODE_ENV);
+  
+  // Log auth headers (without values for security)
+  const authHeader = request.headers.get("authorization");
+  console.log("[API /products GET] Authorization header present:", !!authHeader);
+  console.log("[API /products GET] This endpoint is PUBLIC - no auth required for GET");
+  
   try {
     // Check if Prisma is available and database is accessible
     if (!prisma) {
-      console.error("Prisma client is not initialized");
+      console.error("[API /products GET] Prisma client is not initialized");
       return NextResponse.json(
         { error: "Database connection not available" },
         { status: 503 }
@@ -391,6 +408,12 @@ export async function GET(request: NextRequest) {
       };
     });
 
+    console.log("[API /products GET] Success - returning products:", {
+      count: productListItems.length,
+      total,
+      page,
+    });
+    
     return NextResponse.json({
       products: productListItems,
       total,
@@ -399,7 +422,8 @@ export async function GET(request: NextRequest) {
       totalPages: Math.ceil(total / pageSize),
     });
   } catch (error: any) {
-    console.error("Error fetching products from database, falling back to JSON:", error.message);
+    console.error("[API /products GET] Error fetching products from database, falling back to JSON:", error.message);
+    console.error("[API /products GET] Error stack:", error.stack);
     
     // Fallback to JSON mock data on any error
     try {
