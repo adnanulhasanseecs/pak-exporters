@@ -2,8 +2,11 @@
  * Prisma Client Singleton
  * Ensures only one instance of Prisma Client is created per serverless container
  * 
- * Prisma reads DATABASE_URL and DIRECT_DATABASE_URL from environment variables
- * as configured in prisma/schema.prisma. No manual env reading needed.
+ * Prisma Accelerate Configuration:
+ * - schema.prisma uses DATABASE_PRISMA_DATABASE_URL (prisma+postgres:// protocol)
+ * - DIRECT_DATABASE_URL is used for migrations (direct PostgreSQL connection)
+ * - Prisma Client validates datasource URL at instantiation time
+ * - No runtime env mutation needed - schema-level configuration is sufficient
  */
 
 import { PrismaClient } from "@prisma/client";

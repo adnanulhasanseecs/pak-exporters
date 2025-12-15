@@ -7,7 +7,10 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  // Prisma Accelerate requires prisma+postgres:// protocol
+  // Use DATABASE_PRISMA_DATABASE_URL (Accelerate URL) for production
+  // DIRECT_DATABASE_URL is used for migrations (direct PostgreSQL connection)
+  url       = env("DATABASE_PRISMA_DATABASE_URL")
   directUrl = env("DIRECT_DATABASE_URL")
 }
 
