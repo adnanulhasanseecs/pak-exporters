@@ -1,11 +1,12 @@
 /**
  * Direct Database Queries for Categories
  * For use in Server Components - bypasses HTTP API layer
+ * 
+ * Production: Fail fast on database errors - no JSON fallbacks
  */
 
 import { prisma } from "@/lib/prisma";
 import type { Category } from "@/types/category";
-import categoriesData from "@/services/mocks/categories.json";
 
 // Transform database category to API format
 function transformCategory(category: any): Category {
@@ -26,35 +27,9 @@ function transformCategory(category: any): Category {
 
 /**
  * Fetch categories directly from database (for Server Components)
+ * Categories are publicly readable - no authentication required
  */
 export async function getCategoriesFromDb(): Promise<Category[]> {
-  // Diagnostic logging
-  console.log("[getCategoriesFromDb] Function called");
-  console.log("[getCategoriesFromDb] NODE_ENV:", process.env.NODE_ENV || "not set");
-  
-  try {
-    // Test database connection
-    await prisma.$queryRaw`SELECT 1`;
-    console.log("[getCategoriesFromDb] Database connection test: SUCCESS");
-    
-    // Diagnostic query: bypass all logic, just get raw categories
-    const diagnosticCategories = await prisma.category.findMany({ take: 5 });
-    console.log("[getCategoriesFromDb] Diagnostic query result:", {
-      count: diagnosticCategories.length,
-      ids: diagnosticCategories.map(c => c.id),
-      names: diagnosticCategories.map(c => c.name),
-    });
-    
-    if (diagnosticCategories.length === 0) {
-      console.error("[getCategoriesFromDb] DIAGNOSIS: Database has ZERO categories.");
-    }
-  } catch (error: any) {
-    console.error("[getCategoriesFromDb] Database connection test: FAILED", error.message);
-    console.warn("[getCategoriesFromDb] Database not available, using JSON fallback:", error.message);
-    // Fall back to JSON mock data
-    return getCategoriesFromJson();
-  }
-
   try {
     const categories = await prisma.category.findMany({
       include: {
@@ -66,10 +41,6 @@ export async function getCategoriesFromDb(): Promise<Category[]> {
         { order: "asc" },
         { name: "asc" },
       ],
-    });
-    
-    console.log("[getCategoriesFromDb] Full query result:", {
-      categoriesFound: categories.length,
     });
 
     // Build category tree
@@ -97,27 +68,13 @@ export async function getCategoriesFromDb(): Promise<Category[]> {
       }
     }
 
-    const result = rootCategories.length > 0 ? rootCategories : categories.map(transformCategory);
-    console.log("[getCategoriesFromDb] Final result count:", result.length);
-    return result;
+    return rootCategories.length > 0 ? rootCategories : categories.map(transformCategory);
   } catch (error: any) {
-    console.error("[getCategoriesFromDb] Error fetching categories:", error);
-    console.error("[getCategoriesFromDb] Error stack:", error.stack);
-    // Fall back to JSON mock data
-    return getCategoriesFromJson();
+    // In production, fail fast - do not mask database errors
+    if (process.env.NODE_ENV === "production") {
+      throw error;
+    }
+    // In development, still throw but with better error message
+    throw new Error(`Failed to fetch categories: ${error.message}`);
   }
 }
-
-/**
- * Fallback: Get categories from JSON mock data
- */
-function getCategoriesFromJson(): Category[] {
-  // Mock data is flat, so return as-is
-  return categoriesData.map((cat: any) => ({
-    ...cat,
-    children: [],
-    icon: undefined,
-    parentId: undefined,
-  })) as Category[];
-}
-

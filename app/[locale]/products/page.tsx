@@ -41,12 +41,6 @@ interface ProductsPageProps {
 }
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
-  // STEP 1 & 4: Diagnostic logging for auth issues
-  console.log("[ProductsPage] Page rendering started");
-  console.log("[ProductsPage] NODE_ENV:", process.env.NODE_ENV);
-  console.log("[ProductsPage] This page uses DIRECT Prisma queries - NO HTTP fetch calls");
-  console.log("[ProductsPage] Calling getProductsFromDb directly (not via API route)");
-  
   // searchParams is a plain object (not a Promise) in Next.js App Router
   const t = await getTranslations("products");
   const tCommon = await getTranslations("common");
@@ -63,31 +57,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     membershipTier: searchParams.membershipTier as "platinum" | "gold" | "silver" | "starter" | undefined,
   };
 
-  // Declare variables outside try block so they're accessible in the component
-  let productsData: Awaited<ReturnType<typeof getProductsFromDb>>;
-  let categories: Awaited<ReturnType<typeof getCategoriesFromDb>>;
-
-  try {
-    // Call Prisma queries directly - allow errors to throw instead of silently swallowing
-    // This ensures we see database connection issues immediately rather than empty pages
-    console.log("[ProductsPage] Calling getProductsFromDb...");
-    productsData = await getProductsFromDb(filters, { page, pageSize });
-    console.log("[ProductsPage] getProductsFromDb succeeded:", {
-      productsCount: productsData.products.length,
-      total: productsData.total,
-    });
-    
-    console.log("[ProductsPage] Calling getCategoriesFromDb...");
-    categories = await getCategoriesFromDb();
-    console.log("[ProductsPage] getCategoriesFromDb succeeded:", {
-      categoriesCount: categories.length,
-    });
-  } catch (error: any) {
-    console.error("[ProductsPage] ERROR in data fetching:", error.message);
-    console.error("[ProductsPage] Error stack:", error.stack);
-    // Re-throw to show error page instead of empty data
-    throw error;
-  }
+  // Call Prisma queries directly - errors will throw and show error page
+  // Products are publicly readable - no authentication required
+  const productsData = await getProductsFromDb(filters, { page, pageSize });
+  const categories = await getCategoriesFromDb();
 
   const { products, total, totalPages } = productsData;
 

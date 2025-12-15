@@ -6,10 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  // Use DATABASE_URL as fallback - Prisma Client will override with DATABASE_PRISMA_DATABASE_URL if available
-  // The actual connection string is set at runtime in lib/prisma.ts
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
 }
 
 // User model

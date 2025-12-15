@@ -63,54 +63,9 @@ function transformProduct(product: any) {
 }
 
 export async function GET(request: NextRequest) {
-  // STEP 1 & 4: Diagnostic logging to identify auth issues
-  console.log("[API /products GET] Request received");
-  console.log("[API /products GET] Path:", request.nextUrl.pathname);
-  console.log("[API /products GET] Method:", request.method);
-  console.log("[API /products GET] NODE_ENV:", process.env.NODE_ENV);
-  
-  // Log auth headers (without values for security)
-  const authHeader = request.headers.get("authorization");
-  console.log("[API /products GET] Authorization header present:", !!authHeader);
-  console.log("[API /products GET] This endpoint is PUBLIC - no auth required for GET");
-  
+  // GET /api/products is PUBLIC - no authentication required
+  // Products are publicly readable
   try {
-    // Check if Prisma is available and database is accessible
-    if (!prisma) {
-      console.error("[API /products GET] Prisma client is not initialized");
-      return NextResponse.json(
-        { error: "Database connection not available" },
-        { status: 503 }
-      );
-    }
-
-    // Test database connection (Prisma connects lazily, so we'll test with a simple query)
-    let useDatabase = true;
-    try {
-      // Log connection attempt
-      const dbUrl = process.env.DATABASE_PRISMA_DATABASE_URL || process.env.DATABASE_URL;
-      if (dbUrl) {
-        const urlObj = new URL(dbUrl);
-        console.log(`[API] Testing database connection to: ${urlObj.hostname}:${urlObj.port || 'default'}`);
-      }
-      
-      // Try a simple query to test connection
-      await prisma.$queryRaw`SELECT 1`;
-      console.log("[API] Database connection successful");
-    } catch (connectError: any) {
-      console.error("[API] Database connection failed:", {
-        message: connectError.message,
-        code: connectError.code,
-        meta: connectError.meta,
-        dbUrl: process.env.DATABASE_PRISMA_DATABASE_URL 
-          ? "DATABASE_PRISMA_DATABASE_URL is set" 
-          : process.env.DATABASE_URL 
-          ? "DATABASE_URL is set" 
-          : "No database URL found"
-      });
-      console.warn("Database connection failed, falling back to JSON mock data:", connectError.message);
-      useDatabase = false;
-    }
 
     const searchParams = request.nextUrl.searchParams;
     
