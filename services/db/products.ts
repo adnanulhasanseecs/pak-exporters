@@ -85,26 +85,61 @@ export async function getProductsFromDb(
     // STEP 3: Verify schema alignment - check if Product table exists and its structure
     try {
       // Check if Product table exists (PostgreSQL)
+      // Note: Prisma migrations create PascalCase tables: "Product", "Category", "Company", etc.
       const tableCheck = await prisma.$queryRaw<Array<{ table_name: string }>>`
         SELECT table_name 
         FROM information_schema.tables 
         WHERE table_schema = 'public' 
         AND table_name IN ('Product', 'product', 'products', 'Products')
+        ORDER BY table_name
       `;
       console.log("[getProductsFromDb] Schema check - Found tables:", tableCheck);
       
-      // Check Product table columns
-      const columnCheck = await prisma.$queryRaw<Array<{ column_name: string; data_type: string }>>`
-        SELECT column_name, data_type
-        FROM information_schema.columns
-        WHERE table_schema = 'public'
-        AND table_name IN ('Product', 'product', 'products', 'Products')
-        ORDER BY ordinal_position
-        LIMIT 10
-      `;
-      console.log("[getProductsFromDb] Schema check - Product table columns:", columnCheck);
+      if (tableCheck.length === 0) {
+        console.error("[getProductsFromDb] CRITICAL: Product table does NOT exist! Migrations may not have been applied.");
+      } else {
+        const actualTableName = tableCheck[0].table_name;
+        console.log("[getProductsFromDb] Schema check - Actual table name:", actualTableName);
+        
+        // Check Product table columns
+        const columnCheck = await prisma.$queryRaw<Array<{ column_name: string; data_type: string }>>`
+          SELECT column_name, data_type
+          FROM information_schema.columns
+          WHERE table_schema = 'public'
+          AND table_name = ${actualTableName}
+          ORDER BY ordinal_position
+          LIMIT 10
+        `;
+        console.log("[getProductsFromDb] Schema check - Product table columns:", columnCheck);
+      }
     } catch (schemaError: any) {
       console.warn("[getProductsFromDb] Schema check failed (may not be PostgreSQL):", schemaError.message);
+    }
+    
+    // STEP 4: Verify migrations have been applied
+    try {
+      // Check if _prisma_migrations table exists (Prisma tracks migrations here)
+      const migrationCheck = await prisma.$queryRaw<Array<{ migration_name: string; finished_at: string | null }>>`
+        SELECT migration_name, finished_at
+        FROM _prisma_migrations
+        ORDER BY started_at DESC
+        LIMIT 5
+      `;
+      console.log("[getProductsFromDb] Migration check - Applied migrations:", migrationCheck);
+      
+      if (migrationCheck.length === 0) {
+        console.error("[getProductsFromDb] CRITICAL: No migrations found in _prisma_migrations table. Migrations may not have been applied to production database.");
+      } else {
+        const pendingMigrations = migrationCheck.filter(m => m.finished_at === null);
+        if (pendingMigrations.length > 0) {
+          console.error("[getProductsFromDb] WARNING: Found pending migrations:", pendingMigrations);
+        } else {
+          console.log("[getProductsFromDb] Migration check - All migrations appear to be applied");
+        }
+      }
+    } catch (migrationError: any) {
+      console.warn("[getProductsFromDb] Migration check failed:", migrationError.message);
+      console.warn("[getProductsFromDb] This may indicate migrations have not been applied to the production database.");
     }
   } catch (error: any) {
     console.error("[getProductsFromDb] Database connection test: FAILED", error.message);
