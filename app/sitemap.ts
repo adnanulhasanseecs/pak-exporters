@@ -2,7 +2,6 @@ import type { MetadataRoute } from "next";
 import { APP_CONFIG, ROUTES } from "@/lib/constants";
 // Use direct DB queries instead of HTTP API calls to avoid auth issues
 import { getProductsFromDb } from "@/services/db/products";
-import { getCategoriesFromDb } from "@/services/db/categories";
 import { prisma } from "@/lib/prisma";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

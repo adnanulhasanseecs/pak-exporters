@@ -63,18 +63,22 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     membershipTier: searchParams.membershipTier as "platinum" | "gold" | "silver" | "starter" | undefined,
   };
 
+  // Declare variables outside try block so they're accessible in the component
+  let productsData: Awaited<ReturnType<typeof getProductsFromDb>>;
+  let categories: Awaited<ReturnType<typeof getCategoriesFromDb>>;
+
   try {
     // Call Prisma queries directly - allow errors to throw instead of silently swallowing
     // This ensures we see database connection issues immediately rather than empty pages
     console.log("[ProductsPage] Calling getProductsFromDb...");
-    const productsData = await getProductsFromDb(filters, { page, pageSize });
+    productsData = await getProductsFromDb(filters, { page, pageSize });
     console.log("[ProductsPage] getProductsFromDb succeeded:", {
       productsCount: productsData.products.length,
       total: productsData.total,
     });
     
     console.log("[ProductsPage] Calling getCategoriesFromDb...");
-    const categories = await getCategoriesFromDb();
+    categories = await getCategoriesFromDb();
     console.log("[ProductsPage] getCategoriesFromDb succeeded:", {
       categoriesCount: categories.length,
     });
@@ -84,8 +88,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     // Re-throw to show error page instead of empty data
     throw error;
   }
-
-  const { products, total, totalPages } = productsData;
 
   const { products, total, totalPages } = productsData;
 
@@ -130,7 +132,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           {products.length > 0 ? (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-8">
-                {products.map((product) => (
+                {products.map((product: any) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
