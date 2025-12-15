@@ -5,9 +5,23 @@
 
 import { PrismaClient } from "@prisma/client";
 
-// Validate DATABASE_URL exists at module load
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL environment variable is not set");
+// Use DATABASE_PRISMA_DATABASE_URL (Prisma Accelerate) if available, otherwise fall back to DATABASE_URL
+// Prisma Accelerate requires prisma:// or prisma+postgres:// protocol
+const databaseUrl = process.env.DATABASE_PRISMA_DATABASE_URL || process.env.DATABASE_URL;
+
+// Validate database URL exists at module load
+if (!databaseUrl) {
+  throw new Error(
+    "DATABASE_URL or DATABASE_PRISMA_DATABASE_URL environment variable must be set. " +
+    "If using Prisma Accelerate, set DATABASE_PRISMA_DATABASE_URL. " +
+    "Otherwise, set DATABASE_URL."
+  );
+}
+
+// Override DATABASE_URL at runtime if DATABASE_PRISMA_DATABASE_URL is set
+// This ensures Prisma Client uses the correct connection string
+if (process.env.DATABASE_PRISMA_DATABASE_URL) {
+  process.env.DATABASE_URL = process.env.DATABASE_PRISMA_DATABASE_URL;
 }
 
 const globalForPrisma = globalThis as unknown as {
