@@ -18,6 +18,11 @@ export function middleware(request: NextRequest) {
   // PUBLIC CATALOG ROUTES & STATIC ASSETS - Early bypass
   const isPublicOrStaticRoute =
     pathname === "/" ||
+    pathname === "/manifest.json" ||
+    pathname === "/favicon.ico" ||
+    /^\/_next\/static\//.test(pathname) ||
+    /^\/_next\/image\//.test(pathname) ||
+    /\.(svg|png|jpg|jpeg|gif|webp|ico)$/.test(pathname) ||
     pathname === "/products" ||
     pathname === "/categories" ||
     pathname === "/blog" ||
@@ -25,12 +30,7 @@ export function middleware(request: NextRequest) {
     pathname === "/about" ||
     pathname === "/contact" ||
     pathname === "/companies" ||
-    pathname === "/rfq" ||
-    pathname === "/manifest.json" ||
-    pathname === "/favicon.ico" ||
-    /^\/_next\/static\//.test(pathname) ||
-    /^\/_next\/image\//.test(pathname) ||
-    /\.(svg|png|jpg|jpeg|gif|webp|ico)$/.test(pathname) ||
+    pathname === "/rfq" ||   
     /^\/[a-z]{2}\/?$/.test(pathname) ||
     /^\/[a-z]{2}\/products(\/|$)/.test(pathname) ||
     /^\/[a-z]{2}\/categories(\/|$)/.test(pathname) ||
